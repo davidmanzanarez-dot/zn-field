@@ -1134,17 +1134,14 @@ let pinIngresado = '';
 
 async function cargarTecnicos() {
   try {
-    const data = await api({ action: 'login', tecnico: '_LIST_' });
-    // Si el endpoint devuelve lista de técnicos en data.tecnicos
-    if (data.tecnicos && Array.isArray(data.tecnicos)) {
+    const data = await api({ action: 'obtenerTecnicos' });
+    if (data.ok && Array.isArray(data.tecnicos)) {
       tecnicosLista = data.tecnicos;
+      llenarSelectTecnicos();
     } else {
-      // Fallback: leer de la hoja via endpoint genérico
-      tecnicosLista = data.tecnicos || [];
+      console.warn('Respuesta inesperada al cargar técnicos:', data);
     }
-    llenarSelectTecnicos();
   } catch(e) {
-    // Si falla, igual dejamos el select vacío con mensaje
     console.warn('No se pudieron cargar técnicos:', e);
   }
 }
