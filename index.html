@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ZN Field · SSServicios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --bg:        #0f1117;
+      --surface:   #181c27;
+      --card:      #1e2333;
+      --border:    #2a2f42;
+      --accent:    #ff6b1a;
+      --accent2:   #ffaa1a;
+      --text:      #e8eaf0;
+      --muted:     #8890a8;
+      --success:   #2ecc71;
+      --danger:    #e74c3c;
+      --radius:    10px;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ===== LAYOUT BASE ===== */
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== PANTALLAS ===== */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      animation: fadeIn .25s ease;
+    }
+    .screen.active { display: flex; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: .04em;
+      color: var(--text);
+    }
+    .header-logo span { color: var(--accent); }
+    .header-user {
+      font-family: var(--font-head);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .03em;
+    }
+    .btn-logout {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: .78rem;
+      padding: 5px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-left: 12px;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ===== CONTENIDO SCROLLEABLE ===== */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px 40px;
+      max-width: 540px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ===== LOGIN ===== */
+    #screen-login {
+      justify-content: center;
+      align-items: center;
+      padding: 24px 20px;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,107,26,.08) 0%, transparent 60%),
+        var(--bg);
+    }
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+    }
+    .login-brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-brand h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 2rem;
+      letter-spacing: .05em;
+      line-height: 1;
+    }
+    .login-brand h1 span { color: var(--accent); }
+    .login-brand p {
+      color: var(--muted);
+      font-size: .82rem;
+      margin-top: 4px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 6px;
+    }
+    select, input[type="password"], input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color .2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    select:focus, input:focus {
+      border-color: var(--accent);
+    }
+    select option { background: var(--card); }
+
+    /* PIN visual */
+    .pin-display {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 8px 0 16px;
+    }
+    .pin-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: background .15s, border-color .15s;
+    }
+    .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .numpad-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 16px 0;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      user-select: none;
+    }
+    .numpad-btn:active { transform: scale(.94); background: var(--border); }
+    .numpad-btn.delete { font-size: 1rem; color: var(--muted); }
+    .numpad-btn.zero { grid-column: 2; }
+
+    /* ===== BOTONES ===== */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .9; }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm {
+      width: auto;
+      padding: 8px 16px;
+      font-size: .85rem;
+    }
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn + .btn { margin-top: 10px; }
+
+    /* ===== MENU PRINCIPAL ===== */
+    .greeting {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .greeting span { color: var(--accent); }
+    .greeting-sub {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 22px;
+    }
+
+    /* Resumen personal */
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .resumen-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+    }
+    .resumen-card.full { grid-column: 1 / -1; }
+    .resumen-card .rc-label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+    .resumen-card .rc-value {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .resumen-card .rc-value.secondary { color: var(--accent2); }
+    .resumen-card .rc-sub {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Botones de menú */
+    .menu-section-title {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 16px 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background .18s, border-color .18s;
+      text-align: left;
+    }
+    .menu-btn:hover { background: var(--card); }
+    .menu-btn .menu-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .menu-btn .menu-text h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .menu-btn .menu-text p {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .menu-btn.admin-btn { border-left-color: var(--accent2); }
+
+    /* ===== FORMULARIO VENTAS ===== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-header .back-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 36px; height: 36px;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-family: var(--font-head);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+
+    /* Equipos cards */
+    .equipo-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .equipo-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .equipo-card.selected {
+      border-color: var(--accent);
+      background: rgba(255,107,26,.08);
+    }
+    .equipo-card .eq-nombre {
+      font-family: var(--font-head);
+      font-size: .98rem;
+      font-weight: 700;
+    }
+    .equipo-card .eq-precio {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Comisión preview */
+    .comision-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .comision-preview.visible { display: block; }
+    .comision-preview .cp-label {
+      font-size: .75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .comision-preview .cp-value {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    /* ===== CATEGORÍAS JORNADA ===== */
+    .categoria-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .cat-btn {
+      background: var(--card);
+      border: 2px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 12px 8px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: .88rem;
+      font-weight: 500;
+      text-align: center;
+      transition: border-color .15s, background .15s;
+    }
+    .cat-btn.selected { border-color: var(--accent); background: rgba(255,107,26,.08); }
+    .cat-btn.no-pago { border-style: dashed; color: var(--muted); }
+    .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(136,144,168,.08); }
+
+    /* ===== TICKET COUNT ===== */
+    .ticket-counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .tc-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.4rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .tc-btn:active { background: var(--border); }
+    .tc-value {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      min-width: 60px;
+      text-align: center;
+    }
+    .tc-label { font-size: .8rem; color: var(--muted); text-align: center; }
+
+    /* ===== MENSAJES ===== */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      font-size: .9rem;
+      font-weight: 600;
+      z-index: 1000;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      opacity: 0;
+      white-space: nowrap;
+      max-width: 90vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+    .toast.info { border-left: 4px solid var(--accent); }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: .82rem;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .loading-msg {
+      color: var(--muted);
+      font-size: .88rem;
+      text-align: center;
+      padding: 16px 0;
+    }
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== PANEL ADMIN ===== */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn .2s ease; }
+
+    /* Tabla de datos */
+    .data-table-wrap { overflow-x: auto; border-radius: var(--radius); }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+    .data-table th {
+      background: var(--card);
+      color: var(--muted);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+    /* Equipos gestión */
+    .equipo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .equipo-item .eq-info h4 {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .equipo-item .eq-info p { font-size: .78rem; color: var(--muted); }
+    .equipo-item .eq-actions { display: flex; gap: 8px; }
+    .eq-edit-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      width: 100%;
+      max-width: 540px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 24px 20px 36px;
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-title {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    /* Tags de estado */
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .tag-green { background: rgba(46,204,113,.15); color: var(--success); }
+    .tag-orange { background: rgba(255,107,26,.15); color: var(--accent); }
+    .tag-gray { background: rgba(136,144,168,.15); color: var(--muted); }
+
+    /* Chips selector dupla */
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .radio-chip {
+      flex: 1;
+      min-width: 80px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      color: var(--muted);
+      border-radius: var(--radius);
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 600;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .radio-chip.selected {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(255,107,26,.08);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* Estadísticas admin */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .sr-label { font-size: .88rem; color: var(--muted); }
+    .stat-row .sr-value {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      font-size: .7rem;
+      font-weight: 800;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ========================= LOGIN ========================= -->
+  <div id="screen-login" class="screen active">
+    <div class="login-box">
+      <div class="login-brand">
+        <h1>ZN<span> FIELD</span></h1>
+        <p>SSServicios · Zona Norte</p>
+      </div>
+
+      <div class="form-group">
+        <label>Técnico</label>
+        <select id="login-tecnico">
+          <option value="">— seleccioná un técnico —</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>PIN</label>
+        <div class="pin-display" id="pin-display">
+          <div class="pin-dot" id="dot-0"></div>
+          <div class="pin-dot" id="dot-1"></div>
+          <div class="pin-dot" id="dot-2"></div>
+          <div class="pin-dot" id="dot-3"></div>
+        </div>
+        <div class="numpad" id="numpad">
+          <button class="numpad-btn" data-n="1">1</button>
+          <button class="numpad-btn" data-n="2">2</button>
+          <button class="numpad-btn" data-n="3">3</button>
+          <button class="numpad-btn" data-n="4">4</button>
+          <button class="numpad-btn" data-n="5">5</button>
+          <button class="numpad-btn" data-n="6">6</button>
+          <button class="numpad-btn" data-n="7">7</button>
+          <button class="numpad-btn" data-n="8">8</button>
+          <button class="numpad-btn" data-n="9">9</button>
+          <button class="numpad-btn delete" data-n="del">⌫</button>
+          <button class="numpad-btn zero" data-n="0">0</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-login">INGRESAR</button>
+      <div class="error-msg" id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- ========================= MENÚ PRINCIPAL ========================= -->
+  <div id="screen-menu" class="screen">
+    <div class="header">
+      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <div style="display:flex;align-items:center;">
+        <span class="header-user" id="header-user-name"></span>
+        <button class="btn-logout" id="btn-logout-menu">SALIR</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="greeting">Hola, <span id="menu-nombre"></span></div>
+      <div class="greeting-sub" id="menu-mes"></div>
+
+      <!-- Resumen personal -->
+      <div class="resumen-grid" id="resumen-grid">
+        <div class="resumen-card">
+          <div class="rc-label">Comisiones</div>
+          <div class="rc-value" id="rs-comisiones">—</div>
+          <div class="rc-sub">este mes</div>
+        </div>
+        <div class="resumen-card">
+          <div class="rc-label">Ventas</div>
+          <div class="rc-value secondary" id="rs-ventas">—</div>
+          <div class="rc-sub">equipos</div>
+        </div>
+        <div class="resumen-card">
+          <div class="rc-label">Jornadas</div>
+          <div class="rc-value secondary" id="rs-jornadas">—</div>
+          <div class="rc-sub">registradas</div>
+        </div>
+        <div class="resumen-card">
+          <div class="rc-label">Producción</div>
+          <div class="rc-value" id="rs-produccion">—</div>
+          <div class="rc-sub">por jornadas</div>
+        </div>
+        <div class="resumen-card full" id="rs-equipo-card">
+          <div class="rc-label">Equipo + vendido</div>
+          <div class="rc-value" style="font-size:1.2rem;" id="rs-equipo">—</div>
+        </div>
+      </div>
+
+      <div class="menu-section-title">Módulos</div>
+
+      <button class="menu-btn" id="btn-ir-ventas">
+        <span class="menu-icon">🤝</span>
+        <div class="menu-text">
+          <h3>REGISTRAR VENTA</h3>
+          <p>Comisiones por venta de equipos</p>
+        </div>
+      </button>
+
+      <button class="menu-btn" id="btn-ir-jornada">
+        <span class="menu-icon">📋</span>
+        <div class="menu-text">
+          <h3>REGISTRAR JORNADA</h3>
+          <p>Producción en días no laborales</p>
+        </div>
+      </button>
+
+      <div id="admin-menu-section" style="display:none;">
+        <div class="menu-section-title">Administrador</div>
+        <button class="menu-btn admin-btn" id="btn-ir-admin">
+          <span class="menu-icon">⚙️</span>
+          <div class="menu-text">
+            <h3>PANEL DE GESTIÓN</h3>
+            <p>Catálogo, precios y análisis</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= REGISTRAR VENTA ========================= -->
+  <div id="screen-ventas" class="screen">
+    <div class="header">
+      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-ventas">←</button>
+        <h2>NUEVA VENTA</h2>
+      </div>
+
+      <!-- Selección de equipo -->
+      <div class="menu-section-title">Equipo vendido</div>
+      <div class="equipo-selector" id="equipo-selector">
+        <div class="loading-msg"><span class="spinner"></span>Cargando equipos…</div>
+      </div>
+
+      <!-- Tipo de venta -->
+      <div class="menu-section-title">Tipo de venta</div>
+      <div class="radio-group" id="tipo-venta-group">
+        <div class="radio-chip selected" data-val="directa">Directa</div>
+        <div class="radio-chip" data-val="canje">Canje</div>
+      </div>
+
+      <!-- Modo trabajo -->
+      <div class="menu-section-title" style="margin-top:14px;">Forma de trabajo</div>
+      <div class="radio-group" id="modo-trabajo-group">
+        <div class="radio-chip selected" data-val="solo">Solo (5%)</div>
+        <div class="radio-chip" data-val="dupla">Dupla (2.5%)</div>
+      </div>
+
+      <!-- Compañero en dupla -->
+      <div id="dupla-section" style="display:none;margin-top:12px;">
+        <div class="form-group">
+          <label>Compañero/a</label>
+          <select id="compañero-select">
+            <option value="">— seleccioná compañero/a —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Método de pago -->
+      <div class="menu-section-title" style="margin-top:14px;">Método de pago</div>
+      <div class="radio-group" id="metodo-pago-group">
+        <div class="radio-chip selected" data-val="contado">Contado</div>
+        <div class="radio-chip" data-val="2 cuotas">2 cuotas</div>
+        <div class="radio-chip" data-val="3 cuotas">3 cuotas</div>
+      </div>
+
+      <!-- Fecha de venta -->
+      <div class="form-group" style="margin-top:14px;">
+        <label>Fecha de la venta</label>
+        <input type="date" id="fecha-venta" />
+      </div>
+
+      <!-- Preview comisión -->
+      <div class="comision-preview" id="comision-preview">
+        <div class="cp-label">Tu comisión estimada</div>
+        <div class="cp-value" id="comision-valor">$0</div>
+        <div class="cp-label" style="margin-top:4px;" id="comision-detalle"></div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-registrar-venta">REGISTRAR VENTA</button>
+    </div>
+  </div>
+
+  <!-- ========================= REGISTRAR JORNADA ========================= -->
+  <div id="screen-jornada" class="screen">
+    <div class="header">
+      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-jornada">←</button>
+        <h2>REGISTRAR JORNADA</h2>
+      </div>
+
+      <!-- Fecha y tipo de día -->
+      <div class="form-group">
+        <label>Fecha de la jornada</label>
+        <input type="date" id="fecha-jornada" />
+      </div>
+
+      <div class="menu-section-title">Tipo de día</div>
+      <div class="radio-group" id="tipo-dia-group">
+        <div class="radio-chip" data-val="Sábado">Sábado</div>
+        <div class="radio-chip" data-val="Domingo">Domingo</div>
+        <div class="radio-chip" data-val="Feriado">Feriado</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Categorías de tickets -->
+      <div class="menu-section-title">Tickets realizados</div>
+      <div class="categoria-grid" id="categoria-grid">
+        <!-- Se llenan dinámicamente -->
+      </div>
+
+      <!-- Contador de tickets para categoría seleccionada -->
+      <div id="ticket-counter-section" style="display:none;">
+        <div class="menu-section-title">Cantidad — <span id="cat-seleccionada-label" style="color:var(--accent);">—</span></div>
+        <div class="ticket-counter">
+          <button class="tc-btn" id="tc-minus">−</button>
+          <div>
+            <div class="tc-value" id="tc-value">1</div>
+            <div class="tc-label">tickets</div>
+          </div>
+          <button class="tc-btn" id="tc-plus">+</button>
+        </div>
+        <button class="btn btn-secondary" id="btn-agregar-ticket" style="margin-bottom:16px;">AGREGAR AL REGISTRO</button>
+      </div>
+
+      <!-- Lista de tickets agregados -->
+      <div id="tickets-lista" style="margin-bottom:16px;"></div>
+
+      <button class="btn btn-primary" id="btn-registrar-jornada">REGISTRAR JORNADA</button>
+    </div>
+  </div>
+
+  <!-- ========================= PANEL ADMIN ========================= -->
+  <div id="screen-admin" class="screen">
+    <div class="header">
+      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <button class="btn-logout" id="btn-logout-admin">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-admin">←</button>
+        <h2>PANEL DE GESTIÓN</h2>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="equipos">Catálogo</button>
+        <button class="tab-btn" data-tab="resumen-admin">Resumen</button>
+        <button class="tab-btn" data-tab="ventas-tab">Ventas</button>
+        <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
+      </div>
+
+      <!-- Tab Catálogo -->
+      <div class="tab-panel active" id="tab-equipos">
+        <button class="btn btn-secondary btn-sm btn-icon" id="btn-nuevo-equipo" style="margin-bottom:14px;">
+          + NUEVO EQUIPO
+        </button>
+        <div id="equipos-lista-admin">
+          <div class="loading-msg"><span class="spinner"></span>Cargando…</div>
+        </div>
+      </div>
+
+      <!-- Tab Resumen general -->
+      <div class="tab-panel" id="tab-resumen-admin">
+        <div class="loading-msg" id="resumen-admin-loading"><span class="spinner"></span>Cargando…</div>
+        <div id="resumen-admin-content"></div>
+      </div>
+
+      <!-- Tab Ventas -->
+      <div class="tab-panel" id="tab-ventas-tab">
+        <div class="form-group">
+          <label>Filtrar por mes</label>
+          <select id="filtro-mes-ventas">
+            <option value="">Mes actual</option>
+          </select>
+        </div>
+        <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
+        <div class="data-table-wrap" id="ventas-admin-content"></div>
+      </div>
+
+      <!-- Tab Jornadas -->
+      <div class="tab-panel" id="tab-jornadas-tab">
+        <div class="form-group">
+          <label>Filtrar por mes</label>
+          <select id="filtro-mes-jornadas">
+            <option value="">Mes actual</option>
+          </select>
+        </div>
+        <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
+        <div class="data-table-wrap" id="jornadas-admin-content"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ========================= MODAL EQUIPO ========================= -->
+<div class="modal-overlay" id="modal-equipo">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-equipo-title">NUEVO EQUIPO</div>
+    <input type="hidden" id="modal-eq-id" />
+    <div class="form-group">
+      <label>Nombre del equipo</label>
+      <input type="text" id="modal-eq-nombre" placeholder="Ej: Router AC1200" />
+    </div>
+    <div class="form-group">
+      <label>Precio de venta directa ($)</label>
+      <input type="number" id="modal-eq-precio" placeholder="0" />
+    </div>
+    <div class="form-group">
+      <label>Admite canje</label>
+      <div class="radio-group" id="modal-eq-canje-group">
+        <div class="radio-chip" data-val="si">Sí</div>
+        <div class="radio-chip selected" data-val="no">No</div>
+      </div>
+    </div>
+    <div id="modal-eq-precio-canje-section" style="display:none;">
+      <div class="form-group">
+        <label>Precio de canje ($)</label>
+        <input type="number" id="modal-eq-precio-canje" placeholder="0" />
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-guardar-equipo">GUARDAR</button>
+    <button class="btn btn-secondary" id="btn-cancelar-modal" style="margin-top:8px;">CANCELAR</button>
+    <div class="error-msg" id="modal-equipo-error"></div>
+  </div>
+</div>
+
+<!-- ========================= TOAST ========================= -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  CONFIGURACIÓN GLOBAL
+// ============================================================
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHfCx8ZWo6vLgp-29AP_yFVuPRTR3YPLB4lRPlE8AUhyL5a8m7wCH9kix_gQdYe-_O/exec';
+
+// Estado de la sesión
+const session = {
+  usuario: null,     // nombre del técnico
+  esAdmin: false,
+  pin: ''
+};
+
+// Datos cargados de la app
+let equiposCatalogo = [];
+let tecnicosLista = [];
+
+// Tickets acumulados en la pantalla de jornada
+let ticketsJornada = [];
+let catActual = null;
+
+// ============================================================
+//  UTILIDADES
+// ============================================================
+
+/** Muestra una pantalla y oculta las demás */
+function mostrarPantalla(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/** Toast de notificación */
+function toast(msg, tipo = 'info', duracion = 3000) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${tipo}`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), duracion);
+}
+
+/** Llamada al Apps Script */
+async function api(params) {
+  const url = new URL(WEB_APP_URL);
+  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+  const resp = await fetch(url.toString());
+  return resp.json();
+}
+
+/** Llamada POST al Apps Script */
+async function apiPost(data) {
+  const resp = await fetch(WEB_APP_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return resp.json();
+}
+
+/** Formato pesos argentinos */
+function formatoPesos(n) {
+  if (n === undefined || n === null || n === '') return '—';
+  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+/** Nombre del mes actual */
+function mesActualNombre() {
+  return new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
+}
+
+/** Fecha de hoy en formato YYYY-MM-DD */
+function hoy() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// ============================================================
+//  LOGIN
+// ============================================================
+let pinIngresado = '';
+
+async function cargarTecnicos() {
+  try {
+    const data = await api({ action: 'login', tecnico: '_LIST_' });
+    // Si el endpoint devuelve lista de técnicos en data.tecnicos
+    if (data.tecnicos && Array.isArray(data.tecnicos)) {
+      tecnicosLista = data.tecnicos;
+    } else {
+      // Fallback: leer de la hoja via endpoint genérico
+      tecnicosLista = data.tecnicos || [];
+    }
+    llenarSelectTecnicos();
+  } catch(e) {
+    // Si falla, igual dejamos el select vacío con mensaje
+    console.warn('No se pudieron cargar técnicos:', e);
+  }
+}
+
+function llenarSelectTecnicos() {
+  const sel = document.getElementById('login-tecnico');
+  sel.innerHTML = '<option value="">— seleccioná un técnico —</option>';
+  tecnicosLista.forEach(t => {
+    const op = document.createElement('option');
+    op.value = t.nombre || t;
+    op.textContent = t.nombre || t;
+    sel.appendChild(op);
+  });
+}
+
+function actualizarDotsPIN() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    dot.classList.toggle('filled', i < pinIngresado.length);
+  }
+}
+
+document.getElementById('numpad').addEventListener('click', e => {
+  const btn = e.target.closest('.numpad-btn');
+  if (!btn) return;
+  const n = btn.dataset.n;
+  if (n === 'del') {
+    pinIngresado = pinIngresado.slice(0, -1);
+  } else if (pinIngresado.length < 4) {
+    pinIngresado += n;
+    // Auto-login cuando el PIN tiene 4 dígitos
+    if (pinIngresado.length === 4) {
+      setTimeout(intentarLogin, 100);
+    }
+  }
+  actualizarDotsPIN();
+});
+
+document.getElementById('btn-login').addEventListener('click', intentarLogin);
+
+async function intentarLogin() {
+  const tecnico = document.getElementById('login-tecnico').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+
+  if (!tecnico) { errEl.textContent = 'Seleccioná un técnico'; return; }
+  if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
+
+  document.getElementById('btn-login').textContent = 'Verificando…';
+
+  try {
+    const data = await api({ action: 'login', tecnico, pin: pinIngresado });
+    if (data.ok) {
+      session.usuario = tecnico;
+      session.esAdmin = !!data.esAdmin;
+      pinIngresado = '';
+      actualizarDotsPIN();
+      document.getElementById('btn-login').textContent = 'INGRESAR';
+      await cargarMenuPrincipal();
+    } else {
+      errEl.textContent = data.error || 'PIN incorrecto';
+      pinIngresado = '';
+      actualizarDotsPIN();
+      document.getElementById('btn-login').textContent = 'INGRESAR';
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Verificá tu internet.';
+    document.getElementById('btn-login').textContent = 'INGRESAR';
+  }
+}
+
+// ============================================================
+//  MENÚ PRINCIPAL + RESUMEN
+// ============================================================
+async function cargarMenuPrincipal() {
+  document.getElementById('menu-nombre').textContent = session.usuario;
+  document.getElementById('header-user-name').textContent = session.usuario;
+  document.getElementById('menu-mes').textContent = mesActualNombre().toUpperCase();
+  document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
+
+  mostrarPantalla('menu');
+
+  // Cargar resumen personal
+  try {
+    const data = await api({ action: 'obtenerResumen', tecnico: session.usuario });
+    if (data.ok && data.resumen) {
+      const r = data.resumen;
+      document.getElementById('rs-comisiones').textContent = formatoPesos(r.comisionesTotal);
+      document.getElementById('rs-ventas').textContent = r.equiposVendidos ?? '0';
+      document.getElementById('rs-jornadas').textContent = r.jornadasCount ?? '0';
+      document.getElementById('rs-produccion').textContent = formatoPesos(r.jornadasTotal);
+      document.getElementById('rs-equipo').textContent = r.equipoMasVendido || '—';
+    }
+  } catch(e) {
+    console.warn('No se pudo cargar resumen:', e);
+  }
+}
+
+// ============================================================
+//  VENTAS
+// ============================================================
+let equipoSeleccionado = null;
+let tipoVenta = 'directa';
+let modoTrabajo = 'solo';
+let metodoPago = 'contado';
+
+async function cargarPantallaVentas() {
+  mostrarPantalla('ventas');
+  document.getElementById('fecha-venta').value = hoy();
+
+  // Resetear selecciones
+  equipoSeleccionado = null;
+  tipoVenta = 'directa';
+  modoTrabajo = 'solo';
+  metodoPago = 'contado';
+  document.getElementById('dupla-section').style.display = 'none';
+  document.getElementById('comision-preview').classList.remove('visible');
+  resetChips('tipo-venta-group', 'directa');
+  resetChips('modo-trabajo-group', 'solo');
+  resetChips('metodo-pago-group', 'contado');
+
+  // Cargar equipos si no están cargados
+  await cargarEquipos();
+
+  // Llenar select compañero
+  llenarSelectCompañero();
+}
+
+async function cargarEquipos() {
+  const cont = document.getElementById('equipo-selector');
+  try {
+    const data = await api({ action: 'gestionarEquipos', operacion: 'listar' });
+    if (data.ok && data.equipos) {
+      equiposCatalogo = data.equipos;
+      renderEquiposSelector();
+    } else {
+      cont.innerHTML = '<div class="error-msg">No se pudieron cargar los equipos</div>';
+    }
+  } catch(e) {
+    cont.innerHTML = '<div class="error-msg">Error de conexión</div>';
+  }
+}
+
+function renderEquiposSelector() {
+  const cont = document.getElementById('equipo-selector');
+  if (!equiposCatalogo.length) {
+    cont.innerHTML = '<div class="loading-msg">No hay equipos en el catálogo</div>';
+    return;
+  }
+  cont.innerHTML = '';
+  equiposCatalogo.forEach(eq => {
+    const card = document.createElement('div');
+    card.className = 'equipo-card';
+    card.dataset.id = eq.id;
+    card.innerHTML = `
+      <div class="eq-nombre">${eq.nombre}</div>
+      <div class="eq-precio">${formatoPesos(eq.precio)}</div>
+    `;
+    card.addEventListener('click', () => seleccionarEquipo(eq, card));
+    cont.appendChild(card);
+  });
+}
+
+function seleccionarEquipo(eq, cardEl) {
+  document.querySelectorAll('.equipo-card').forEach(c => c.classList.remove('selected'));
+  cardEl.classList.add('selected');
+  equipoSeleccionado = eq;
+  // Mostrar/ocultar canje
+  const chipCanje = document.querySelector('#tipo-venta-group [data-val="canje"]');
+  if (chipCanje) {
+    chipCanje.style.opacity = eq.admiteCanje ? '1' : '.3';
+    chipCanje.style.pointerEvents = eq.admiteCanje ? 'auto' : 'none';
+  }
+  calcularComision();
+}
+
+function calcularComision() {
+  if (!equipoSeleccionado) { document.getElementById('comision-preview').classList.remove('visible'); return; }
+  const precio = tipoVenta === 'canje' ? (equipoSeleccionado.precioCanje || equipoSeleccionado.precio) : equipoSeleccionado.precio;
+  const pct = modoTrabajo === 'solo' ? 0.05 : 0.025;
+  const comision = precio * pct;
+  document.getElementById('comision-valor').textContent = formatoPesos(comision);
+  document.getElementById('comision-detalle').textContent =
+    `${formatoPesos(precio)} × ${modoTrabajo === 'solo' ? '5%' : '2.5%'} (${tipoVenta === 'canje' ? 'canje' : 'directa'})`;
+  document.getElementById('comision-preview').classList.add('visible');
+}
+
+function resetChips(groupId, valorDefault) {
+  document.querySelectorAll(`#${groupId} .radio-chip`).forEach(c => {
+    c.classList.toggle('selected', c.dataset.val === valorDefault);
+  });
+}
+
+// Chips de tipo de venta
+document.getElementById('tipo-venta-group').addEventListener('click', e => {
+  const chip = e.target.closest('.radio-chip');
+  if (!chip) return;
+  tipoVenta = chip.dataset.val;
+  resetChips('tipo-venta-group', tipoVenta);
+  calcularComision();
+});
+
+// Chips modo trabajo
+document.getElementById('modo-trabajo-group').addEventListener('click', e => {
+  const chip = e.target.closest('.radio-chip');
+  if (!chip) return;
+  modoTrabajo = chip.dataset.val;
+  resetChips('modo-trabajo-group', modoTrabajo);
+  document.getElementById('dupla-section').style.display = modoTrabajo === 'dupla' ? 'block' : 'none';
+  calcularComision();
+});
+
+// Chips método de pago
+document.getElementById('metodo-pago-group').addEventListener('click', e => {
+  const chip = e.target.closest('.radio-chip');
+  if (!chip) return;
+  metodoPago = chip.dataset.val;
+  resetChips('metodo-pago-group', metodoPago);
+});
+
+function llenarSelectCompañero() {
+  const sel = document.getElementById('compañero-select');
+  sel.innerHTML = '<option value="">— seleccioná compañero/a —</option>';
+  tecnicosLista.forEach(t => {
+    const nombre = t.nombre || t;
+    if (nombre !== session.usuario) {
+      const op = document.createElement('option');
+      op.value = nombre;
+      op.textContent = nombre;
+      sel.appendChild(op);
+    }
+  });
+}
+
+document.getElementById('btn-registrar-venta').addEventListener('click', async () => {
+  if (!equipoSeleccionado) { toast('Seleccioná un equipo', 'error'); return; }
+  const fecha = document.getElementById('fecha-venta').value;
+  if (!fecha) { toast('Ingresá la fecha de la venta', 'error'); return; }
+  if (modoTrabajo === 'dupla' && !document.getElementById('compañero-select').value) {
+    toast('Seleccioná tu compañero/a de dupla', 'error'); return;
+  }
+
+  const btn = document.getElementById('btn-registrar-venta');
+  btn.textContent = 'Registrando…';
+  btn.disabled = true;
+
+  const payload = {
+    action: 'registrarVenta',
+    tecnico: session.usuario,
+    equipoId: equipoSeleccionado.id,
+    equipoNombre: equipoSeleccionado.nombre,
+    tipoVenta,
+    modoTrabajo,
+    compañero: modoTrabajo === 'dupla' ? document.getElementById('compañero-select').value : '',
+    metodoPago,
+    fechaJornada: fecha
+  };
+
+  try {
+    const data = await apiPost(payload);
+    if (data.ok) {
+      toast('¡Venta registrada con éxito!', 'success');
+      setTimeout(() => mostrarPantalla('menu'), 1000);
+    } else {
+      toast(data.error || 'Error al registrar', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = 'REGISTRAR VENTA';
+    btn.disabled = false;
+  }
+});
+
+// ============================================================
+//  JORNADAS
+// ============================================================
+const CATEGORIAS = [
+  { nombre: 'Instalación FO',       pago: true  },
+  { nombre: 'Instalación Wireless', pago: true  },
+  { nombre: 'Mudanza',              pago: true  },
+  { nombre: 'Reparación',           pago: true  },
+  { nombre: 'Migración',            pago: true  },
+  { nombre: 'Servicio Técnico',     pago: true  },
+  { nombre: 'Baja',                 pago: false },
+  { nombre: 'Visita No Concretada', pago: false }
+];
+
+function renderCategoriasGrid() {
+  const grid = document.getElementById('categoria-grid');
+  grid.innerHTML = '';
+  CATEGORIAS.forEach(cat => {
+    const btn = document.createElement('div');
+    btn.className = 'cat-btn' + (cat.pago ? '' : ' no-pago');
+    btn.dataset.nombre = cat.nombre;
+    btn.textContent = cat.nombre;
+    btn.addEventListener('click', () => seleccionarCategoria(cat.nombre, btn));
+    grid.appendChild(btn);
+  });
+}
+
+function seleccionarCategoria(nombre, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  catActual = nombre;
+  document.getElementById('cat-seleccionada-label').textContent = nombre;
+  document.getElementById('tc-value').textContent = '1';
+  document.getElementById('ticket-counter-section').style.display = 'block';
+}
+
+document.getElementById('tc-minus').addEventListener('click', () => {
+  const v = parseInt(document.getElementById('tc-value').textContent);
+  if (v > 1) document.getElementById('tc-value').textContent = v - 1;
+});
+document.getElementById('tc-plus').addEventListener('click', () => {
+  const v = parseInt(document.getElementById('tc-value').textContent);
+  document.getElementById('tc-value').textContent = v + 1;
+});
+
+document.getElementById('btn-agregar-ticket').addEventListener('click', () => {
+  if (!catActual) return;
+  const cantidad = parseInt(document.getElementById('tc-value').textContent);
+  // Agregar o actualizar en la lista
+  const idx = ticketsJornada.findIndex(t => t.categoria === catActual);
+  if (idx >= 0) {
+    ticketsJornada[idx].cantidad += cantidad;
+  } else {
+    ticketsJornada.push({ categoria: catActual, cantidad });
+  }
+  renderTicketsLista();
+  document.getElementById('ticket-counter-section').style.display = 'none';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  catActual = null;
+  toast(`+${cantidad} ticket${cantidad > 1 ? 's' : ''} de ${ticketsJornada[idx >= 0 ? idx : ticketsJornada.length - 1].categoria}`, 'success');
+});
+
+function renderTicketsLista() {
+  const cont = document.getElementById('tickets-lista');
+  if (!ticketsJornada.length) { cont.innerHTML = ''; return; }
+  cont.innerHTML = '<div class="menu-section-title">Tickets acumulados</div>';
+  ticketsJornada.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML = `
+      <span style="font-size:.9rem;">${t.categoria}</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="badge">${t.cantidad}</span>
+        <button onclick="eliminarTicket(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;">✕</button>
+      </div>`;
+    cont.appendChild(row);
+  });
+}
+
+function eliminarTicket(idx) {
+  ticketsJornada.splice(idx, 1);
+  renderTicketsLista();
+}
+
+async function cargarPantallaJornada() {
+  ticketsJornada = [];
+  catActual = null;
+  renderCategoriasGrid();
+  renderTicketsLista();
+  document.getElementById('fecha-jornada').value = hoy();
+  document.getElementById('ticket-counter-section').style.display = 'none';
+  // Auto-detectar tipo de día
+  const diaSemana = new Date().getDay(); // 0=dom, 6=sab
+  let tipoDia = 'Domingo';
+  if (diaSemana === 6) tipoDia = 'Sábado';
+  resetChips('tipo-dia-group', tipoDia);
+  mostrarPantalla('jornada');
+}
+
+document.getElementById('tipo-dia-group').addEventListener('click', e => {
+  const chip = e.target.closest('.radio-chip');
+  if (!chip) return;
+  resetChips('tipo-dia-group', chip.dataset.val);
+});
+
+document.getElementById('btn-registrar-jornada').addEventListener('click', async () => {
+  const fecha = document.getElementById('fecha-jornada').value;
+  if (!fecha) { toast('Ingresá la fecha de la jornada', 'error'); return; }
+  const tipoDia = document.querySelector('#tipo-dia-group .radio-chip.selected')?.dataset.val;
+  if (!tipoDia) { toast('Seleccioná el tipo de día', 'error'); return; }
+  if (!ticketsJornada.length) { toast('Agregá al menos un ticket', 'error'); return; }
+
+  const btn = document.getElementById('btn-registrar-jornada');
+  btn.textContent = 'Registrando…';
+  btn.disabled = true;
+
+  const payload = {
+    action: 'registrarJornada',
+    tecnico: session.usuario,
+    fechaJornada: fecha,
+    tipoDia,
+    tickets: JSON.stringify(ticketsJornada)
+  };
+
+  try {
+    const data = await apiPost(payload);
+    if (data.ok) {
+      toast('¡Jornada registrada!', 'success');
+      setTimeout(() => mostrarPantalla('menu'), 1000);
+    } else {
+      toast(data.error || 'Error al registrar', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = 'REGISTRAR JORNADA';
+    btn.disabled = false;
+  }
+});
+
+// ============================================================
+//  PANEL ADMIN
+// ============================================================
+function cargarPantallaAdmin() {
+  mostrarPantalla('admin');
+  cargarEquiposAdmin();
+}
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    // Carga lazy
+    if (tab === 'resumen-admin') cargarResumenAdmin();
+    if (tab === 'ventas-tab') cargarVentasAdmin();
+    if (tab === 'jornadas-tab') cargarJornadasAdmin();
+  });
+});
+
+// --- Catálogo de equipos ---
+async function cargarEquiposAdmin() {
+  const cont = document.getElementById('equipos-lista-admin');
+  cont.innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando…</div>';
+  try {
+    const data = await api({ action: 'gestionarEquipos', operacion: 'listar' });
+    if (data.ok && data.equipos) {
+      equiposCatalogo = data.equipos;
+      renderEquiposAdmin();
+    } else {
+      cont.innerHTML = '<div class="error-msg">Error al cargar equipos</div>';
+    }
+  } catch(e) {
+    cont.innerHTML = '<div class="error-msg">Error de conexión</div>';
+  }
+}
+
+function renderEquiposAdmin() {
+  const cont = document.getElementById('equipos-lista-admin');
+  cont.innerHTML = '';
+  if (!equiposCatalogo.length) {
+    cont.innerHTML = '<div class="loading-msg">No hay equipos en el catálogo</div>';
+    return;
+  }
+  equiposCatalogo.forEach(eq => {
+    const item = document.createElement('div');
+    item.className = 'equipo-item';
+    item.innerHTML = `
+      <div class="eq-info">
+        <h4>${eq.nombre}</h4>
+        <p>${formatoPesos(eq.precio)} ${eq.admiteCanje ? '· Canje: ' + formatoPesos(eq.precioCanje) : '· Sin canje'}</p>
+      </div>
+      <div class="eq-actions">
+        <button class="eq-edit-btn" title="Editar" onclick='abrirModalEquipo(${JSON.stringify(eq)})'>✏️</button>
+      </div>`;
+    cont.appendChild(item);
+  });
+}
+
+// --- Resumen Admin ---
+async function cargarResumenAdmin() {
+  const loading = document.getElementById('resumen-admin-loading');
+  const content = document.getElementById('resumen-admin-content');
+  loading.style.display = 'block';
+  content.innerHTML = '';
+  try {
+    const data = await api({ action: 'obtenerResumen', tecnico: 'ADMIN' });
+    loading.style.display = 'none';
+    if (data.ok && data.resumen) {
+      renderResumenAdmin(data.resumen);
+    } else {
+      content.innerHTML = '<div class="error-msg">No se pudo cargar el resumen</div>';
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    content.innerHTML = '<div class="error-msg">Error de conexión</div>';
+  }
+}
+
+function renderResumenAdmin(r) {
+  const content = document.getElementById('resumen-admin-content');
+  const stats = [
+    { label: 'Total comisiones del mes', valor: formatoPesos(r.comisionesTotal) },
+    { label: 'Total ventas (equipos)', valor: r.equiposVendidos ?? '0' },
+    { label: 'Total jornadas registradas', valor: r.jornadasCount ?? '0' },
+    { label: 'Total producción por jornadas', valor: formatoPesos(r.jornadasTotal) },
+    { label: 'Equipo más vendido', valor: r.equipoMasVendido || '—' },
+    { label: 'Técnico con más ventas', valor: r.tecnicoTop || '—' },
+  ];
+  content.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+      ${stats.map(s => `
+        <div class="stat-row">
+          <span class="sr-label">${s.label}</span>
+          <span class="sr-value">${s.valor}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+// --- Ventas Admin ---
+async function cargarVentasAdmin() {
+  const loading = document.getElementById('ventas-admin-loading');
+  const content = document.getElementById('ventas-admin-content');
+  loading.style.display = 'block';
+  content.innerHTML = '';
+  try {
+    const mes = document.getElementById('filtro-mes-ventas').value || '';
+    const data = await api({ action: 'obtenerVentas', mes, admin: 'true' });
+    loading.style.display = 'none';
+    if (data.ok && data.ventas) {
+      renderTablaVentas(data.ventas);
+    } else {
+      content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    content.innerHTML = '<div class="error-msg">Error de conexión</div>';
+  }
+}
+
+function renderTablaVentas(ventas) {
+  if (!ventas.length) {
+    document.getElementById('ventas-admin-content').innerHTML = '<div class="loading-msg">Sin ventas registradas</div>';
+    return;
+  }
+  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Equipo</th><th>Tipo</th><th>Comisión</th><th>Fecha</th></tr></thead><tbody>';
+  ventas.forEach(v => {
+    html += `<tr>
+      <td>${v.tecnico}</td>
+      <td>${v.equipo || v.equipoNombre}</td>
+      <td><span class="tag ${v.tipoVenta === 'canje' ? 'tag-orange' : 'tag-green'}">${v.tipoVenta || '—'}</span></td>
+      <td>${formatoPesos(v.comision)}</td>
+      <td>${v.fecha || v.fechaJornada || '—'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('ventas-admin-content').innerHTML = html;
+}
+
+// --- Jornadas Admin ---
+async function cargarJornadasAdmin() {
+  const loading = document.getElementById('jornadas-admin-loading');
+  const content = document.getElementById('jornadas-admin-content');
+  loading.style.display = 'block';
+  content.innerHTML = '';
+  try {
+    const mes = document.getElementById('filtro-mes-jornadas').value || '';
+    const data = await api({ action: 'obtenerJornadas', mes, admin: 'true' });
+    loading.style.display = 'none';
+    if (data.ok && data.jornadas) {
+      renderTablaJornadas(data.jornadas);
+    } else {
+      content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
+    }
+  } catch(e) {
+    loading.style.display = 'none';
+    content.innerHTML = '<div class="error-msg">Error de conexión</div>';
+  }
+}
+
+function renderTablaJornadas(jornadas) {
+  if (!jornadas.length) {
+    document.getElementById('jornadas-admin-content').innerHTML = '<div class="loading-msg">Sin jornadas registradas</div>';
+    return;
+  }
+  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Fecha</th><th>Tipo día</th><th>Tickets</th><th>Total</th></tr></thead><tbody>';
+  jornadas.forEach(j => {
+    html += `<tr>
+      <td>${j.tecnico}</td>
+      <td>${j.fechaJornada || j.fecha || '—'}</td>
+      <td><span class="tag tag-orange">${j.tipoDia || '—'}</span></td>
+      <td>${j.totalTickets || '—'}</td>
+      <td>${formatoPesos(j.total)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('jornadas-admin-content').innerHTML = html;
+}
+
+// ============================================================
+//  MODAL EQUIPO
+// ============================================================
+let modalEqCanje = 'no';
+
+function abrirModalEquipo(eq = null) {
+  const modal = document.getElementById('modal-equipo');
+  const title = document.getElementById('modal-equipo-title');
+  document.getElementById('modal-equipo-error').textContent = '';
+  if (eq) {
+    title.textContent = 'EDITAR EQUIPO';
+    document.getElementById('modal-eq-id').value = eq.id || '';
+    document.getElementById('modal-eq-nombre').value = eq.nombre || '';
+    document.getElementById('modal-eq-precio').value = eq.precio || '';
+    modalEqCanje = eq.admiteCanje ? 'si' : 'no';
+    document.getElementById('modal-eq-precio-canje').value = eq.precioCanje || '';
+  } else {
+    title.textContent = 'NUEVO EQUIPO';
+    document.getElementById('modal-eq-id').value = '';
+    document.getElementById('modal-eq-nombre').value = '';
+    document.getElementById('modal-eq-precio').value = '';
+    modalEqCanje = 'no';
+  }
+  resetChips('modal-eq-canje-group', modalEqCanje);
+  document.getElementById('modal-eq-precio-canje-section').style.display = modalEqCanje === 'si' ? 'block' : 'none';
+  modal.classList.add('open');
+}
+
+document.getElementById('modal-eq-canje-group').addEventListener('click', e => {
+  const chip = e.target.closest('.radio-chip');
+  if (!chip) return;
+  modalEqCanje = chip.dataset.val;
+  resetChips('modal-eq-canje-group', modalEqCanje);
+  document.getElementById('modal-eq-precio-canje-section').style.display = modalEqCanje === 'si' ? 'block' : 'none';
+});
+
+document.getElementById('btn-cancelar-modal').addEventListener('click', () => {
+  document.getElementById('modal-equipo').classList.remove('open');
+});
+
+document.getElementById('modal-equipo').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-equipo')) {
+    document.getElementById('modal-equipo').classList.remove('open');
+  }
+});
+
+document.getElementById('btn-guardar-equipo').addEventListener('click', async () => {
+  const nombre = document.getElementById('modal-eq-nombre').value.trim();
+  const precio = document.getElementById('modal-eq-precio').value;
+  const precioCanje = document.getElementById('modal-eq-precio-canje').value;
+  const errEl = document.getElementById('modal-equipo-error');
+
+  if (!nombre) { errEl.textContent = 'Ingresá el nombre del equipo'; return; }
+  if (!precio) { errEl.textContent = 'Ingresá el precio'; return; }
+  if (modalEqCanje === 'si' && !precioCanje) { errEl.textContent = 'Ingresá el precio de canje'; return; }
+
+  const btn = document.getElementById('btn-guardar-equipo');
+  btn.textContent = 'Guardando…';
+  btn.disabled = true;
+
+  const id = document.getElementById('modal-eq-id').value;
+  const payload = {
+    action: 'gestionarEquipos',
+    operacion: id ? 'editar' : 'agregar',
+    id,
+    nombre,
+    precio: parseFloat(precio),
+    admiteCanje: modalEqCanje === 'si',
+    precioCanje: modalEqCanje === 'si' ? parseFloat(precioCanje) : 0
+  };
+
+  try {
+    const data = await apiPost(payload);
+    if (data.ok) {
+      document.getElementById('modal-equipo').classList.remove('open');
+      toast(id ? 'Equipo actualizado' : 'Equipo agregado', 'success');
+      await cargarEquiposAdmin();
+      equiposCatalogo = []; // forzar recarga en ventas
+    } else {
+      errEl.textContent = data.error || 'Error al guardar';
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión';
+  } finally {
+    btn.textContent = 'GUARDAR';
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('btn-nuevo-equipo').addEventListener('click', () => abrirModalEquipo(null));
+
+// ============================================================
+//  NAVEGACIÓN Y LOGOUT
+// ============================================================
+document.getElementById('btn-ir-ventas').addEventListener('click', cargarPantallaVentas);
+document.getElementById('btn-ir-jornada').addEventListener('click', cargarPantallaJornada);
+document.getElementById('btn-ir-admin').addEventListener('click', cargarPantallaAdmin);
+
+document.getElementById('back-ventas').addEventListener('click', () => mostrarPantalla('menu'));
+document.getElementById('back-jornada').addEventListener('click', () => mostrarPantalla('menu'));
+document.getElementById('back-admin').addEventListener('click', () => mostrarPantalla('menu'));
+
+function cerrarSesion() {
+  session.usuario = null;
+  session.esAdmin = false;
+  pinIngresado = '';
+  actualizarDotsPIN();
+  document.getElementById('login-tecnico').value = '';
+  document.getElementById('login-error').textContent = '';
+  mostrarPantalla('login');
+}
+
+document.getElementById('btn-logout-menu').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-ventas').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-jornada').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
+
+// ============================================================
+//  INIT
+// ============================================================
+(async function init() {
+  // Cargar técnicos para el select de login
+  await cargarTecnicos();
+  // Renderizar grid de categorías
+  renderCategoriasGrid();
+})();
+</script>
+</body>
+</html>
