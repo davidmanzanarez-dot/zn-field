@@ -1193,7 +1193,7 @@ async function intentarLogin() {
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
-    const data = await api({ action: 'login', tecnico, pin: pinIngresado });
+    const data = await apiPost({ action: 'login', tecnico, pin: pinIngresado });
     if (data.ok) {
       session.usuario = tecnico;
       session.esAdmin = !!data.esAdmin;
