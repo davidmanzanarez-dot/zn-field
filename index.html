@@ -6,22 +6,22 @@
   <title>SSServicios · Técnicos Zona Norte</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     /* ===== VARIABLES — Paleta Azul Noche + Cian ===== */
     :root {
-      --bg:        #050d1a;        /* azul noche muy oscuro */
-      --surface:   #0a1830;        /* azul oscuro superficies */
-      --card:      #0f2040;        /* azul oscuro cards */
-      --border:    #00d4ff;        /* cian para bordes (acento) */
-      --border-soft: #1a3560;      /* azul medio para bordes secundarios */
-      --accent:    #00d4ff;        /* cian principal */
-      --accent2:   #4dd0e1;        /* cian secundario más suave */
+      --bg:        #050d1a;
+      --surface:   #0a1830;
+      --card:      #0f2040;
+      --border:    #00d4ff;
+      --border-soft: #1a3560;
+      --accent:    #00d4ff;
+      --accent2:   #4dd0e1;
       --text:      #e8eaf0;
       --muted:     #7a93b3;
       --success:   #2ecc71;
       --danger:    #e74c3c;
+      --warning:   #f39c12;
       --gold:      #ffd700;
       --silver:    #c0c0c0;
       --bronze:    #cd7f32;
@@ -199,6 +199,7 @@
     .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border-soft); }
     .btn-success { background: var(--success); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
+    .btn-warning { background: var(--warning); color: #fff; }
     .btn-sm { width: auto; padding: 8px 16px; font-size: .85rem; }
     .btn-icon { display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn + .btn { margin-top: 10px; }
@@ -229,6 +230,17 @@
     }
     .resumen-card .rc-value.secondary { color: var(--accent2); }
     .resumen-card .rc-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    .pendientes-banner {
+      background: rgba(243, 156, 18, 0.12);
+      border: 1px solid var(--warning);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: .88rem;
+    }
+    .pendientes-banner.hidden { display: none; }
 
     .menu-section-title {
       font-family: var(--font-head);
@@ -324,32 +336,30 @@
     .cat-btn.no-pago { border-style: dashed; color: var(--muted); }
     .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(122,147,179,.08); }
 
-    .ticket-counter {
-      display: flex; align-items: center; justify-content: center; gap: 18px;
-      background: var(--card);
+    /* NUEVO: Lista de tickets cargados (jornada) */
+    .ticket-item {
+      background: var(--surface);
       border: 1px solid var(--border-soft);
       border-radius: var(--radius);
-      padding: 14px;
-      margin-bottom: 16px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
     }
-    .tc-btn {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--border-soft);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 1.4rem;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .tc-btn:active { background: var(--border-soft); }
-    .tc-value {
+    .ticket-item-info { flex: 1; min-width: 0; }
+    .ticket-item-info .t-cat { font-family: var(--font-head); font-weight: 700; font-size: .95rem; }
+    .ticket-item-info .t-cli { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+    .ticket-item-precio {
       font-family: var(--font-head);
-      font-size: 2.2rem; font-weight: 800;
-      min-width: 60px; text-align: center;
+      font-size: .9rem; font-weight: 700;
+      color: var(--accent2);
     }
-    .tc-label { font-size: .8rem; color: var(--muted); text-align: center; }
+    .ticket-item .t-delete {
+      background: none; border: none;
+      color: var(--danger);
+      cursor: pointer; font-size: 1.1rem;
+      padding: 4px 8px;
+    }
 
     .toast {
       position: fixed;
@@ -402,13 +412,26 @@
       border-radius: var(--radius);
       cursor: pointer;
       transition: background .15s, color .15s, border-color .15s;
+      position: relative;
     }
     .tab-btn.active { background: var(--accent); color: #050d1a; border-color: var(--accent); }
+    .tab-btn .tab-badge {
+      position: absolute;
+      top: -6px; right: -6px;
+      background: var(--warning);
+      color: #050d1a;
+      border-radius: 50%;
+      min-width: 20px; height: 20px;
+      font-size: .7rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 4px;
+    }
+    .tab-btn .tab-badge.hidden { display: none; }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeIn .2s ease; }
 
-    /* ===== KPIs CARDS ===== */
+    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .kpi-card {
       background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
@@ -424,6 +447,7 @@
     }
     .kpi-card.gold::before { background: var(--gold); }
     .kpi-card.success::before { background: var(--success); }
+    .kpi-card.warning::before { background: var(--warning); }
     .kpi-card .kpi-icon { font-size: 1.3rem; margin-bottom: 6px; opacity: .8; }
     .kpi-card .kpi-label {
       font-size: .68rem; font-weight: 600;
@@ -438,7 +462,7 @@
     }
     .kpi-card .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
-    /* ===== PODIO TOP 3 ===== */
+    /* PODIO */
     .podium-section {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -495,7 +519,6 @@
     .podium-spot.second { order: 1; }
     .podium-spot.third { order: 3; }
 
-    /* ===== CHART CONTAINERS ===== */
     .chart-card {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -523,10 +546,40 @@
       text-transform: uppercase; letter-spacing: .07em;
       padding: 10px 12px; text-align: left;
       border-bottom: 1px solid var(--border-soft);
+      white-space: nowrap;
     }
     .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); }
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+    /* CARDS DE APROBACIÓN */
+    .approval-card {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--warning);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .approval-card-row {
+      display: flex; justify-content: space-between;
+      gap: 8px; margin-bottom: 6px;
+      font-size: .85rem;
+    }
+    .approval-card-row .label { color: var(--muted); font-size: .75rem; }
+    .approval-card-row .value { font-weight: 600; }
+    .approval-card-row.principal {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .approval-actions {
+      display: flex; gap: 8px;
+      margin-top: 12px;
+    }
+    .approval-actions .btn { margin: 0; flex: 1; padding: 10px; font-size: .9rem; }
 
     .equipo-item {
       display: flex; align-items: center; justify-content: space-between;
@@ -567,6 +620,7 @@
       padding: 24px 20px 36px;
       transform: translateY(100%);
       transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      max-height: 90vh; overflow-y: auto;
     }
     .modal-overlay.open .modal-box { transform: translateY(0); }
     .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; }
@@ -581,6 +635,8 @@
     .tag-green { background: rgba(46,204,113,.15); color: var(--success); }
     .tag-cyan { background: rgba(0,212,255,.15); color: var(--accent); }
     .tag-gray { background: rgba(122,147,179,.15); color: var(--muted); }
+    .tag-warning { background: rgba(243,156,18,.15); color: var(--warning); }
+    .tag-danger { background: rgba(231,76,60,.15); color: var(--danger); }
 
     .radio-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
     .radio-chip {
@@ -609,6 +665,36 @@
       width: 20px; height: 20px;
       font-size: .7rem; font-weight: 800;
       margin-left: 6px;
+    }
+
+    /* CERTIFICACIÓN */
+    .cert-preview {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .cert-preview-row {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px; text-align: center;
+    }
+    .cert-preview-row .item {
+      padding: 8px;
+      background: var(--card);
+      border-radius: var(--radius);
+    }
+    .cert-preview-row .v-num {
+      font-family: var(--font-head);
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--text);
+    }
+    .cert-preview-row .v-num.warning { color: var(--warning); }
+    .cert-preview-row .v-num.accent { color: var(--accent); }
+    .cert-preview-row .v-label {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -671,21 +757,25 @@
       <div class="greeting">Hola, <span id="menu-nombre"></span></div>
       <div class="greeting-sub" id="menu-mes"></div>
 
+      <div class="pendientes-banner hidden" id="pendientes-banner">
+        ⏳ <span id="pendientes-text"></span>
+      </div>
+
       <div class="resumen-grid" id="resumen-grid">
         <div class="resumen-card">
           <div class="rc-label">Comisiones</div>
           <div class="rc-value" id="rs-comisiones">—</div>
-          <div class="rc-sub">este mes</div>
+          <div class="rc-sub">aprobadas</div>
         </div>
         <div class="resumen-card">
           <div class="rc-label">Ventas</div>
           <div class="rc-value secondary" id="rs-ventas">—</div>
-          <div class="rc-sub">equipos</div>
+          <div class="rc-sub">aprobadas</div>
         </div>
         <div class="resumen-card">
           <div class="rc-label">Jornadas</div>
           <div class="rc-value secondary" id="rs-jornadas">—</div>
-          <div class="rc-sub">registradas</div>
+          <div class="rc-sub">tickets aprobados</div>
         </div>
         <div class="resumen-card">
           <div class="rc-label">Producción</div>
@@ -722,7 +812,7 @@
           <span class="menu-icon">⚙️</span>
           <div class="menu-text">
             <h3>PANEL DE GESTIÓN</h3>
-            <p>Catálogo, precios y análisis</p>
+            <p>Aprobaciones, certificación y análisis</p>
           </div>
         </button>
       </div>
@@ -739,6 +829,20 @@
       <div class="section-header">
         <button class="back-btn" id="back-ventas">←</button>
         <h2>NUEVA VENTA</h2>
+      </div>
+
+      <div class="form-group">
+        <label>Localidad</label>
+        <select id="venta-localidad">
+          <option value="">— seleccioná localidad —</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Móvil</label>
+        <select id="venta-movil">
+          <option value="">— seleccioná móvil —</option>
+        </select>
       </div>
 
       <div class="menu-section-title">Equipo vendido</div>
@@ -761,7 +865,7 @@
       <div id="dupla-section" style="display:none;margin-top:12px;">
         <div class="form-group">
           <label>Compañero/a</label>
-          <select id="compañero-select">
+          <select id="companero-select">
             <option value="">— seleccioná compañero/a —</option>
           </select>
         </div>
@@ -769,7 +873,7 @@
 
       <div class="menu-section-title" style="margin-top:14px;">Método de pago</div>
       <div class="radio-group" id="metodo-pago-group">
-        <div class="radio-chip selected" data-val="contado">Contado</div>
+        <div class="radio-chip selected" data-val="Contado">Contado</div>
         <div class="radio-chip" data-val="2 cuotas">2 cuotas</div>
         <div class="radio-chip" data-val="3 cuotas">3 cuotas</div>
       </div>
@@ -811,32 +915,27 @@
         <input type="date" id="fecha-jornada" />
       </div>
 
-      <div class="menu-section-title">Tipo de día</div>
-      <div class="radio-group" id="tipo-dia-group">
-        <div class="radio-chip" data-val="Sábado">Sábado</div>
-        <div class="radio-chip" data-val="Domingo">Domingo</div>
-        <div class="radio-chip" data-val="Feriado">Feriado</div>
+      <div class="form-group">
+        <label>Localidad</label>
+        <select id="jornada-localidad">
+          <option value="">— seleccioná localidad —</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Móvil</label>
+        <select id="jornada-movil">
+          <option value="">— seleccioná móvil —</option>
+        </select>
       </div>
 
       <div class="divider"></div>
 
-      <div class="menu-section-title">Tickets realizados</div>
-      <div class="categoria-grid" id="categoria-grid"></div>
-
-      <div id="ticket-counter-section" style="display:none;">
-        <div class="menu-section-title">Cantidad — <span id="cat-seleccionada-label" style="color:var(--accent);">—</span></div>
-        <div class="ticket-counter">
-          <button class="tc-btn" id="tc-minus">−</button>
-          <div>
-            <div class="tc-value" id="tc-value">1</div>
-            <div class="tc-label">tickets</div>
-          </div>
-          <button class="tc-btn" id="tc-plus">+</button>
-        </div>
-        <button class="btn btn-secondary" id="btn-agregar-ticket" style="margin-bottom:16px;">AGREGAR AL REGISTRO</button>
-      </div>
-
       <div id="tickets-lista" style="margin-bottom:16px;"></div>
+
+      <button class="btn btn-secondary btn-icon" id="btn-agregar-ticket-modal">+ AGREGAR TICKET</button>
+
+      <div class="divider"></div>
 
       <button class="btn btn-primary" id="btn-registrar-jornada">REGISTRAR JORNADA</button>
     </div>
@@ -856,6 +955,11 @@
 
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="tab-btn" data-tab="aprobaciones">
+          ✓ Aprobar
+          <span class="tab-badge hidden" id="badge-pendientes">0</span>
+        </button>
+        <button class="tab-btn" data-tab="certificacion">📥 Certificación</button>
         <button class="tab-btn" data-tab="equipos">Catálogo</button>
         <button class="tab-btn" data-tab="ventas-tab">Ventas</button>
         <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
@@ -866,13 +970,12 @@
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
 
-          <!-- KPIs -->
           <div class="kpi-grid">
             <div class="kpi-card">
               <div class="kpi-icon">💰</div>
               <div class="kpi-label">Comisiones del mes</div>
               <div class="kpi-value" id="kpi-comisiones">—</div>
-              <div class="kpi-sub">total acumulado</div>
+              <div class="kpi-sub">aprobadas</div>
             </div>
             <div class="kpi-card success">
               <div class="kpi-icon">📦</div>
@@ -882,9 +985,9 @@
             </div>
             <div class="kpi-card">
               <div class="kpi-icon">📋</div>
-              <div class="kpi-label">Jornadas</div>
+              <div class="kpi-label">Tickets jornada</div>
               <div class="kpi-value" id="kpi-jornadas">—</div>
-              <div class="kpi-sub">registradas</div>
+              <div class="kpi-sub">aprobados</div>
             </div>
             <div class="kpi-card gold">
               <div class="kpi-icon">⚡</div>
@@ -894,7 +997,6 @@
             </div>
           </div>
 
-          <!-- Podio Top 3 -->
           <div class="podium-section">
             <div class="podium-title"><span class="icon">🏆</span> TOP 3 DEL MES</div>
             <div class="podium-container" id="podium-container">
@@ -902,7 +1004,6 @@
             </div>
           </div>
 
-          <!-- Gráfico ventas por técnico -->
           <div class="chart-card">
             <div class="chart-card-title">📊 Ventas por técnico</div>
             <div class="chart-wrap">
@@ -910,7 +1011,6 @@
             </div>
           </div>
 
-          <!-- Gráfico equipos más vendidos -->
           <div class="chart-card">
             <div class="chart-card-title">🥇 Equipos más vendidos</div>
             <div class="chart-wrap tall">
@@ -919,6 +1019,52 @@
           </div>
 
         </div>
+      </div>
+
+      <!-- APROBACIONES -->
+      <div class="tab-panel" id="tab-aprobaciones">
+        <div class="loading-msg" id="aprob-loading"><span class="spinner"></span>Cargando pendientes…</div>
+        <div id="aprob-content" style="display:none;">
+          <div class="menu-section-title">Ventas pendientes (<span id="aprob-ventas-count">0</span>)</div>
+          <div id="aprob-ventas-lista"></div>
+          <div class="divider"></div>
+          <div class="menu-section-title">Jornadas pendientes (<span id="aprob-jornadas-count">0</span>)</div>
+          <div id="aprob-jornadas-lista"></div>
+        </div>
+      </div>
+
+      <!-- CERTIFICACIÓN -->
+      <div class="tab-panel" id="tab-certificacion">
+        <div class="form-group">
+          <label>Mes a certificar</label>
+          <select id="cert-mes">
+            <option value="">Cargando…</option>
+          </select>
+        </div>
+
+        <div class="cert-preview" id="cert-preview-box">
+          <div class="cert-preview-row">
+            <div class="item">
+              <div class="v-num accent" id="cert-aprobadas-v">—</div>
+              <div class="v-label">Ventas OK</div>
+            </div>
+            <div class="item">
+              <div class="v-num accent" id="cert-aprobadas-j">—</div>
+              <div class="v-label">Jornadas OK</div>
+            </div>
+            <div class="item">
+              <div class="v-num warning" id="cert-pendientes">—</div>
+              <div class="v-label">Pendientes</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-icon" id="btn-descargar-cert">
+          📥 DESCARGAR CERTIFICACIÓN
+        </button>
+        <p class="loading-msg" style="font-size:.78rem;margin-top:8px;">
+          Solo se incluyen las ventas y jornadas <strong>aprobadas</strong>. Después podés pegar los links de tickets en el Excel.
+        </p>
       </div>
 
       <!-- Catálogo -->
@@ -991,6 +1137,27 @@
   </div>
 </div>
 
+<!-- MODAL TICKET (NUEVO - para agregar ticket a la jornada) -->
+<div class="modal-overlay" id="modal-ticket">
+  <div class="modal-box">
+    <div class="modal-title">AGREGAR TICKET</div>
+
+    <div class="form-group">
+      <label>Categoría</label>
+      <div class="categoria-grid" id="modal-ticket-cats"></div>
+    </div>
+
+    <div class="form-group">
+      <label>Número de cliente</label>
+      <input type="text" id="modal-ticket-cliente" placeholder="Ej: 123456" inputmode="numeric" />
+    </div>
+
+    <button class="btn btn-primary" id="btn-confirmar-ticket">AGREGAR</button>
+    <button class="btn btn-secondary" id="btn-cancelar-ticket" style="margin-top:8px;">CANCELAR</button>
+    <div class="error-msg" id="modal-ticket-error"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -999,15 +1166,29 @@
 // ============================================================
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHfCx8ZWo6vLgp-29AP_yFVuPRTR3YPLB4lRPlE8AUhyL5a8m7wCH9kix_gQdYe-_O/exec';
 
-const session = { usuario: null, esAdmin: false, pin: '' };
+const session = { usuario: null, esAdmin: false, movil: '' };
 let equiposCatalogo = [];
 let tecnicosLista = [];
+let movilesLista = [];
+let localidadesLista = [];
 let ticketsJornada = [];
-let catActual = null;
+let modalTicketCat = null;
 
-// Charts (referencias para destruirlos al recargar)
+// Charts
 let chartVentasTecnico = null;
 let chartEquipos = null;
+
+// Categorias jornada
+const CATEGORIAS = [
+  { nombre: 'Instalacion FO',       pago: true  },
+  { nombre: 'Instalacion Wireless', pago: true  },
+  { nombre: 'Mudanza',              pago: true  },
+  { nombre: 'Reparacion',           pago: true  },
+  { nombre: 'Migracion',            pago: true  },
+  { nombre: 'Servicio Tecnico',     pago: true  },
+  { nombre: 'Baja',                 pago: false },
+  { nombre: 'Visita No Concretada', pago: false }
+];
 
 // ============================================================
 //  UTILIDADES
@@ -1057,6 +1238,13 @@ function mesActualNombre() {
   return new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
 }
 
+// Fecha en formato dd/MM/yyyy para el backend
+function fechaToBackend(yyyymmdd) {
+  if (!yyyymmdd) return '';
+  const [a, m, d] = yyyymmdd.split('-');
+  return `${d}/${m}/${a}`;
+}
+
 function hoy() {
   return new Date().toISOString().split('T')[0];
 }
@@ -1068,7 +1256,7 @@ let pinIngresado = '';
 
 async function cargarTecnicos() {
   try {
-    const data = await api({ action: 'obtenerTecnicos' });
+    const data = await api({ accion: 'obtenerTecnicos' });
     if (data.ok && Array.isArray(data.tecnicos)) {
       tecnicosLista = data.tecnicos;
       llenarSelectTecnicos();
@@ -1076,13 +1264,31 @@ async function cargarTecnicos() {
   } catch(e) { console.warn('No se pudieron cargar técnicos:', e); }
 }
 
+async function cargarMoviles() {
+  try {
+    const data = await api({ accion: 'obtenerMoviles' });
+    if (data.ok && Array.isArray(data.moviles)) {
+      movilesLista = data.moviles;
+    }
+  } catch(e) { console.warn('No se pudieron cargar móviles:', e); }
+}
+
+async function cargarLocalidades() {
+  try {
+    const data = await api({ accion: 'obtenerLocalidades' });
+    if (data.ok && Array.isArray(data.localidades)) {
+      localidadesLista = data.localidades;
+    }
+  } catch(e) { console.warn('No se pudieron cargar localidades:', e); }
+}
+
 function llenarSelectTecnicos() {
   const sel = document.getElementById('login-tecnico');
   sel.innerHTML = '<option value="">— seleccioná un técnico —</option>';
   tecnicosLista.forEach(t => {
     const op = document.createElement('option');
-    op.value = t.nombre || t;
-    op.textContent = t.nombre || t;
+    op.value = t.nombre;
+    op.textContent = t.nombre;
     sel.appendChild(op);
   });
 }
@@ -1113,16 +1319,20 @@ async function intentarLogin() {
   const errEl = document.getElementById('login-error');
   errEl.textContent = '';
 
-  if (!tecnico) { errEl.textContent = 'Seleccioná un técnico'; return; }
+  if (!tecnico && pinIngresado !== '1015') {
+    errEl.textContent = 'Seleccioná un técnico';
+    return;
+  }
   if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
-    const data = await apiPost({ action: 'login', tecnico, pin: pinIngresado });
+    const data = await apiPost({ accion: 'login', nombre: tecnico, pin: pinIngresado });
     if (data.ok) {
-      session.usuario = tecnico;
-      session.esAdmin = !!data.esAdmin;
+      session.esAdmin = (data.tipo === 'admin');
+      session.usuario = session.esAdmin ? 'ADMIN' : data.nombre;
+      session.movil = data.movil || '';
       pinIngresado = '';
       actualizarDotsPIN();
       document.getElementById('btn-login').textContent = 'INGRESAR';
@@ -1143,22 +1353,36 @@ async function intentarLogin() {
 //  MENÚ PRINCIPAL
 // ============================================================
 async function cargarMenuPrincipal() {
-  document.getElementById('menu-nombre').textContent = session.usuario;
-  document.getElementById('header-user-name').textContent = session.usuario;
+  const nombreMostrar = session.esAdmin ? 'Administrador' : session.usuario;
+  document.getElementById('menu-nombre').textContent = nombreMostrar;
+  document.getElementById('header-user-name').textContent = nombreMostrar;
   document.getElementById('menu-mes').textContent = mesActualNombre().toUpperCase();
   document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
 
   mostrarPantalla('menu');
 
   try {
-    const data = await api({ action: 'obtenerResumen', tecnico: session.usuario });
-    if (data.ok && data.resumen) {
-      const r = data.resumen;
-      document.getElementById('rs-comisiones').textContent = formatoPesos(r.comisionesTotal);
-      document.getElementById('rs-ventas').textContent = r.equiposVendidos ?? '0';
-      document.getElementById('rs-jornadas').textContent = r.jornadasCount ?? '0';
-      document.getElementById('rs-produccion').textContent = formatoPesos(r.jornadasTotal);
-      document.getElementById('rs-equipo').textContent = r.equipoMasVendido || '—';
+    const data = await api({ accion: 'obtenerResumen', tecnico: session.usuario });
+    if (data.ok) {
+      document.getElementById('rs-comisiones').textContent = formatoPesos(data.totalComision);
+      document.getElementById('rs-ventas').textContent = data.cantidadVentas ?? '0';
+      document.getElementById('rs-jornadas').textContent = data.cantidadJornadas ?? '0';
+      document.getElementById('rs-produccion').textContent = formatoPesos(data.totalJornadas);
+      document.getElementById('rs-equipo').textContent = data.equipoTop || '—';
+
+      // Banner de pendientes
+      const totalPend = (data.pendientesV || 0) + (data.pendientesJ || 0);
+      const banner = document.getElementById('pendientes-banner');
+      if (totalPend > 0) {
+        const partes = [];
+        if (data.pendientesV) partes.push(`${data.pendientesV} venta${data.pendientesV > 1 ? 's' : ''}`);
+        if (data.pendientesJ) partes.push(`${data.pendientesJ} ticket${data.pendientesJ > 1 ? 's' : ''} de jornada`);
+        document.getElementById('pendientes-text').innerHTML =
+          `<strong>${partes.join(' y ')}</strong> pendiente${totalPend > 1 ? 's' : ''} de aprobación`;
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
     }
   } catch(e) { console.warn('No se pudo cargar resumen:', e); }
 }
@@ -1169,7 +1393,7 @@ async function cargarMenuPrincipal() {
 let equipoSeleccionado = null;
 let tipoVenta = 'directa';
 let modoTrabajo = 'solo';
-let metodoPago = 'contado';
+let metodoPago = 'Contado';
 
 async function cargarPantallaVentas() {
   mostrarPantalla('ventas');
@@ -1179,21 +1403,47 @@ async function cargarPantallaVentas() {
   equipoSeleccionado = null;
   tipoVenta = 'directa';
   modoTrabajo = 'solo';
-  metodoPago = 'contado';
+  metodoPago = 'Contado';
   document.getElementById('dupla-section').style.display = 'none';
   document.getElementById('comision-preview').classList.remove('visible');
   resetChips('tipo-venta-group', 'directa');
   resetChips('modo-trabajo-group', 'solo');
-  resetChips('metodo-pago-group', 'contado');
+  resetChips('metodo-pago-group', 'Contado');
+
+  llenarSelectLocalidades('venta-localidad');
+  llenarSelectMoviles('venta-movil', session.movil);
 
   await cargarEquipos();
-  llenarSelectCompañero();
+  llenarSelectCompanero();
+}
+
+function llenarSelectLocalidades(selectId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = '<option value="">— seleccioná localidad —</option>';
+  localidadesLista.forEach(l => {
+    const op = document.createElement('option');
+    op.value = l.codigo;
+    op.textContent = `${l.codigo} - ${l.nombre}`;
+    sel.appendChild(op);
+  });
+}
+
+function llenarSelectMoviles(selectId, defaultPatente) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = '<option value="">— seleccioná móvil —</option>';
+  movilesLista.forEach(m => {
+    const op = document.createElement('option');
+    op.value = m.patente;
+    op.textContent = m.patente;
+    if (m.patente === defaultPatente) op.selected = true;
+    sel.appendChild(op);
+  });
 }
 
 async function cargarEquipos() {
   const cont = document.getElementById('equipo-selector');
   try {
-    const data = await api({ action: 'gestionarEquipos', operacion: 'listar' });
+    const data = await api({ accion: 'obtenerEquipos' });
     if (data.ok && data.equipos) {
       equiposCatalogo = data.equipos;
       renderEquiposSelector();
@@ -1218,7 +1468,7 @@ function renderEquiposSelector() {
     card.dataset.id = eq.id;
     card.innerHTML = `
       <div class="eq-nombre">${eq.nombre}</div>
-      <div class="eq-precio">${formatoPesos(eq.precio)}</div>
+      <div class="eq-precio">${formatoPesos(eq.precioVenta)}</div>
     `;
     card.addEventListener('click', () => seleccionarEquipo(eq, card));
     cont.appendChild(card);
@@ -1234,12 +1484,16 @@ function seleccionarEquipo(eq, cardEl) {
     chipCanje.style.opacity = eq.admiteCanje ? '1' : '.3';
     chipCanje.style.pointerEvents = eq.admiteCanje ? 'auto' : 'none';
   }
+  if (!eq.admiteCanje && tipoVenta === 'canje') {
+    tipoVenta = 'directa';
+    resetChips('tipo-venta-group', 'directa');
+  }
   calcularComision();
 }
 
 function calcularComision() {
   if (!equipoSeleccionado) { document.getElementById('comision-preview').classList.remove('visible'); return; }
-  const precio = tipoVenta === 'canje' ? (equipoSeleccionado.precioCanje || equipoSeleccionado.precio) : equipoSeleccionado.precio;
+  const precio = tipoVenta === 'canje' ? (equipoSeleccionado.precioCanje || equipoSeleccionado.precioVenta) : equipoSeleccionado.precioVenta;
   const pct = modoTrabajo === 'solo' ? 0.05 : 0.025;
   const comision = precio * pct;
   document.getElementById('comision-valor').textContent = formatoPesos(comision);
@@ -1278,25 +1532,29 @@ document.getElementById('metodo-pago-group').addEventListener('click', e => {
   resetChips('metodo-pago-group', metodoPago);
 });
 
-function llenarSelectCompañero() {
-  const sel = document.getElementById('compañero-select');
+function llenarSelectCompanero() {
+  const sel = document.getElementById('companero-select');
   sel.innerHTML = '<option value="">— seleccioná compañero/a —</option>';
   tecnicosLista.forEach(t => {
-    const nombre = t.nombre || t;
-    if (nombre !== session.usuario) {
+    if (t.nombre !== session.usuario) {
       const op = document.createElement('option');
-      op.value = nombre;
-      op.textContent = nombre;
+      op.value = t.nombre;
+      op.textContent = t.nombre;
       sel.appendChild(op);
     }
   });
 }
 
 document.getElementById('btn-registrar-venta').addEventListener('click', async () => {
-  if (!equipoSeleccionado) { toast('Seleccioná un equipo', 'error'); return; }
+  const localidad = document.getElementById('venta-localidad').value;
+  const movil = document.getElementById('venta-movil').value;
   const fecha = document.getElementById('fecha-venta').value;
+
+  if (!localidad) { toast('Seleccioná la localidad', 'error'); return; }
+  if (!movil) { toast('Seleccioná el móvil', 'error'); return; }
+  if (!equipoSeleccionado) { toast('Seleccioná un equipo', 'error'); return; }
   if (!fecha) { toast('Ingresá la fecha de la venta', 'error'); return; }
-  if (modoTrabajo === 'dupla' && !document.getElementById('compañero-select').value) {
+  if (modoTrabajo === 'dupla' && !document.getElementById('companero-select').value) {
     toast('Seleccioná tu compañero/a de dupla', 'error'); return;
   }
 
@@ -1305,23 +1563,26 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
   btn.disabled = true;
 
   const payload = {
-    action: 'registrarVenta',
+    accion: 'registrarVenta',
     tecnico: session.usuario,
+    localidad: localidad,
+    movil: movil,
     equipoId: equipoSeleccionado.id,
     equipoNombre: equipoSeleccionado.nombre,
-    tipoVenta,
-    modoTrabajo,
-    compañero: modoTrabajo === 'dupla' ? document.getElementById('compañero-select').value : '',
-    metodoPago,
+    tipoVenta: tipoVenta,
+    dupla: modoTrabajo === 'dupla',
+    companero: modoTrabajo === 'dupla' ? document.getElementById('companero-select').value : '',
+    metodoPago: metodoPago,
+    cantidad: 1,
     nroCliente: document.getElementById('nro-cliente').value || '',
-    fechaJornada: fecha
+    fechaJornada: fechaToBackend(fecha)
   };
 
   try {
     const data = await apiPost(payload);
     if (data.ok) {
-      toast('¡Venta registrada con éxito!', 'success');
-      setTimeout(() => mostrarPantalla('menu'), 1000);
+      toast('¡Venta registrada! Esperando aprobación', 'success');
+      setTimeout(() => mostrarPantalla('menu'), 1200);
     } else {
       toast(data.error || 'Error al registrar', 'error');
     }
@@ -1336,111 +1597,101 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
 // ============================================================
 //  JORNADAS
 // ============================================================
-const CATEGORIAS = [
-  { nombre: 'Instalación FO',       pago: true  },
-  { nombre: 'Instalación Wireless', pago: true  },
-  { nombre: 'Mudanza',              pago: true  },
-  { nombre: 'Reparación',           pago: true  },
-  { nombre: 'Migración',            pago: true  },
-  { nombre: 'Servicio Técnico',     pago: true  },
-  { nombre: 'Baja',                 pago: false },
-  { nombre: 'Visita No Concretada', pago: false }
-];
+async function cargarPantallaJornada() {
+  ticketsJornada = [];
+  renderTicketsLista();
+  document.getElementById('fecha-jornada').value = hoy();
 
-function renderCategoriasGrid() {
-  const grid = document.getElementById('categoria-grid');
-  grid.innerHTML = '';
+  llenarSelectLocalidades('jornada-localidad');
+  llenarSelectMoviles('jornada-movil', session.movil);
+
+  mostrarPantalla('jornada');
+}
+
+function renderTicketsLista() {
+  const cont = document.getElementById('tickets-lista');
+  if (!ticketsJornada.length) {
+    cont.innerHTML = '<div class="loading-msg">Aún no agregaste tickets</div>';
+    return;
+  }
+  cont.innerHTML = '<div class="menu-section-title">Tickets cargados (' + ticketsJornada.length + ')</div>';
+  ticketsJornada.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'ticket-item';
+    const cat = CATEGORIAS.find(c => c.nombre === t.categoria);
+    const paga = cat ? cat.pago : false;
+    item.innerHTML = `
+      <div class="ticket-item-info">
+        <div class="t-cat">${t.categoria}</div>
+        <div class="t-cli">Cliente: ${t.nroCliente || '—'}</div>
+      </div>
+      <div class="ticket-item-precio">${paga ? '$' : ''}${paga ? '20K' : 'sin pago'}</div>
+      <button class="t-delete" onclick="eliminarTicket(${i})">✕</button>
+    `;
+    cont.appendChild(item);
+  });
+}
+
+window.eliminarTicket = function(idx) {
+  ticketsJornada.splice(idx, 1);
+  renderTicketsLista();
+};
+
+// MODAL TICKET
+document.getElementById('btn-agregar-ticket-modal').addEventListener('click', () => {
+  abrirModalTicket();
+});
+
+function abrirModalTicket() {
+  modalTicketCat = null;
+  document.getElementById('modal-ticket-cliente').value = '';
+  document.getElementById('modal-ticket-error').textContent = '';
+  renderModalCategorias();
+  document.getElementById('modal-ticket').classList.add('open');
+}
+
+function renderModalCategorias() {
+  const cont = document.getElementById('modal-ticket-cats');
+  cont.innerHTML = '';
   CATEGORIAS.forEach(cat => {
     const btn = document.createElement('div');
     btn.className = 'cat-btn' + (cat.pago ? '' : ' no-pago');
     btn.dataset.nombre = cat.nombre;
     btn.textContent = cat.nombre;
-    btn.addEventListener('click', () => seleccionarCategoria(cat.nombre, btn));
-    grid.appendChild(btn);
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#modal-ticket-cats .cat-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      modalTicketCat = cat.nombre;
+    });
+    cont.appendChild(btn);
   });
 }
 
-function seleccionarCategoria(nombre, btn) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  catActual = nombre;
-  document.getElementById('cat-seleccionada-label').textContent = nombre;
-  document.getElementById('tc-value').textContent = '1';
-  document.getElementById('ticket-counter-section').style.display = 'block';
-}
-
-document.getElementById('tc-minus').addEventListener('click', () => {
-  const v = parseInt(document.getElementById('tc-value').textContent);
-  if (v > 1) document.getElementById('tc-value').textContent = v - 1;
-});
-document.getElementById('tc-plus').addEventListener('click', () => {
-  const v = parseInt(document.getElementById('tc-value').textContent);
-  document.getElementById('tc-value').textContent = v + 1;
+document.getElementById('btn-cancelar-ticket').addEventListener('click', () => {
+  document.getElementById('modal-ticket').classList.remove('open');
 });
 
-document.getElementById('btn-agregar-ticket').addEventListener('click', () => {
-  if (!catActual) return;
-  const cantidad = parseInt(document.getElementById('tc-value').textContent);
-  const idx = ticketsJornada.findIndex(t => t.categoria === catActual);
-  if (idx >= 0) {
-    ticketsJornada[idx].cantidad += cantidad;
-  } else {
-    ticketsJornada.push({ categoria: catActual, cantidad });
-  }
+document.getElementById('btn-confirmar-ticket').addEventListener('click', () => {
+  const errEl = document.getElementById('modal-ticket-error');
+  const nroCliente = document.getElementById('modal-ticket-cliente').value.trim();
+
+  if (!modalTicketCat) { errEl.textContent = 'Seleccioná una categoría'; return; }
+  if (!nroCliente) { errEl.textContent = 'Ingresá el N° de cliente'; return; }
+
+  ticketsJornada.push({ categoria: modalTicketCat, nroCliente: nroCliente });
   renderTicketsLista();
-  document.getElementById('ticket-counter-section').style.display = 'none';
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-  catActual = null;
-  toast(`+${cantidad} ticket${cantidad > 1 ? 's' : ''} agregado${cantidad > 1 ? 's' : ''}`, 'success');
-});
-
-function renderTicketsLista() {
-  const cont = document.getElementById('tickets-lista');
-  if (!ticketsJornada.length) { cont.innerHTML = ''; return; }
-  cont.innerHTML = '<div class="menu-section-title">Tickets acumulados</div>';
-  ticketsJornada.forEach((t, i) => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-soft);';
-    row.innerHTML = `
-      <span style="font-size:.9rem;">${t.categoria}</span>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span class="badge">${t.cantidad}</span>
-        <button onclick="eliminarTicket(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;">✕</button>
-      </div>`;
-    cont.appendChild(row);
-  });
-}
-
-function eliminarTicket(idx) {
-  ticketsJornada.splice(idx, 1);
-  renderTicketsLista();
-}
-
-async function cargarPantallaJornada() {
-  ticketsJornada = [];
-  catActual = null;
-  renderCategoriasGrid();
-  renderTicketsLista();
-  document.getElementById('fecha-jornada').value = hoy();
-  document.getElementById('ticket-counter-section').style.display = 'none';
-  const diaSemana = new Date().getDay();
-  let tipoDia = 'Domingo';
-  if (diaSemana === 6) tipoDia = 'Sábado';
-  resetChips('tipo-dia-group', tipoDia);
-  mostrarPantalla('jornada');
-}
-
-document.getElementById('tipo-dia-group').addEventListener('click', e => {
-  const chip = e.target.closest('.radio-chip');
-  if (!chip) return;
-  resetChips('tipo-dia-group', chip.dataset.val);
+  document.getElementById('modal-ticket').classList.remove('open');
+  toast('Ticket agregado', 'success');
 });
 
 document.getElementById('btn-registrar-jornada').addEventListener('click', async () => {
+  const localidad = document.getElementById('jornada-localidad').value;
+  const movil = document.getElementById('jornada-movil').value;
   const fecha = document.getElementById('fecha-jornada').value;
+
   if (!fecha) { toast('Ingresá la fecha de la jornada', 'error'); return; }
-  const tipoDia = document.querySelector('#tipo-dia-group .radio-chip.selected')?.dataset.val;
-  if (!tipoDia) { toast('Seleccioná el tipo de día', 'error'); return; }
+  if (!localidad) { toast('Seleccioná la localidad', 'error'); return; }
+  if (!movil) { toast('Seleccioná el móvil', 'error'); return; }
   if (!ticketsJornada.length) { toast('Agregá al menos un ticket', 'error'); return; }
 
   const btn = document.getElementById('btn-registrar-jornada');
@@ -1448,18 +1699,19 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
   btn.disabled = true;
 
   const payload = {
-    action: 'registrarJornada',
+    accion: 'registrarJornada',
     tecnico: session.usuario,
-    fechaJornada: fecha,
-    tipoDia,
+    fechaJornada: fechaToBackend(fecha),
+    localidad: localidad,
+    movil: movil,
     tickets: JSON.stringify(ticketsJornada)
   };
 
   try {
     const data = await apiPost(payload);
     if (data.ok) {
-      toast('¡Jornada registrada!', 'success');
-      setTimeout(() => mostrarPantalla('menu'), 1000);
+      toast(`¡${data.total} ticket${data.total > 1 ? 's' : ''} registrado${data.total > 1 ? 's' : ''}!`, 'success');
+      setTimeout(() => mostrarPantalla('menu'), 1200);
     } else {
       toast(data.error || 'Error al registrar', 'error');
     }
@@ -1477,6 +1729,7 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
 function cargarPantallaAdmin() {
   mostrarPantalla('admin');
   cargarDashboard();
+  actualizarBadgePendientes();
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1487,14 +1740,28 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
     if (tab === 'dashboard') cargarDashboard();
+    if (tab === 'aprobaciones') cargarAprobaciones();
+    if (tab === 'certificacion') cargarCertificacion();
     if (tab === 'equipos') cargarEquiposAdmin();
     if (tab === 'ventas-tab') cargarVentasAdmin();
     if (tab === 'jornadas-tab') cargarJornadasAdmin();
   });
 });
 
+async function actualizarBadgePendientes() {
+  try {
+    const data = await api({ accion: 'obtenerPendientes' });
+    if (data.ok) {
+      const total = (data.ventas?.length || 0) + (data.jornadas?.length || 0);
+      const badge = document.getElementById('badge-pendientes');
+      badge.textContent = total;
+      badge.classList.toggle('hidden', total === 0);
+    }
+  } catch(e) {}
+}
+
 // ============================================================
-//  DASHBOARD ADMIN
+//  DASHBOARD
 // ============================================================
 async function cargarDashboard() {
   const loading = document.getElementById('dashboard-loading');
@@ -1503,25 +1770,21 @@ async function cargarDashboard() {
   content.style.display = 'none';
 
   try {
-    // Pedimos ventas y resumen
     const [ventasData, resumenData] = await Promise.all([
-      api({ action: 'obtenerVentas', mes: '', admin: 'true' }),
-      api({ action: 'obtenerResumen', tecnico: 'ADMIN' })
+      api({ accion: 'obtenerVentas' }),
+      api({ accion: 'obtenerResumen', tecnico: 'ADMIN' })
     ]);
 
     loading.style.display = 'none';
     content.style.display = 'block';
 
-    // KPIs
-    if (resumenData.ok && resumenData.resumen) {
-      const r = resumenData.resumen;
-      document.getElementById('kpi-comisiones').textContent = formatoPesos(r.comisionesTotal);
-      document.getElementById('kpi-ventas').textContent = r.equiposVendidos ?? '0';
-      document.getElementById('kpi-jornadas').textContent = r.jornadasCount ?? '0';
-      document.getElementById('kpi-produccion').textContent = formatoPesos(r.jornadasTotal);
+    if (resumenData.ok) {
+      document.getElementById('kpi-comisiones').textContent = formatoPesos(resumenData.totalComision);
+      document.getElementById('kpi-ventas').textContent = resumenData.cantidadVentas ?? '0';
+      document.getElementById('kpi-jornadas').textContent = resumenData.cantidadJornadas ?? '0';
+      document.getElementById('kpi-produccion').textContent = formatoPesos(resumenData.totalJornadas);
     }
 
-    // Procesar ventas para podio y gráficos
     const ventas = (ventasData.ok && ventasData.ventas) ? ventasData.ventas : [];
     procesarYRenderizarTodo(ventas);
 
@@ -1532,22 +1795,30 @@ async function cargarDashboard() {
 }
 
 function procesarYRenderizarTodo(ventas) {
+  // Estructura de ventas: { fila: N, datos: [array de columnas] }
+  // Columnas: 0:Fecha, 1:FechaCarga, 2:Localidad, 3:Movil, 4:Tecnico, 5:NCliente,
+  //           6:Equipo, 7:FormaPago, 8:Cantidad, 9:Dupla, 10:Companero, 11:Comision,
+  //           12:Estado, 13:FechaAprobacion
   const comisionesTec = {};
   const ventasTec = {};
   const equiposCount = {};
 
   ventas.forEach(v => {
-    const tec = v.tecnico;
-    const tec2 = v.tecnico2;
-    const com = Number(v.comision) || 0;
-    const equipo = v.equipo || 'Sin nombre';
+    const f = v.datos;
+    const estado = String(f[12] || '').trim();
+    if (estado !== 'Aprobada') return; // solo aprobadas
+
+    const tec = f[4];
+    const tec2 = f[10];
+    const com = Number(f[11]) || 0;
+    const equipo = f[6] || 'Sin nombre';
+    const dupla = String(f[9]).toLowerCase().startsWith('s');
 
     if (tec) {
       comisionesTec[tec] = (comisionesTec[tec] || 0) + com;
       ventasTec[tec] = (ventasTec[tec] || 0) + 1;
     }
-    if (tec2 && (v.dupla === 'Sí' || v.dupla === 'SÍ')) {
-      // Si es dupla, el segundo técnico también suma su parte
+    if (dupla && tec2) {
       comisionesTec[tec2] = (comisionesTec[tec2] || 0) + com;
       ventasTec[tec2] = (ventasTec[tec2] || 0) + 1;
     }
@@ -1568,7 +1839,7 @@ function renderPodio(comisionesTec) {
     .slice(0, 3);
 
   if (!ranking.length) {
-    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin ventas este mes</div>';
+    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin ventas aprobadas</div>';
     return;
   }
 
@@ -1729,12 +2000,206 @@ function renderChartEquipos(equiposCount) {
   });
 }
 
-// --- Catálogo ---
+// ============================================================
+//  APROBACIONES
+// ============================================================
+async function cargarAprobaciones() {
+  const loading = document.getElementById('aprob-loading');
+  const content = document.getElementById('aprob-content');
+  loading.style.display = 'block';
+  content.style.display = 'none';
+
+  try {
+    const data = await api({ accion: 'obtenerPendientes' });
+    if (data.ok) {
+      renderAprobaciones(data.ventas || [], data.jornadas || []);
+    }
+  } catch(e) {
+    console.error(e);
+  } finally {
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  }
+}
+
+function renderAprobaciones(ventas, jornadas) {
+  document.getElementById('aprob-ventas-count').textContent = ventas.length;
+  document.getElementById('aprob-jornadas-count').textContent = jornadas.length;
+
+  // Ventas
+  const contV = document.getElementById('aprob-ventas-lista');
+  if (!ventas.length) {
+    contV.innerHTML = '<div class="loading-msg">No hay ventas pendientes</div>';
+  } else {
+    contV.innerHTML = '';
+    ventas.forEach(v => {
+      const f = v.datos;
+      // 0:Fecha, 2:Localidad, 3:Movil, 4:Tecnico, 5:NCliente, 6:Equipo,
+      // 7:FormaPago, 9:Dupla, 10:Companero, 11:Comision
+      const card = document.createElement('div');
+      card.className = 'approval-card';
+      const dupla = String(f[9]).toLowerCase().startsWith('s');
+      card.innerHTML = `
+        <div class="approval-card-row principal">
+          <span>${f[4]}${dupla ? ' + ' + f[10] : ''}</span>
+          <span style="color:var(--accent);">${formatoPesos(f[11])}</span>
+        </div>
+        <div class="approval-card-row"><span class="label">Equipo</span><span class="value">${f[6]}</span></div>
+        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${f[5] || '—'}</span></div>
+        <div class="approval-card-row"><span class="label">Localidad / Móvil</span><span class="value">${f[2]} / ${f[3]}</span></div>
+        <div class="approval-card-row"><span class="label">Pago</span><span class="value">${f[7]}</span></div>
+        <div class="approval-card-row"><span class="label">Fecha</span><span class="value">${f[0]}</span></div>
+        <div class="approval-actions">
+          <button class="btn btn-success" onclick="aprobar('venta', ${v.fila})">✓ APROBAR</button>
+          <button class="btn btn-danger" onclick="aprobar('venta', ${v.fila}, true)">✕ RECHAZAR</button>
+        </div>
+      `;
+      contV.appendChild(card);
+    });
+  }
+
+  // Jornadas
+  const contJ = document.getElementById('aprob-jornadas-lista');
+  if (!jornadas.length) {
+    contJ.innerHTML = '<div class="loading-msg">No hay jornadas pendientes</div>';
+  } else {
+    contJ.innerHTML = '';
+    jornadas.forEach(j => {
+      const f = j.datos;
+      // 0:Fecha, 2:TipoDia, 3:Localidad, 4:Movil, 5:Tecnico, 6:NCliente, 7:Categoria, 8:Precio
+      const card = document.createElement('div');
+      card.className = 'approval-card';
+      card.innerHTML = `
+        <div class="approval-card-row principal">
+          <span>${f[5]}</span>
+          <span style="color:var(--accent);">${formatoPesos(f[8])}</span>
+        </div>
+        <div class="approval-card-row"><span class="label">Categoría</span><span class="value">${f[7]}</span></div>
+        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${f[6] || '—'}</span></div>
+        <div class="approval-card-row"><span class="label">Localidad / Móvil</span><span class="value">${f[3]} / ${f[4]}</span></div>
+        <div class="approval-card-row"><span class="label">Día</span><span class="value">${f[0]} (${f[2]})</span></div>
+        <div class="approval-actions">
+          <button class="btn btn-success" onclick="aprobar('jornada', ${j.fila})">✓ APROBAR</button>
+          <button class="btn btn-danger" onclick="aprobar('jornada', ${j.fila}, true)">✕ RECHAZAR</button>
+        </div>
+      `;
+      contJ.appendChild(card);
+    });
+  }
+}
+
+window.aprobar = async function(tipo, fila, rechazar = false) {
+  const accion = rechazar
+    ? (tipo === 'venta' ? 'rechazarVenta' : 'rechazarJornada')
+    : (tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada');
+
+  try {
+    const data = await apiPost({ accion, fila });
+    if (data.ok) {
+      toast(rechazar ? 'Rechazada' : 'Aprobada ✓', 'success');
+      cargarAprobaciones();
+      actualizarBadgePendientes();
+    } else {
+      toast(data.error || 'Error', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  }
+};
+
+// ============================================================
+//  CERTIFICACIÓN
+// ============================================================
+async function cargarCertificacion() {
+  const sel = document.getElementById('cert-mes');
+  sel.innerHTML = '<option value="">Cargando…</option>';
+
+  try {
+    const data = await api({ accion: 'obtenerMesesDisponibles' });
+    if (data.ok && data.meses) {
+      sel.innerHTML = '';
+      data.meses.forEach(m => {
+        const op = document.createElement('option');
+        op.value = m;
+        op.textContent = m;
+        sel.appendChild(op);
+      });
+      if (data.meses.length === 0) {
+        sel.innerHTML = '<option value="">Sin meses disponibles</option>';
+      } else {
+        actualizarPreviewCert();
+      }
+    }
+  } catch(e) {}
+}
+
+document.getElementById('cert-mes').addEventListener('change', actualizarPreviewCert);
+
+async function actualizarPreviewCert() {
+  const mes = document.getElementById('cert-mes').value;
+  if (!mes) return;
+
+  document.getElementById('cert-aprobadas-v').textContent = '…';
+  document.getElementById('cert-aprobadas-j').textContent = '…';
+  document.getElementById('cert-pendientes').textContent = '…';
+
+  try {
+    const [vData, jData, pData] = await Promise.all([
+      api({ accion: 'obtenerVentas', mes }),
+      api({ accion: 'obtenerJornadas', mes }),
+      api({ accion: 'obtenerPendientes', mes })
+    ]);
+
+    let aprobV = 0, aprobJ = 0;
+    if (vData.ok && vData.ventas) {
+      aprobV = vData.ventas.filter(v => String(v.datos[12] || '').trim() === 'Aprobada').length;
+    }
+    if (jData.ok && jData.jornadas) {
+      aprobJ = jData.jornadas.filter(j => String(j.datos[9] || '').trim() === 'Aprobada').length;
+    }
+    const pend = (pData.ventas?.length || 0) + (pData.jornadas?.length || 0);
+
+    document.getElementById('cert-aprobadas-v').textContent = aprobV;
+    document.getElementById('cert-aprobadas-j').textContent = aprobJ;
+    document.getElementById('cert-pendientes').textContent = pend;
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+document.getElementById('btn-descargar-cert').addEventListener('click', async () => {
+  const mes = document.getElementById('cert-mes').value;
+  if (!mes) { toast('Seleccioná el mes', 'error'); return; }
+
+  const btn = document.getElementById('btn-descargar-cert');
+  btn.textContent = '⏳ GENERANDO…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({ accion: 'descargarCertificacion', mes });
+    if (data.ok && data.urlDescarga) {
+      toast('Certificación generada ✓', 'success');
+      // Abrir URL de descarga directa
+      window.open(data.urlDescarga, '_blank');
+    } else {
+      toast(data.error || 'Error al generar', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = '📥 DESCARGAR CERTIFICACIÓN';
+    btn.disabled = false;
+  }
+});
+
+// ============================================================
+//  CATÁLOGO ADMIN
+// ============================================================
 async function cargarEquiposAdmin() {
   const cont = document.getElementById('equipos-lista-admin');
   cont.innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando…</div>';
   try {
-    const data = await api({ action: 'gestionarEquipos', operacion: 'listar' });
+    const data = await api({ accion: 'obtenerEquipos' });
     if (data.ok && data.equipos) {
       equiposCatalogo = data.equipos;
       renderEquiposAdmin();
@@ -1759,7 +2224,7 @@ function renderEquiposAdmin() {
     item.innerHTML = `
       <div class="eq-info">
         <h4>${eq.nombre}</h4>
-        <p>${formatoPesos(eq.precio)} ${eq.admiteCanje ? '· Canje: ' + formatoPesos(eq.precioCanje) : '· Sin canje'}</p>
+        <p>${formatoPesos(eq.precioVenta)} ${eq.admiteCanje ? '· Canje: ' + formatoPesos(eq.precioCanje) : '· Sin canje'}</p>
       </div>
       <div class="eq-actions">
         <button class="eq-edit-btn" title="Editar" onclick='abrirModalEquipo(${JSON.stringify(eq)})'>✏️</button>
@@ -1768,15 +2233,18 @@ function renderEquiposAdmin() {
   });
 }
 
-// --- Ventas Admin ---
+// ============================================================
+//  VENTAS ADMIN
+// ============================================================
 async function cargarVentasAdmin() {
+  await llenarSelectorMesesAdmin('filtro-mes-ventas');
   const loading = document.getElementById('ventas-admin-loading');
   const content = document.getElementById('ventas-admin-content');
   loading.style.display = 'block';
   content.innerHTML = '';
   try {
     const mes = document.getElementById('filtro-mes-ventas').value || '';
-    const data = await api({ action: 'obtenerVentas', mes, admin: 'true' });
+    const data = await api({ accion: 'obtenerVentas', mes });
     loading.style.display = 'none';
     if (data.ok && data.ventas) {
       renderTablaVentas(data.ventas);
@@ -1789,35 +2257,59 @@ async function cargarVentasAdmin() {
   }
 }
 
+async function llenarSelectorMesesAdmin(selectId) {
+  const sel = document.getElementById(selectId);
+  if (sel.options.length > 1) return; // ya está cargado
+  try {
+    const data = await api({ accion: 'obtenerMesesDisponibles' });
+    if (data.ok && data.meses) {
+      data.meses.forEach(m => {
+        const op = document.createElement('option');
+        op.value = m;
+        op.textContent = m;
+        sel.appendChild(op);
+      });
+    }
+  } catch(e) {}
+}
+
 function renderTablaVentas(ventas) {
   if (!ventas.length) {
     document.getElementById('ventas-admin-content').innerHTML = '<div class="loading-msg">Sin ventas registradas</div>';
     return;
   }
-  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Equipo</th><th>Tipo</th><th>N° Cliente</th><th>Comisión</th><th>Fecha</th></tr></thead><tbody>';
+  let html = '<table class="data-table"><thead><tr><th>Fecha</th><th>Técnico</th><th>Equipo</th><th>Cliente</th><th>Comisión</th><th>Estado</th></tr></thead><tbody>';
   ventas.forEach(v => {
+    const f = v.datos;
+    const estado = String(f[12] || 'Pendiente').trim();
+    const claseTag = estado === 'Aprobada' ? 'tag-green' : estado === 'Rechazada' ? 'tag-danger' : 'tag-warning';
     html += `<tr>
-      <td>${v.tecnico}</td>
-      <td>${v.equipo || v.equipoNombre}</td>
-      <td><span class="tag ${v.tipoVenta === 'canje' ? 'tag-cyan' : 'tag-green'}">${v.tipoVenta || '—'}</span></td>
-      <td>${v.nroCliente || '—'}</td>
-      <td>${formatoPesos(v.comision)}</td>
-      <td>${v.fecha || v.fechaJornada || '—'}</td>
+      <td>${f[0]}</td>
+      <td>${f[4]}</td>
+      <td>${f[6]}</td>
+      <td>${f[5] || '—'}</td>
+      <td>${formatoPesos(f[11])}</td>
+      <td><span class="tag ${claseTag}">${estado}</span></td>
     </tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('ventas-admin-content').innerHTML = html;
 }
 
-// --- Jornadas Admin ---
+document.getElementById('filtro-mes-ventas').addEventListener('change', cargarVentasAdmin);
+
+// ============================================================
+//  JORNADAS ADMIN
+// ============================================================
 async function cargarJornadasAdmin() {
+  await llenarSelectorMesesAdmin('filtro-mes-jornadas');
   const loading = document.getElementById('jornadas-admin-loading');
   const content = document.getElementById('jornadas-admin-content');
   loading.style.display = 'block';
   content.innerHTML = '';
   try {
     const mes = document.getElementById('filtro-mes-jornadas').value || '';
-    const data = await api({ action: 'obtenerJornadas', mes, admin: 'true' });
+    const data = await api({ accion: 'obtenerJornadas', mes });
     loading.style.display = 'none';
     if (data.ok && data.jornadas) {
       renderTablaJornadas(data.jornadas);
@@ -1835,19 +2327,26 @@ function renderTablaJornadas(jornadas) {
     document.getElementById('jornadas-admin-content').innerHTML = '<div class="loading-msg">Sin jornadas registradas</div>';
     return;
   }
-  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Fecha</th><th>Tipo día</th><th>Tickets</th><th>Total</th></tr></thead><tbody>';
+  let html = '<table class="data-table"><thead><tr><th>Fecha</th><th>Técnico</th><th>Categoría</th><th>Cliente</th><th>Precio</th><th>Estado</th></tr></thead><tbody>';
   jornadas.forEach(j => {
+    const f = j.datos;
+    // 0:Fecha, 2:TipoDia, 5:Tecnico, 6:NCliente, 7:Categoria, 8:Precio, 9:Estado
+    const estado = String(f[9] || 'Pendiente').trim();
+    const claseTag = estado === 'Aprobada' ? 'tag-green' : estado === 'Rechazada' ? 'tag-danger' : 'tag-warning';
     html += `<tr>
-      <td>${j.tecnico}</td>
-      <td>${j.fechaJornada || j.fecha || '—'}</td>
-      <td><span class="tag tag-cyan">${j.tipoDia || '—'}</span></td>
-      <td>${j.totalTickets || '—'}</td>
-      <td>${formatoPesos(j.total)}</td>
+      <td>${f[0]} <span class="tag tag-cyan">${f[2]}</span></td>
+      <td>${f[5]}</td>
+      <td>${f[7]}</td>
+      <td>${f[6] || '—'}</td>
+      <td>${formatoPesos(f[8])}</td>
+      <td><span class="tag ${claseTag}">${estado}</span></td>
     </tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('jornadas-admin-content').innerHTML = html;
 }
+
+document.getElementById('filtro-mes-jornadas').addEventListener('change', cargarJornadasAdmin);
 
 // ============================================================
 //  MODAL EQUIPO
@@ -1862,7 +2361,7 @@ function abrirModalEquipo(eq = null) {
     title.textContent = 'EDITAR EQUIPO';
     document.getElementById('modal-eq-id').value = eq.id || '';
     document.getElementById('modal-eq-nombre').value = eq.nombre || '';
-    document.getElementById('modal-eq-precio').value = eq.precio || '';
+    document.getElementById('modal-eq-precio').value = eq.precioVenta || '';
     modalEqCanje = eq.admiteCanje ? 'si' : 'no';
     document.getElementById('modal-eq-precio-canje').value = eq.precioCanje || '';
   } else {
@@ -1876,6 +2375,7 @@ function abrirModalEquipo(eq = null) {
   document.getElementById('modal-eq-precio-canje-section').style.display = modalEqCanje === 'si' ? 'block' : 'none';
   modal.classList.add('open');
 }
+window.abrirModalEquipo = abrirModalEquipo;
 
 document.getElementById('modal-eq-canje-group').addEventListener('click', e => {
   const chip = e.target.closest('.radio-chip');
@@ -1911,10 +2411,10 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
 
   const id = document.getElementById('modal-eq-id').value;
   const payload = {
-    action: 'gestionarEquipos',
+    accion: 'gestionarEquipos',
     operacion: id ? 'editar' : 'agregar',
     id, nombre,
-    precio: parseFloat(precio),
+    precioVenta: parseFloat(precio),
     admiteCanje: modalEqCanje === 'si',
     precioCanje: modalEqCanje === 'si' ? parseFloat(precioCanje) : 0
   };
@@ -1925,7 +2425,6 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
       document.getElementById('modal-equipo').classList.remove('open');
       toast(id ? 'Equipo actualizado' : 'Equipo agregado', 'success');
       await cargarEquiposAdmin();
-      equiposCatalogo = [];
     } else {
       errEl.textContent = data.error || 'Error al guardar';
     }
@@ -1953,6 +2452,7 @@ document.getElementById('back-admin').addEventListener('click', () => mostrarPan
 function cerrarSesion() {
   session.usuario = null;
   session.esAdmin = false;
+  session.movil = '';
   pinIngresado = '';
   actualizarDotsPIN();
   document.getElementById('login-tecnico').value = '';
@@ -1967,8 +2467,11 @@ document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesi
 
 // INIT
 (async function init() {
-  await cargarTecnicos();
-  renderCategoriasGrid();
+  await Promise.all([
+    cargarTecnicos(),
+    cargarMoviles(),
+    cargarLocalidades()
+  ]);
 })();
 </script>
 </body>
