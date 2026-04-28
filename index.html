@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* ===== VARIABLES — Paleta Azul Noche + Cian ===== */
     :root {
       --bg:        #050d1a;
       --surface:   #0a1830;
@@ -46,7 +45,6 @@
     .screen.active { display: flex; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
-    /* HEADER */
     .header {
       background: var(--surface);
       border-bottom: 2px solid var(--accent);
@@ -92,7 +90,6 @@
       margin: 0 auto;
     }
 
-    /* LOGIN */
     #screen-login {
       justify-content: center; align-items: center;
       padding: 24px 20px;
@@ -180,7 +177,6 @@
     .numpad-btn.delete { font-size: 1rem; color: var(--muted); }
     .numpad-btn.zero { grid-column: 2; }
 
-    /* BOTONES */
     .btn {
       display: block; width: 100%;
       padding: 14px;
@@ -204,7 +200,6 @@
     .btn-icon { display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn + .btn { margin-top: 10px; }
 
-    /* MENU PRINCIPAL */
     .greeting { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
     .greeting span { color: var(--accent); }
     .greeting-sub { color: var(--muted); font-size: .85rem; margin-bottom: 22px; }
@@ -272,7 +267,6 @@
     .menu-btn .menu-text p { font-size: .78rem; color: var(--muted); margin-top: 1px; }
     .menu-btn.admin-btn { border-left-color: var(--accent2); }
 
-    /* FORMULARIOS */
     .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .section-header .back-btn {
       background: var(--card);
@@ -336,7 +330,6 @@
     .cat-btn.no-pago { border-style: dashed; color: var(--muted); }
     .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(122,147,179,.08); }
 
-    /* NUEVO: Lista de tickets cargados (jornada) */
     .ticket-item {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -394,7 +387,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* PANEL ADMIN */
     .tab-bar {
       display: flex; gap: 6px; margin-bottom: 20px;
       overflow-x: auto; scrollbar-width: none;
@@ -431,7 +423,6 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeIn .2s ease; }
 
-    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .kpi-card {
       background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
@@ -462,7 +453,6 @@
     }
     .kpi-card .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
-    /* PODIO */
     .podium-section {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -552,7 +542,6 @@
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
-    /* CARDS DE APROBACIÓN */
     .approval-card {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -667,7 +656,6 @@
       margin-left: 6px;
     }
 
-    /* CERTIFICACIÓN */
     .cert-preview {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -1137,21 +1125,18 @@
   </div>
 </div>
 
-<!-- MODAL TICKET (NUEVO - para agregar ticket a la jornada) -->
+<!-- MODAL TICKET -->
 <div class="modal-overlay" id="modal-ticket">
   <div class="modal-box">
     <div class="modal-title">AGREGAR TICKET</div>
-
     <div class="form-group">
       <label>Categoría</label>
       <div class="categoria-grid" id="modal-ticket-cats"></div>
     </div>
-
     <div class="form-group">
       <label>Número de cliente</label>
       <input type="text" id="modal-ticket-cliente" placeholder="Ej: 123456" inputmode="numeric" />
     </div>
-
     <button class="btn btn-primary" id="btn-confirmar-ticket">AGREGAR</button>
     <button class="btn btn-secondary" id="btn-cancelar-ticket" style="margin-top:8px;">CANCELAR</button>
     <div class="error-msg" id="modal-ticket-error"></div>
@@ -1174,11 +1159,9 @@ let localidadesLista = [];
 let ticketsJornada = [];
 let modalTicketCat = null;
 
-// Charts
 let chartVentasTecnico = null;
 let chartEquipos = null;
 
-// Categorias jornada
 const CATEGORIAS = [
   { nombre: 'Instalacion FO',       pago: true  },
   { nombre: 'Instalacion Wireless', pago: true  },
@@ -1238,7 +1221,6 @@ function mesActualNombre() {
   return new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
 }
 
-// Fecha en formato dd/MM/yyyy para el backend
 function fechaToBackend(yyyymmdd) {
   if (!yyyymmdd) return '';
   const [a, m, d] = yyyymmdd.split('-');
@@ -1291,6 +1273,11 @@ function llenarSelectTecnicos() {
     op.textContent = t.nombre;
     sel.appendChild(op);
   });
+  // Opción Admin al final
+  const opAdmin = document.createElement('option');
+  opAdmin.value = '__ADMIN__';
+  opAdmin.textContent = '⚙️ Administrador';
+  sel.appendChild(opAdmin);
 }
 
 function actualizarDotsPIN() {
@@ -1319,16 +1306,19 @@ async function intentarLogin() {
   const errEl = document.getElementById('login-error');
   errEl.textContent = '';
 
-  if (!tecnico && pinIngresado !== '1015') {
-    errEl.textContent = 'Seleccioná un técnico';
+  if (!tecnico) {
+    errEl.textContent = 'Seleccioná un técnico o Administrador';
     return;
   }
   if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
+  // Si es admin, no mandamos nombre
+  const nombreLogin = (tecnico === '__ADMIN__') ? '' : tecnico;
+
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
-    const data = await apiPost({ accion: 'login', nombre: tecnico, pin: pinIngresado });
+    const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinIngresado });
     if (data.ok) {
       session.esAdmin = (data.tipo === 'admin');
       session.usuario = session.esAdmin ? 'ADMIN' : data.nombre;
@@ -1370,7 +1360,6 @@ async function cargarMenuPrincipal() {
       document.getElementById('rs-produccion').textContent = formatoPesos(data.totalJornadas);
       document.getElementById('rs-equipo').textContent = data.equipoTop || '—';
 
-      // Banner de pendientes
       const totalPend = (data.pendientesV || 0) + (data.pendientesJ || 0);
       const banner = document.getElementById('pendientes-banner');
       if (totalPend > 0) {
@@ -1625,7 +1614,7 @@ function renderTicketsLista() {
         <div class="t-cat">${t.categoria}</div>
         <div class="t-cli">Cliente: ${t.nroCliente || '—'}</div>
       </div>
-      <div class="ticket-item-precio">${paga ? '$' : ''}${paga ? '20K' : 'sin pago'}</div>
+      <div class="ticket-item-precio">${paga ? '$20K' : 'sin pago'}</div>
       <button class="t-delete" onclick="eliminarTicket(${i})">✕</button>
     `;
     cont.appendChild(item);
@@ -1637,7 +1626,6 @@ window.eliminarTicket = function(idx) {
   renderTicketsLista();
 };
 
-// MODAL TICKET
 document.getElementById('btn-agregar-ticket-modal').addEventListener('click', () => {
   abrirModalTicket();
 });
@@ -1795,10 +1783,6 @@ async function cargarDashboard() {
 }
 
 function procesarYRenderizarTodo(ventas) {
-  // Estructura de ventas: { fila: N, datos: [array de columnas] }
-  // Columnas: 0:Fecha, 1:FechaCarga, 2:Localidad, 3:Movil, 4:Tecnico, 5:NCliente,
-  //           6:Equipo, 7:FormaPago, 8:Cantidad, 9:Dupla, 10:Companero, 11:Comision,
-  //           12:Estado, 13:FechaAprobacion
   const comisionesTec = {};
   const ventasTec = {};
   const equiposCount = {};
@@ -1806,7 +1790,7 @@ function procesarYRenderizarTodo(ventas) {
   ventas.forEach(v => {
     const f = v.datos;
     const estado = String(f[12] || '').trim();
-    if (estado !== 'Aprobada') return; // solo aprobadas
+    if (estado !== 'Aprobada') return;
 
     const tec = f[4];
     const tec2 = f[10];
@@ -2026,7 +2010,6 @@ function renderAprobaciones(ventas, jornadas) {
   document.getElementById('aprob-ventas-count').textContent = ventas.length;
   document.getElementById('aprob-jornadas-count').textContent = jornadas.length;
 
-  // Ventas
   const contV = document.getElementById('aprob-ventas-lista');
   if (!ventas.length) {
     contV.innerHTML = '<div class="loading-msg">No hay ventas pendientes</div>';
@@ -2034,8 +2017,6 @@ function renderAprobaciones(ventas, jornadas) {
     contV.innerHTML = '';
     ventas.forEach(v => {
       const f = v.datos;
-      // 0:Fecha, 2:Localidad, 3:Movil, 4:Tecnico, 5:NCliente, 6:Equipo,
-      // 7:FormaPago, 9:Dupla, 10:Companero, 11:Comision
       const card = document.createElement('div');
       card.className = 'approval-card';
       const dupla = String(f[9]).toLowerCase().startsWith('s');
@@ -2058,7 +2039,6 @@ function renderAprobaciones(ventas, jornadas) {
     });
   }
 
-  // Jornadas
   const contJ = document.getElementById('aprob-jornadas-lista');
   if (!jornadas.length) {
     contJ.innerHTML = '<div class="loading-msg">No hay jornadas pendientes</div>';
@@ -2066,7 +2046,6 @@ function renderAprobaciones(ventas, jornadas) {
     contJ.innerHTML = '';
     jornadas.forEach(j => {
       const f = j.datos;
-      // 0:Fecha, 2:TipoDia, 3:Localidad, 4:Movil, 5:Tecnico, 6:NCliente, 7:Categoria, 8:Precio
       const card = document.createElement('div');
       card.className = 'approval-card';
       card.innerHTML = `
@@ -2167,6 +2146,7 @@ async function actualizarPreviewCert() {
   }
 }
 
+// DESCARGA DIRECTA via base64 (NUEVA - funciona sin pop-ups)
 document.getElementById('btn-descargar-cert').addEventListener('click', async () => {
   const mes = document.getElementById('cert-mes').value;
   if (!mes) { toast('Seleccioná el mes', 'error'); return; }
@@ -2177,15 +2157,39 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
 
   try {
     const data = await apiPost({ accion: 'descargarCertificacion', mes });
-    if (data.ok && data.urlDescarga) {
-      toast('Certificación generada ✓', 'success');
-      // Abrir URL de descarga directa
-      window.open(data.urlDescarga, '_blank');
+    if (data.ok && data.base64) {
+      // Convertir base64 a Blob
+      const byteChars = atob(data.base64);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteChars.length; offset += 512) {
+        const slice = byteChars.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+      const blob = new Blob(byteArrays, {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      // Disparar descarga sin pop-up
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = data.nombre || ('Certificacion_' + mes + '.xlsx');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast('Certificación descargada ✓', 'success');
     } else {
       toast(data.error || 'Error al generar', 'error');
     }
   } catch(e) {
     toast('Error de conexión', 'error');
+    console.error(e);
   } finally {
     btn.textContent = '📥 DESCARGAR CERTIFICACIÓN';
     btn.disabled = false;
@@ -2259,7 +2263,7 @@ async function cargarVentasAdmin() {
 
 async function llenarSelectorMesesAdmin(selectId) {
   const sel = document.getElementById(selectId);
-  if (sel.options.length > 1) return; // ya está cargado
+  if (sel.options.length > 1) return;
   try {
     const data = await api({ accion: 'obtenerMesesDisponibles' });
     if (data.ok && data.meses) {
@@ -2330,7 +2334,6 @@ function renderTablaJornadas(jornadas) {
   let html = '<table class="data-table"><thead><tr><th>Fecha</th><th>Técnico</th><th>Categoría</th><th>Cliente</th><th>Precio</th><th>Estado</th></tr></thead><tbody>';
   jornadas.forEach(j => {
     const f = j.datos;
-    // 0:Fecha, 2:TipoDia, 5:Tecnico, 6:NCliente, 7:Categoria, 8:Precio, 9:Estado
     const estado = String(f[9] || 'Pendiente').trim();
     const claseTag = estado === 'Aprobada' ? 'tag-green' : estado === 'Rechazada' ? 'tag-danger' : 'tag-warning';
     html += `<tr>
