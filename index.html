@@ -3,28 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ZN Field · SSServicios</title>
+  <title>SSServicios · Técnicos Zona Norte</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Chart.js para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* ===== VARIABLES ===== */
+    /* ===== VARIABLES — Paleta Azul Noche + Cian ===== */
     :root {
-      --bg:        #0f1117;
-      --surface:   #181c27;
-      --card:      #1e2333;
-      --border:    #2a2f42;
-      --accent:    #ff6b1a;
-      --accent2:   #ffaa1a;
+      --bg:        #050d1a;        /* azul noche muy oscuro */
+      --surface:   #0a1830;        /* azul oscuro superficies */
+      --card:      #0f2040;        /* azul oscuro cards */
+      --border:    #00d4ff;        /* cian para bordes (acento) */
+      --border-soft: #1a3560;      /* azul medio para bordes secundarios */
+      --accent:    #00d4ff;        /* cian principal */
+      --accent2:   #4dd0e1;        /* cian secundario más suave */
       --text:      #e8eaf0;
-      --muted:     #8890a8;
+      --muted:     #7a93b3;
       --success:   #2ecc71;
       --danger:    #e74c3c;
+      --gold:      #ffd700;
+      --silver:    #c0c0c0;
+      --bronze:    #cd7f32;
       --radius:    10px;
       --font-head: 'Barlow Condensed', sans-serif;
       --font-body: 'Barlow', sans-serif;
     }
 
-    /* ===== RESET ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
@@ -35,43 +40,30 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ===== LAYOUT BASE ===== */
-    #app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* ===== PANTALLAS ===== */
-    .screen {
-      display: none;
-      flex-direction: column;
-      flex: 1;
-      animation: fadeIn .25s ease;
-    }
+    .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn .25s ease; }
     .screen.active { display: flex; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
-    /* ===== HEADER ===== */
+    /* HEADER */
     .header {
       background: var(--surface);
       border-bottom: 2px solid var(--accent);
       padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
     }
     .header-logo {
       font-family: var(--font-head);
       font-weight: 800;
       font-size: 1.35rem;
       letter-spacing: .04em;
-      color: var(--text);
+      color: #fff;
     }
-    .header-logo span { color: var(--accent); }
+    .header-logo .ss { color: var(--accent); }
+    .header-logo .servicios { color: #fff; }
+
     .header-user {
       font-family: var(--font-head);
       font-size: .95rem;
@@ -81,7 +73,7 @@
     }
     .btn-logout {
       background: none;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--muted);
       font-family: var(--font-body);
       font-size: .78rem;
@@ -93,46 +85,41 @@
     }
     .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* ===== CONTENIDO SCROLLEABLE ===== */
     .content {
-      flex: 1;
-      overflow-y: auto;
+      flex: 1; overflow-y: auto;
       padding: 20px 16px 40px;
-      max-width: 540px;
-      width: 100%;
+      max-width: 540px; width: 100%;
       margin: 0 auto;
     }
 
-    /* ===== LOGIN ===== */
+    /* LOGIN */
     #screen-login {
-      justify-content: center;
-      align-items: center;
+      justify-content: center; align-items: center;
       padding: 24px 20px;
       background:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,107,26,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,212,255,.10) 0%, transparent 60%),
         var(--bg);
     }
     .login-box {
-      width: 100%;
-      max-width: 360px;
+      width: 100%; max-width: 360px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-top: 3px solid var(--accent);
       border-radius: var(--radius);
       padding: 32px 24px;
+      box-shadow: 0 0 24px rgba(0,212,255,.08);
     }
-    .login-brand {
-      text-align: center;
-      margin-bottom: 28px;
-    }
+    .login-brand { text-align: center; margin-bottom: 28px; }
     .login-brand h1 {
       font-family: var(--font-head);
       font-weight: 800;
       font-size: 2rem;
       letter-spacing: .05em;
       line-height: 1;
+      color: #fff;
     }
-    .login-brand h1 span { color: var(--accent); }
+    .login-brand h1 .ss { color: var(--accent); }
+    .login-brand h1 .servicios { color: #fff; }
     .login-brand p {
       color: var(--muted);
       font-size: .82rem;
@@ -140,9 +127,7 @@
       letter-spacing: .04em;
       text-transform: uppercase;
     }
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
       font-size: .78rem;
@@ -155,7 +140,7 @@
     select, input[type="password"], input[type="text"], input[type="number"], input[type="date"] {
       width: 100%;
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--text);
       font-family: var(--font-body);
       font-size: 1rem;
@@ -166,288 +151,183 @@
       appearance: none;
       -webkit-appearance: none;
     }
-    select:focus, input:focus {
-      border-color: var(--accent);
-    }
+    select:focus, input:focus { border-color: var(--accent); }
     select option { background: var(--card); }
 
-    /* PIN visual */
-    .pin-display {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 8px 0 16px;
-    }
+    .pin-display { display: flex; gap: 10px; justify-content: center; margin: 8px 0 16px; }
     .pin-dot {
       width: 14px; height: 14px;
       border-radius: 50%;
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       transition: background .15s, border-color .15s;
     }
     .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
 
-    .numpad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
+    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
     .numpad-btn {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--text);
       font-family: var(--font-head);
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.5rem; font-weight: 700;
       padding: 16px 0;
       border-radius: var(--radius);
       cursor: pointer;
       transition: background .15s, border-color .15s, transform .1s;
       user-select: none;
     }
-    .numpad-btn:active { transform: scale(.94); background: var(--border); }
+    .numpad-btn:active { transform: scale(.94); background: var(--border-soft); border-color: var(--accent); }
     .numpad-btn.delete { font-size: 1rem; color: var(--muted); }
     .numpad-btn.zero { grid-column: 2; }
 
-    /* ===== BOTONES ===== */
+    /* BOTONES */
     .btn {
-      display: block;
-      width: 100%;
+      display: block; width: 100%;
       padding: 14px;
       border: none;
       border-radius: var(--radius);
       font-family: var(--font-head);
-      font-weight: 700;
-      font-size: 1.05rem;
+      font-weight: 700; font-size: 1.05rem;
       letter-spacing: .06em;
       text-transform: uppercase;
       cursor: pointer;
       transition: opacity .2s, transform .1s;
     }
     .btn:active { transform: scale(.97); }
-    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary { background: var(--accent); color: #050d1a; }
     .btn-primary:hover { opacity: .9; }
-    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border-soft); }
     .btn-success { background: var(--success); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
-    .btn-sm {
-      width: auto;
-      padding: 8px 16px;
-      font-size: .85rem;
-    }
-    .btn-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+    .btn-sm { width: auto; padding: 8px 16px; font-size: .85rem; }
+    .btn-icon { display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn + .btn { margin-top: 10px; }
 
-    /* ===== MENU PRINCIPAL ===== */
-    .greeting {
-      font-family: var(--font-head);
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
+    /* MENU PRINCIPAL */
+    .greeting { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
     .greeting span { color: var(--accent); }
-    .greeting-sub {
-      color: var(--muted);
-      font-size: .85rem;
-      margin-bottom: 22px;
-    }
+    .greeting-sub { color: var(--muted); font-size: .85rem; margin-bottom: 22px; }
 
-    /* Resumen personal */
-    .resumen-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
+    .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
     .resumen-card {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 14px 12px;
     }
     .resumen-card.full { grid-column: 1 / -1; }
     .resumen-card .rc-label {
-      font-size: .72rem;
-      font-weight: 600;
+      font-size: .72rem; font-weight: 600;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
+      text-transform: uppercase; letter-spacing: .06em;
       margin-bottom: 4px;
     }
     .resumen-card .rc-value {
       font-family: var(--font-head);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--accent); line-height: 1;
     }
     .resumen-card .rc-value.secondary { color: var(--accent2); }
-    .resumen-card .rc-sub {
-      font-size: .75rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+    .resumen-card .rc-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
 
-    /* Botones de menú */
     .menu-section-title {
       font-family: var(--font-head);
-      font-size: .78rem;
-      font-weight: 700;
+      font-size: .78rem; font-weight: 700;
       color: var(--muted);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      margin-top: 8px;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 10px; margin-top: 8px;
     }
     .menu-btn {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      display: flex; align-items: center; gap: 14px;
       width: 100%;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-left: 3px solid var(--accent);
       color: var(--text);
       border-radius: var(--radius);
       padding: 16px 14px;
-      cursor: pointer;
-      margin-bottom: 10px;
+      cursor: pointer; margin-bottom: 10px;
       transition: background .18s, border-color .18s;
       text-align: left;
     }
     .menu-btn:hover { background: var(--card); }
-    .menu-btn .menu-icon {
-      font-size: 1.6rem;
-      flex-shrink: 0;
-    }
+    .menu-btn .menu-icon { font-size: 1.6rem; flex-shrink: 0; }
     .menu-btn .menu-text h3 {
       font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.1rem; font-weight: 700;
       letter-spacing: .03em;
     }
-    .menu-btn .menu-text p {
-      font-size: .78rem;
-      color: var(--muted);
-      margin-top: 1px;
-    }
+    .menu-btn .menu-text p { font-size: .78rem; color: var(--muted); margin-top: 1px; }
     .menu-btn.admin-btn { border-left-color: var(--accent2); }
 
-    /* ===== FORMULARIO VENTAS ===== */
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+    /* FORMULARIOS */
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .section-header .back-btn {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--muted);
       width: 36px; height: 36px;
       border-radius: var(--radius);
       font-size: 1.1rem;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
+      cursor: pointer; flex-shrink: 0;
     }
     .section-header h2 {
       font-family: var(--font-head);
-      font-size: 1.45rem;
-      font-weight: 800;
+      font-size: 1.45rem; font-weight: 800;
       letter-spacing: .03em;
     }
 
-    /* Equipos cards */
-    .equipo-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
+    .equipo-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .equipo-card {
       background: var(--card);
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 12px 10px;
       cursor: pointer;
       transition: border-color .15s, background .15s;
     }
-    .equipo-card.selected {
-      border-color: var(--accent);
-      background: rgba(255,107,26,.08);
-    }
-    .equipo-card .eq-nombre {
-      font-family: var(--font-head);
-      font-size: .98rem;
-      font-weight: 700;
-    }
-    .equipo-card .eq-precio {
-      font-size: .78rem;
-      color: var(--muted);
-      margin-top: 3px;
-    }
+    .equipo-card.selected { border-color: var(--accent); background: rgba(0,212,255,.10); }
+    .equipo-card .eq-nombre { font-family: var(--font-head); font-size: .98rem; font-weight: 700; }
+    .equipo-card .eq-precio { font-size: .78rem; color: var(--muted); margin-top: 3px; }
 
-    /* Comisión preview */
     .comision-preview {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 14px;
       margin-bottom: 16px;
       display: none;
     }
     .comision-preview.visible { display: block; }
-    .comision-preview .cp-label {
-      font-size: .75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
+    .comision-preview .cp-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
     .comision-preview .cp-value {
       font-family: var(--font-head);
-      font-size: 2rem;
-      font-weight: 800;
+      font-size: 2rem; font-weight: 800;
       color: var(--success);
     }
 
-    /* ===== CATEGORÍAS JORNADA ===== */
-    .categoria-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
+    .categoria-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
     .cat-btn {
       background: var(--card);
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       color: var(--text);
       border-radius: var(--radius);
       padding: 12px 8px;
       cursor: pointer;
       font-family: var(--font-body);
-      font-size: .88rem;
-      font-weight: 500;
+      font-size: .88rem; font-weight: 500;
       text-align: center;
       transition: border-color .15s, background .15s;
     }
-    .cat-btn.selected { border-color: var(--accent); background: rgba(255,107,26,.08); }
+    .cat-btn.selected { border-color: var(--accent); background: rgba(0,212,255,.10); }
     .cat-btn.no-pago { border-style: dashed; color: var(--muted); }
-    .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(136,144,168,.08); }
+    .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(122,147,179,.08); }
 
-    /* ===== TICKET COUNT ===== */
     .ticket-counter {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
+      display: flex; align-items: center; justify-content: center; gap: 18px;
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 14px;
       margin-bottom: 16px;
@@ -455,7 +335,7 @@
     .tc-btn {
       width: 44px; height: 44px;
       border-radius: 50%;
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       background: var(--surface);
       color: var(--text);
       font-size: 1.4rem;
@@ -463,57 +343,39 @@
       cursor: pointer;
       transition: background .15s;
     }
-    .tc-btn:active { background: var(--border); }
+    .tc-btn:active { background: var(--border-soft); }
     .tc-value {
       font-family: var(--font-head);
-      font-size: 2.2rem;
-      font-weight: 800;
-      min-width: 60px;
-      text-align: center;
+      font-size: 2.2rem; font-weight: 800;
+      min-width: 60px; text-align: center;
     }
     .tc-label { font-size: .8rem; color: var(--muted); text-align: center; }
 
-    /* ===== MENSAJES ===== */
     .toast {
       position: fixed;
-      bottom: 20px;
-      left: 50%;
+      bottom: 20px; left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 14px 20px;
-      font-size: .9rem;
-      font-weight: 600;
+      font-size: .9rem; font-weight: 600;
       z-index: 1000;
       transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
-      opacity: 0;
-      white-space: nowrap;
-      max-width: 90vw;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      opacity: 0; white-space: nowrap;
+      max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-left: 4px solid var(--success); }
     .toast.error { border-left: 4px solid var(--danger); }
     .toast.info { border-left: 4px solid var(--accent); }
 
-    .error-msg {
-      color: var(--danger);
-      font-size: .82rem;
-      margin-top: 8px;
-      text-align: center;
-    }
-    .loading-msg {
-      color: var(--muted);
-      font-size: .88rem;
-      text-align: center;
-      padding: 16px 0;
-    }
+    .error-msg { color: var(--danger); font-size: .82rem; margin-top: 8px; text-align: center; }
+    .loading-msg { color: var(--muted); font-size: .88rem; text-align: center; padding: 16px 0; }
     .spinner {
       display: inline-block;
       width: 18px; height: 18px;
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin .7s linear infinite;
@@ -522,107 +384,184 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== PANEL ADMIN ===== */
+    /* PANEL ADMIN */
     .tab-bar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      scrollbar-width: none;
+      display: flex; gap: 6px; margin-bottom: 20px;
+      overflow-x: auto; scrollbar-width: none;
     }
     .tab-bar::-webkit-scrollbar { display: none; }
     .tab-btn {
       flex-shrink: 0;
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--muted);
       font-family: var(--font-head);
-      font-size: .85rem;
-      font-weight: 700;
-      letter-spacing: .05em;
-      text-transform: uppercase;
+      font-size: .85rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
       padding: 8px 14px;
       border-radius: var(--radius);
       cursor: pointer;
       transition: background .15s, color .15s, border-color .15s;
     }
-    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tab-btn.active { background: var(--accent); color: #050d1a; border-color: var(--accent); }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeIn .2s ease; }
 
-    /* Tabla de datos */
-    .data-table-wrap { overflow-x: auto; border-radius: var(--radius); }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .82rem;
+    /* ===== KPIs CARDS ===== */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .kpi-card {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      position: relative; overflow: hidden;
     }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+    }
+    .kpi-card.gold::before { background: var(--gold); }
+    .kpi-card.success::before { background: var(--success); }
+    .kpi-card .kpi-icon { font-size: 1.3rem; margin-bottom: 6px; opacity: .8; }
+    .kpi-card .kpi-label {
+      font-size: .68rem; font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+    .kpi-card .kpi-value {
+      font-family: var(--font-head);
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--text); line-height: 1.1;
+    }
+    .kpi-card .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+    /* ===== PODIO TOP 3 ===== */
+    .podium-section {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 18px 14px;
+      margin-bottom: 20px;
+    }
+    .podium-title {
+      font-family: var(--font-head);
+      font-size: 1rem; font-weight: 800;
+      letter-spacing: .04em; text-align: center;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .podium-title .icon { color: var(--gold); margin-right: 4px; }
+
+    .podium-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .podium-spot { flex: 1; max-width: 120px; text-align: center; }
+    .podium-medal { font-size: 2rem; margin-bottom: 4px; }
+    .podium-name {
+      font-family: var(--font-head);
+      font-size: .85rem; font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .podium-value {
+      font-family: var(--font-head);
+      font-size: .9rem; font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .podium-bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      background: linear-gradient(180deg, var(--card), var(--surface));
+      border: 1px solid var(--border-soft);
+      border-bottom: none;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      font-size: 1.2rem; font-weight: 800;
+    }
+    .podium-spot.first .podium-bar { height: 90px; border-color: var(--gold); color: var(--gold); }
+    .podium-spot.second .podium-bar { height: 70px; border-color: var(--silver); color: var(--silver); }
+    .podium-spot.third .podium-bar { height: 50px; border-color: var(--bronze); color: var(--bronze); }
+    .podium-spot.first { order: 2; }
+    .podium-spot.second { order: 1; }
+    .podium-spot.third { order: 3; }
+
+    /* ===== CHART CONTAINERS ===== */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 16px 14px;
+      margin-bottom: 16px;
+    }
+    .chart-card-title {
+      font-family: var(--font-head);
+      font-size: .95rem; font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 12px;
+      color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .chart-wrap { position: relative; width: 100%; height: 240px; }
+    .chart-wrap.tall { height: 280px; }
+
+    .data-table-wrap { overflow-x: auto; border-radius: var(--radius); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
     .data-table th {
       background: var(--card);
       color: var(--muted);
       font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      padding: 10px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
+      text-transform: uppercase; letter-spacing: .07em;
+      padding: 10px 12px; text-align: left;
+      border-bottom: 1px solid var(--border-soft);
     }
-    .data-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-    }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); }
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
-    /* Equipos gestión */
     .equipo-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       padding: 12px 14px;
       margin-bottom: 8px;
     }
-    .equipo-item .eq-info h4 {
-      font-family: var(--font-head);
-      font-size: 1rem;
-      font-weight: 700;
-    }
+    .equipo-item .eq-info h4 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; }
     .equipo-item .eq-info p { font-size: .78rem; color: var(--muted); }
     .equipo-item .eq-actions { display: flex; gap: 8px; }
     .eq-edit-btn {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       color: var(--muted);
       width: 32px; height: 32px;
       border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
+      cursor: pointer; font-size: 1rem;
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Modal */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,.75);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 200;
-      opacity: 0;
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 200; opacity: 0;
       pointer-events: none;
       transition: opacity .25s;
     }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal-box {
-      width: 100%;
-      max-width: 540px;
+      width: 100%; max-width: 540px;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-soft);
       border-top: 3px solid var(--accent);
       border-radius: var(--radius) var(--radius) 0 0;
       padding: 24px 20px 36px;
@@ -630,88 +569,45 @@
       transition: transform .3s cubic-bezier(.34,1.56,.64,1);
     }
     .modal-overlay.open .modal-box { transform: translateY(0); }
-    .modal-title {
-      font-family: var(--font-head);
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
+    .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; }
 
-    /* Tags de estado */
     .tag {
       display: inline-block;
       padding: 2px 8px;
       border-radius: 4px;
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
     }
     .tag-green { background: rgba(46,204,113,.15); color: var(--success); }
-    .tag-orange { background: rgba(255,107,26,.15); color: var(--accent); }
-    .tag-gray { background: rgba(136,144,168,.15); color: var(--muted); }
+    .tag-cyan { background: rgba(0,212,255,.15); color: var(--accent); }
+    .tag-gray { background: rgba(122,147,179,.15); color: var(--muted); }
 
-    /* Chips selector dupla */
-    .radio-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
-    }
+    .radio-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
     .radio-chip {
-      flex: 1;
-      min-width: 80px;
+      flex: 1; min-width: 80px;
       background: var(--card);
-      border: 2px solid var(--border);
+      border: 2px solid var(--border-soft);
       color: var(--muted);
       border-radius: var(--radius);
       padding: 10px 6px;
-      text-align: center;
-      cursor: pointer;
-      font-size: .85rem;
-      font-weight: 600;
+      text-align: center; cursor: pointer;
+      font-size: .85rem; font-weight: 600;
       transition: border-color .15s, color .15s, background .15s;
     }
     .radio-chip.selected {
       border-color: var(--accent);
       color: var(--text);
-      background: rgba(255,107,26,.08);
+      background: rgba(0,212,255,.10);
     }
 
-    /* Divider */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 20px 0;
-    }
-
-    /* Estadísticas admin */
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-row .sr-label { font-size: .88rem; color: var(--muted); }
-    .stat-row .sr-value {
-      font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
+    .divider { height: 1px; background: var(--border-soft); margin: 20px 0; }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-      color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--accent); color: #050d1a;
       border-radius: 50%;
       width: 20px; height: 20px;
-      font-size: .7rem;
-      font-weight: 800;
+      font-size: .7rem; font-weight: 800;
       margin-left: 6px;
     }
   </style>
@@ -719,12 +615,12 @@
 <body>
 <div id="app">
 
-  <!-- ========================= LOGIN ========================= -->
+  <!-- LOGIN -->
   <div id="screen-login" class="screen active">
     <div class="login-box">
       <div class="login-brand">
-        <h1>ZN<span> FIELD</span></h1>
-        <p>SSServicios · Zona Norte</p>
+        <h1><span class="ss">SS</span><span class="servicios">Servicios</span></h1>
+        <p>Técnicos Zona Norte</p>
       </div>
 
       <div class="form-group">
@@ -762,10 +658,10 @@
     </div>
   </div>
 
-  <!-- ========================= MENÚ PRINCIPAL ========================= -->
+  <!-- MENÚ PRINCIPAL -->
   <div id="screen-menu" class="screen">
     <div class="header">
-      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
       <div style="display:flex;align-items:center;">
         <span class="header-user" id="header-user-name"></span>
         <button class="btn-logout" id="btn-logout-menu">SALIR</button>
@@ -775,7 +671,6 @@
       <div class="greeting">Hola, <span id="menu-nombre"></span></div>
       <div class="greeting-sub" id="menu-mes"></div>
 
-      <!-- Resumen personal -->
       <div class="resumen-grid" id="resumen-grid">
         <div class="resumen-card">
           <div class="rc-label">Comisiones</div>
@@ -834,10 +729,10 @@
     </div>
   </div>
 
-  <!-- ========================= REGISTRAR VENTA ========================= -->
+  <!-- REGISTRAR VENTA -->
   <div id="screen-ventas" class="screen">
     <div class="header">
-      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
       <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
     </div>
     <div class="content">
@@ -846,27 +741,23 @@
         <h2>NUEVA VENTA</h2>
       </div>
 
-      <!-- Selección de equipo -->
       <div class="menu-section-title">Equipo vendido</div>
       <div class="equipo-selector" id="equipo-selector">
         <div class="loading-msg"><span class="spinner"></span>Cargando equipos…</div>
       </div>
 
-      <!-- Tipo de venta -->
       <div class="menu-section-title">Tipo de venta</div>
       <div class="radio-group" id="tipo-venta-group">
         <div class="radio-chip selected" data-val="directa">Directa</div>
         <div class="radio-chip" data-val="canje">Canje</div>
       </div>
 
-      <!-- Modo trabajo -->
       <div class="menu-section-title" style="margin-top:14px;">Forma de trabajo</div>
       <div class="radio-group" id="modo-trabajo-group">
         <div class="radio-chip selected" data-val="solo">Solo (5%)</div>
         <div class="radio-chip" data-val="dupla">Dupla (2.5%)</div>
       </div>
 
-      <!-- Compañero en dupla -->
       <div id="dupla-section" style="display:none;margin-top:12px;">
         <div class="form-group">
           <label>Compañero/a</label>
@@ -876,7 +767,6 @@
         </div>
       </div>
 
-      <!-- Método de pago -->
       <div class="menu-section-title" style="margin-top:14px;">Método de pago</div>
       <div class="radio-group" id="metodo-pago-group">
         <div class="radio-chip selected" data-val="contado">Contado</div>
@@ -884,13 +774,16 @@
         <div class="radio-chip" data-val="3 cuotas">3 cuotas</div>
       </div>
 
-      <!-- Fecha de venta -->
       <div class="form-group" style="margin-top:14px;">
+        <label>Número de cliente</label>
+        <input type="text" id="nro-cliente" placeholder="Ej: 123456" inputmode="numeric" />
+      </div>
+
+      <div class="form-group">
         <label>Fecha de la venta</label>
         <input type="date" id="fecha-venta" />
       </div>
 
-      <!-- Preview comisión -->
       <div class="comision-preview" id="comision-preview">
         <div class="cp-label">Tu comisión estimada</div>
         <div class="cp-value" id="comision-valor">$0</div>
@@ -901,10 +794,10 @@
     </div>
   </div>
 
-  <!-- ========================= REGISTRAR JORNADA ========================= -->
+  <!-- REGISTRAR JORNADA -->
   <div id="screen-jornada" class="screen">
     <div class="header">
-      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
       <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -913,7 +806,6 @@
         <h2>REGISTRAR JORNADA</h2>
       </div>
 
-      <!-- Fecha y tipo de día -->
       <div class="form-group">
         <label>Fecha de la jornada</label>
         <input type="date" id="fecha-jornada" />
@@ -928,13 +820,9 @@
 
       <div class="divider"></div>
 
-      <!-- Categorías de tickets -->
       <div class="menu-section-title">Tickets realizados</div>
-      <div class="categoria-grid" id="categoria-grid">
-        <!-- Se llenan dinámicamente -->
-      </div>
+      <div class="categoria-grid" id="categoria-grid"></div>
 
-      <!-- Contador de tickets para categoría seleccionada -->
       <div id="ticket-counter-section" style="display:none;">
         <div class="menu-section-title">Cantidad — <span id="cat-seleccionada-label" style="color:var(--accent);">—</span></div>
         <div class="ticket-counter">
@@ -948,17 +836,16 @@
         <button class="btn btn-secondary" id="btn-agregar-ticket" style="margin-bottom:16px;">AGREGAR AL REGISTRO</button>
       </div>
 
-      <!-- Lista de tickets agregados -->
       <div id="tickets-lista" style="margin-bottom:16px;"></div>
 
       <button class="btn btn-primary" id="btn-registrar-jornada">REGISTRAR JORNADA</button>
     </div>
   </div>
 
-  <!-- ========================= PANEL ADMIN ========================= -->
+  <!-- PANEL ADMIN -->
   <div id="screen-admin" class="screen">
     <div class="header">
-      <div class="header-logo">ZN<span>·</span>FIELD</div>
+      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
       <button class="btn-logout" id="btn-logout-admin">SALIR</button>
     </div>
     <div class="content">
@@ -968,14 +855,74 @@
       </div>
 
       <div class="tab-bar">
-        <button class="tab-btn active" data-tab="equipos">Catálogo</button>
-        <button class="tab-btn" data-tab="resumen-admin">Resumen</button>
+        <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="tab-btn" data-tab="equipos">Catálogo</button>
         <button class="tab-btn" data-tab="ventas-tab">Ventas</button>
         <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
       </div>
 
-      <!-- Tab Catálogo -->
-      <div class="tab-panel active" id="tab-equipos">
+      <!-- DASHBOARD -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
+        <div id="dashboard-content" style="display:none;">
+
+          <!-- KPIs -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon">💰</div>
+              <div class="kpi-label">Comisiones del mes</div>
+              <div class="kpi-value" id="kpi-comisiones">—</div>
+              <div class="kpi-sub">total acumulado</div>
+            </div>
+            <div class="kpi-card success">
+              <div class="kpi-icon">📦</div>
+              <div class="kpi-label">Equipos vendidos</div>
+              <div class="kpi-value" id="kpi-ventas">—</div>
+              <div class="kpi-sub">unidades</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon">📋</div>
+              <div class="kpi-label">Jornadas</div>
+              <div class="kpi-value" id="kpi-jornadas">—</div>
+              <div class="kpi-sub">registradas</div>
+            </div>
+            <div class="kpi-card gold">
+              <div class="kpi-icon">⚡</div>
+              <div class="kpi-label">Producción jornadas</div>
+              <div class="kpi-value" id="kpi-produccion">—</div>
+              <div class="kpi-sub">total a pagar</div>
+            </div>
+          </div>
+
+          <!-- Podio Top 3 -->
+          <div class="podium-section">
+            <div class="podium-title"><span class="icon">🏆</span> TOP 3 DEL MES</div>
+            <div class="podium-container" id="podium-container">
+              <div class="loading-msg" style="grid-column:1/-1;">Sin datos</div>
+            </div>
+          </div>
+
+          <!-- Gráfico ventas por técnico -->
+          <div class="chart-card">
+            <div class="chart-card-title">📊 Ventas por técnico</div>
+            <div class="chart-wrap">
+              <canvas id="chart-ventas-tecnico"></canvas>
+            </div>
+          </div>
+
+          <!-- Gráfico equipos más vendidos -->
+          <div class="chart-card">
+            <div class="chart-card-title">🥇 Equipos más vendidos</div>
+            <div class="chart-wrap tall">
+              <canvas id="chart-equipos"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Catálogo -->
+      <div class="tab-panel" id="tab-equipos">
         <button class="btn btn-secondary btn-sm btn-icon" id="btn-nuevo-equipo" style="margin-bottom:14px;">
           + NUEVO EQUIPO
         </button>
@@ -984,13 +931,7 @@
         </div>
       </div>
 
-      <!-- Tab Resumen general -->
-      <div class="tab-panel" id="tab-resumen-admin">
-        <div class="loading-msg" id="resumen-admin-loading"><span class="spinner"></span>Cargando…</div>
-        <div id="resumen-admin-content"></div>
-      </div>
-
-      <!-- Tab Ventas -->
+      <!-- Ventas -->
       <div class="tab-panel" id="tab-ventas-tab">
         <div class="form-group">
           <label>Filtrar por mes</label>
@@ -1002,7 +943,7 @@
         <div class="data-table-wrap" id="ventas-admin-content"></div>
       </div>
 
-      <!-- Tab Jornadas -->
+      <!-- Jornadas -->
       <div class="tab-panel" id="tab-jornadas-tab">
         <div class="form-group">
           <label>Filtrar por mes</label>
@@ -1016,9 +957,9 @@
     </div>
   </div>
 
-</div><!-- #app -->
+</div>
 
-<!-- ========================= MODAL EQUIPO ========================= -->
+<!-- MODAL EQUIPO -->
 <div class="modal-overlay" id="modal-equipo">
   <div class="modal-box">
     <div class="modal-title" id="modal-equipo-title">NUEVO EQUIPO</div>
@@ -1050,42 +991,33 @@
   </div>
 </div>
 
-<!-- ========================= TOAST ========================= -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-//  CONFIGURACIÓN GLOBAL
+//  CONFIGURACIÓN
 // ============================================================
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHfCx8ZWo6vLgp-29AP_yFVuPRTR3YPLB4lRPlE8AUhyL5a8m7wCH9kix_gQdYe-_O/exec';
 
-// Estado de la sesión
-const session = {
-  usuario: null,     // nombre del técnico
-  esAdmin: false,
-  pin: ''
-};
-
-// Datos cargados de la app
+const session = { usuario: null, esAdmin: false, pin: '' };
 let equiposCatalogo = [];
 let tecnicosLista = [];
-
-// Tickets acumulados en la pantalla de jornada
 let ticketsJornada = [];
 let catActual = null;
+
+// Charts (referencias para destruirlos al recargar)
+let chartVentasTecnico = null;
+let chartEquipos = null;
 
 // ============================================================
 //  UTILIDADES
 // ============================================================
-
-/** Muestra una pantalla y oculta las demás */
 function mostrarPantalla(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-/** Toast de notificación */
 function toast(msg, tipo = 'info', duracion = 3000) {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -1094,7 +1026,6 @@ function toast(msg, tipo = 'info', duracion = 3000) {
   setTimeout(() => el.classList.remove('show'), duracion);
 }
 
-/** Llamada al Apps Script */
 async function api(params) {
   const url = new URL(WEB_APP_URL);
   Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
@@ -1102,7 +1033,6 @@ async function api(params) {
   return resp.json();
 }
 
-/** Llamada POST al Apps Script */
 async function apiPost(data) {
   const resp = await fetch(WEB_APP_URL, {
     method: 'POST',
@@ -1111,18 +1041,22 @@ async function apiPost(data) {
   return resp.json();
 }
 
-/** Formato pesos argentinos */
 function formatoPesos(n) {
   if (n === undefined || n === null || n === '') return '—';
   return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-/** Nombre del mes actual */
+function formatoPesosCompacto(n) {
+  if (!n) return '$0';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'K';
+  return '$' + Number(n).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+}
+
 function mesActualNombre() {
   return new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
 }
 
-/** Fecha de hoy en formato YYYY-MM-DD */
 function hoy() {
   return new Date().toISOString().split('T')[0];
 }
@@ -1138,12 +1072,8 @@ async function cargarTecnicos() {
     if (data.ok && Array.isArray(data.tecnicos)) {
       tecnicosLista = data.tecnicos;
       llenarSelectTecnicos();
-    } else {
-      console.warn('Respuesta inesperada al cargar técnicos:', data);
     }
-  } catch(e) {
-    console.warn('No se pudieron cargar técnicos:', e);
-  }
+  } catch(e) { console.warn('No se pudieron cargar técnicos:', e); }
 }
 
 function llenarSelectTecnicos() {
@@ -1159,8 +1089,7 @@ function llenarSelectTecnicos() {
 
 function actualizarDotsPIN() {
   for (let i = 0; i < 4; i++) {
-    const dot = document.getElementById('dot-' + i);
-    dot.classList.toggle('filled', i < pinIngresado.length);
+    document.getElementById('dot-' + i).classList.toggle('filled', i < pinIngresado.length);
   }
 }
 
@@ -1172,10 +1101,7 @@ document.getElementById('numpad').addEventListener('click', e => {
     pinIngresado = pinIngresado.slice(0, -1);
   } else if (pinIngresado.length < 4) {
     pinIngresado += n;
-    // Auto-login cuando el PIN tiene 4 dígitos
-    if (pinIngresado.length === 4) {
-      setTimeout(intentarLogin, 100);
-    }
+    if (pinIngresado.length === 4) setTimeout(intentarLogin, 100);
   }
   actualizarDotsPIN();
 });
@@ -1214,7 +1140,7 @@ async function intentarLogin() {
 }
 
 // ============================================================
-//  MENÚ PRINCIPAL + RESUMEN
+//  MENÚ PRINCIPAL
 // ============================================================
 async function cargarMenuPrincipal() {
   document.getElementById('menu-nombre').textContent = session.usuario;
@@ -1224,7 +1150,6 @@ async function cargarMenuPrincipal() {
 
   mostrarPantalla('menu');
 
-  // Cargar resumen personal
   try {
     const data = await api({ action: 'obtenerResumen', tecnico: session.usuario });
     if (data.ok && data.resumen) {
@@ -1235,9 +1160,7 @@ async function cargarMenuPrincipal() {
       document.getElementById('rs-produccion').textContent = formatoPesos(r.jornadasTotal);
       document.getElementById('rs-equipo').textContent = r.equipoMasVendido || '—';
     }
-  } catch(e) {
-    console.warn('No se pudo cargar resumen:', e);
-  }
+  } catch(e) { console.warn('No se pudo cargar resumen:', e); }
 }
 
 // ============================================================
@@ -1251,8 +1174,8 @@ let metodoPago = 'contado';
 async function cargarPantallaVentas() {
   mostrarPantalla('ventas');
   document.getElementById('fecha-venta').value = hoy();
+  document.getElementById('nro-cliente').value = '';
 
-  // Resetear selecciones
   equipoSeleccionado = null;
   tipoVenta = 'directa';
   modoTrabajo = 'solo';
@@ -1263,10 +1186,7 @@ async function cargarPantallaVentas() {
   resetChips('modo-trabajo-group', 'solo');
   resetChips('metodo-pago-group', 'contado');
 
-  // Cargar equipos si no están cargados
   await cargarEquipos();
-
-  // Llenar select compañero
   llenarSelectCompañero();
 }
 
@@ -1309,7 +1229,6 @@ function seleccionarEquipo(eq, cardEl) {
   document.querySelectorAll('.equipo-card').forEach(c => c.classList.remove('selected'));
   cardEl.classList.add('selected');
   equipoSeleccionado = eq;
-  // Mostrar/ocultar canje
   const chipCanje = document.querySelector('#tipo-venta-group [data-val="canje"]');
   if (chipCanje) {
     chipCanje.style.opacity = eq.admiteCanje ? '1' : '.3';
@@ -1335,7 +1254,6 @@ function resetChips(groupId, valorDefault) {
   });
 }
 
-// Chips de tipo de venta
 document.getElementById('tipo-venta-group').addEventListener('click', e => {
   const chip = e.target.closest('.radio-chip');
   if (!chip) return;
@@ -1344,7 +1262,6 @@ document.getElementById('tipo-venta-group').addEventListener('click', e => {
   calcularComision();
 });
 
-// Chips modo trabajo
 document.getElementById('modo-trabajo-group').addEventListener('click', e => {
   const chip = e.target.closest('.radio-chip');
   if (!chip) return;
@@ -1354,7 +1271,6 @@ document.getElementById('modo-trabajo-group').addEventListener('click', e => {
   calcularComision();
 });
 
-// Chips método de pago
 document.getElementById('metodo-pago-group').addEventListener('click', e => {
   const chip = e.target.closest('.radio-chip');
   if (!chip) return;
@@ -1397,6 +1313,7 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
     modoTrabajo,
     compañero: modoTrabajo === 'dupla' ? document.getElementById('compañero-select').value : '',
     metodoPago,
+    nroCliente: document.getElementById('nro-cliente').value || '',
     fechaJornada: fecha
   };
 
@@ -1464,7 +1381,6 @@ document.getElementById('tc-plus').addEventListener('click', () => {
 document.getElementById('btn-agregar-ticket').addEventListener('click', () => {
   if (!catActual) return;
   const cantidad = parseInt(document.getElementById('tc-value').textContent);
-  // Agregar o actualizar en la lista
   const idx = ticketsJornada.findIndex(t => t.categoria === catActual);
   if (idx >= 0) {
     ticketsJornada[idx].cantidad += cantidad;
@@ -1475,7 +1391,7 @@ document.getElementById('btn-agregar-ticket').addEventListener('click', () => {
   document.getElementById('ticket-counter-section').style.display = 'none';
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
   catActual = null;
-  toast(`+${cantidad} ticket${cantidad > 1 ? 's' : ''} de ${ticketsJornada[idx >= 0 ? idx : ticketsJornada.length - 1].categoria}`, 'success');
+  toast(`+${cantidad} ticket${cantidad > 1 ? 's' : ''} agregado${cantidad > 1 ? 's' : ''}`, 'success');
 });
 
 function renderTicketsLista() {
@@ -1484,7 +1400,7 @@ function renderTicketsLista() {
   cont.innerHTML = '<div class="menu-section-title">Tickets acumulados</div>';
   ticketsJornada.forEach((t, i) => {
     const row = document.createElement('div');
-    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);';
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-soft);';
     row.innerHTML = `
       <span style="font-size:.9rem;">${t.categoria}</span>
       <div style="display:flex;align-items:center;gap:12px;">
@@ -1507,8 +1423,7 @@ async function cargarPantallaJornada() {
   renderTicketsLista();
   document.getElementById('fecha-jornada').value = hoy();
   document.getElementById('ticket-counter-section').style.display = 'none';
-  // Auto-detectar tipo de día
-  const diaSemana = new Date().getDay(); // 0=dom, 6=sab
+  const diaSemana = new Date().getDay();
   let tipoDia = 'Domingo';
   if (diaSemana === 6) tipoDia = 'Sábado';
   resetChips('tipo-dia-group', tipoDia);
@@ -1561,10 +1476,9 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
 // ============================================================
 function cargarPantallaAdmin() {
   mostrarPantalla('admin');
-  cargarEquiposAdmin();
+  cargarDashboard();
 }
 
-// Tabs
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
@@ -1572,14 +1486,250 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
-    // Carga lazy
-    if (tab === 'resumen-admin') cargarResumenAdmin();
+    if (tab === 'dashboard') cargarDashboard();
+    if (tab === 'equipos') cargarEquiposAdmin();
     if (tab === 'ventas-tab') cargarVentasAdmin();
     if (tab === 'jornadas-tab') cargarJornadasAdmin();
   });
 });
 
-// --- Catálogo de equipos ---
+// ============================================================
+//  DASHBOARD ADMIN
+// ============================================================
+async function cargarDashboard() {
+  const loading = document.getElementById('dashboard-loading');
+  const content = document.getElementById('dashboard-content');
+  loading.style.display = 'block';
+  content.style.display = 'none';
+
+  try {
+    // Pedimos ventas y resumen
+    const [ventasData, resumenData] = await Promise.all([
+      api({ action: 'obtenerVentas', mes: '', admin: 'true' }),
+      api({ action: 'obtenerResumen', tecnico: 'ADMIN' })
+    ]);
+
+    loading.style.display = 'none';
+    content.style.display = 'block';
+
+    // KPIs
+    if (resumenData.ok && resumenData.resumen) {
+      const r = resumenData.resumen;
+      document.getElementById('kpi-comisiones').textContent = formatoPesos(r.comisionesTotal);
+      document.getElementById('kpi-ventas').textContent = r.equiposVendidos ?? '0';
+      document.getElementById('kpi-jornadas').textContent = r.jornadasCount ?? '0';
+      document.getElementById('kpi-produccion').textContent = formatoPesos(r.jornadasTotal);
+    }
+
+    // Procesar ventas para podio y gráficos
+    const ventas = (ventasData.ok && ventasData.ventas) ? ventasData.ventas : [];
+    procesarYRenderizarTodo(ventas);
+
+  } catch(e) {
+    loading.innerHTML = '<div class="error-msg">Error al cargar el dashboard</div>';
+    console.error(e);
+  }
+}
+
+function procesarYRenderizarTodo(ventas) {
+  const comisionesTec = {};
+  const ventasTec = {};
+  const equiposCount = {};
+
+  ventas.forEach(v => {
+    const tec = v.tecnico;
+    const tec2 = v.tecnico2;
+    const com = Number(v.comision) || 0;
+    const equipo = v.equipo || 'Sin nombre';
+
+    if (tec) {
+      comisionesTec[tec] = (comisionesTec[tec] || 0) + com;
+      ventasTec[tec] = (ventasTec[tec] || 0) + 1;
+    }
+    if (tec2 && (v.dupla === 'Sí' || v.dupla === 'SÍ')) {
+      // Si es dupla, el segundo técnico también suma su parte
+      comisionesTec[tec2] = (comisionesTec[tec2] || 0) + com;
+      ventasTec[tec2] = (ventasTec[tec2] || 0) + 1;
+    }
+    if (equipo) {
+      equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
+    }
+  });
+
+  renderPodio(comisionesTec);
+  renderChartVentasTecnico(ventasTec, comisionesTec);
+  renderChartEquipos(equiposCount);
+}
+
+function renderPodio(comisionesTec) {
+  const cont = document.getElementById('podium-container');
+  const ranking = Object.entries(comisionesTec)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  if (!ranking.length) {
+    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin ventas este mes</div>';
+    return;
+  }
+
+  const medallas = ['🥇', '🥈', '🥉'];
+  const clases = ['first', 'second', 'third'];
+  const labels = ['1°', '2°', '3°'];
+
+  cont.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const data = ranking[i];
+    const div = document.createElement('div');
+    div.className = `podium-spot ${clases[i]}`;
+    if (data) {
+      div.innerHTML = `
+        <div class="podium-medal">${medallas[i]}</div>
+        <div class="podium-name">${data[0]}</div>
+        <div class="podium-value">${formatoPesosCompacto(data[1])}</div>
+        <div class="podium-bar">${labels[i]}</div>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="podium-medal" style="opacity:.3">${medallas[i]}</div>
+        <div class="podium-name" style="color:var(--muted);">—</div>
+        <div class="podium-value" style="color:var(--muted);">—</div>
+        <div class="podium-bar" style="opacity:.4;">${labels[i]}</div>
+      `;
+    }
+    cont.appendChild(div);
+  }
+}
+
+function renderChartVentasTecnico(ventasTec, comisionesTec) {
+  const ctx = document.getElementById('chart-ventas-tecnico');
+  if (!ctx) return;
+
+  const ordenados = Object.entries(ventasTec).sort((a, b) => b[1] - a[1]);
+  const labels = ordenados.map(e => e[0]);
+  const valoresVentas = ordenados.map(e => e[1]);
+
+  if (chartVentasTecnico) chartVentasTecnico.destroy();
+
+  if (!labels.length) {
+    ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>';
+    return;
+  }
+
+  chartVentasTecnico = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Equipos vendidos',
+        data: valoresVentas,
+        backgroundColor: 'rgba(0, 212, 255, 0.6)',
+        borderColor: 'rgba(0, 212, 255, 1)',
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            afterLabel: (ctx) => {
+              const tec = ctx.label;
+              const com = comisionesTec[tec] || 0;
+              return 'Comisiones: ' + formatoPesos(com);
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#7a93b3', font: { size: 11 }, stepSize: 1 },
+          grid: { color: 'rgba(26, 53, 96, 0.3)' },
+          beginAtZero: true
+        },
+        y: {
+          ticks: { color: '#e8eaf0', font: { size: 11 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderChartEquipos(equiposCount) {
+  const ctx = document.getElementById('chart-equipos');
+  if (!ctx) return;
+
+  const ordenados = Object.entries(equiposCount).sort((a, b) => b[1] - a[1]);
+  let labels, valores;
+  if (ordenados.length > 6) {
+    const top = ordenados.slice(0, 5);
+    const resto = ordenados.slice(5).reduce((acc, e) => acc + e[1], 0);
+    labels = [...top.map(e => e[0]), 'Otros'];
+    valores = [...top.map(e => e[1]), resto];
+  } else {
+    labels = ordenados.map(e => e[0]);
+    valores = ordenados.map(e => e[1]);
+  }
+
+  if (chartEquipos) chartEquipos.destroy();
+
+  if (!labels.length) {
+    ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>';
+    return;
+  }
+
+  const colores = [
+    'rgba(0, 212, 255, 0.85)',
+    'rgba(77, 208, 225, 0.85)',
+    'rgba(0, 168, 232, 0.85)',
+    'rgba(100, 181, 246, 0.85)',
+    'rgba(38, 198, 218, 0.85)',
+    'rgba(122, 147, 179, 0.85)'
+  ];
+
+  chartEquipos = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: valores,
+        backgroundColor: colores,
+        borderColor: '#0a1830',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#e8eaf0',
+            padding: 10,
+            font: { size: 11 },
+            boxWidth: 14, boxHeight: 14
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = ((ctx.parsed / total) * 100).toFixed(0);
+              return `${ctx.label}: ${ctx.parsed} (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// --- Catálogo ---
 async function cargarEquiposAdmin() {
   const cont = document.getElementById('equipos-lista-admin');
   cont.innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando…</div>';
@@ -1618,46 +1768,6 @@ function renderEquiposAdmin() {
   });
 }
 
-// --- Resumen Admin ---
-async function cargarResumenAdmin() {
-  const loading = document.getElementById('resumen-admin-loading');
-  const content = document.getElementById('resumen-admin-content');
-  loading.style.display = 'block';
-  content.innerHTML = '';
-  try {
-    const data = await api({ action: 'obtenerResumen', tecnico: 'ADMIN' });
-    loading.style.display = 'none';
-    if (data.ok && data.resumen) {
-      renderResumenAdmin(data.resumen);
-    } else {
-      content.innerHTML = '<div class="error-msg">No se pudo cargar el resumen</div>';
-    }
-  } catch(e) {
-    loading.style.display = 'none';
-    content.innerHTML = '<div class="error-msg">Error de conexión</div>';
-  }
-}
-
-function renderResumenAdmin(r) {
-  const content = document.getElementById('resumen-admin-content');
-  const stats = [
-    { label: 'Total comisiones del mes', valor: formatoPesos(r.comisionesTotal) },
-    { label: 'Total ventas (equipos)', valor: r.equiposVendidos ?? '0' },
-    { label: 'Total jornadas registradas', valor: r.jornadasCount ?? '0' },
-    { label: 'Total producción por jornadas', valor: formatoPesos(r.jornadasTotal) },
-    { label: 'Equipo más vendido', valor: r.equipoMasVendido || '—' },
-    { label: 'Técnico con más ventas', valor: r.tecnicoTop || '—' },
-  ];
-  content.innerHTML = `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
-      ${stats.map(s => `
-        <div class="stat-row">
-          <span class="sr-label">${s.label}</span>
-          <span class="sr-value">${s.valor}</span>
-        </div>`).join('')}
-    </div>`;
-}
-
 // --- Ventas Admin ---
 async function cargarVentasAdmin() {
   const loading = document.getElementById('ventas-admin-loading');
@@ -1684,12 +1794,13 @@ function renderTablaVentas(ventas) {
     document.getElementById('ventas-admin-content').innerHTML = '<div class="loading-msg">Sin ventas registradas</div>';
     return;
   }
-  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Equipo</th><th>Tipo</th><th>Comisión</th><th>Fecha</th></tr></thead><tbody>';
+  let html = '<table class="data-table"><thead><tr><th>Técnico</th><th>Equipo</th><th>Tipo</th><th>N° Cliente</th><th>Comisión</th><th>Fecha</th></tr></thead><tbody>';
   ventas.forEach(v => {
     html += `<tr>
       <td>${v.tecnico}</td>
       <td>${v.equipo || v.equipoNombre}</td>
-      <td><span class="tag ${v.tipoVenta === 'canje' ? 'tag-orange' : 'tag-green'}">${v.tipoVenta || '—'}</span></td>
+      <td><span class="tag ${v.tipoVenta === 'canje' ? 'tag-cyan' : 'tag-green'}">${v.tipoVenta || '—'}</span></td>
+      <td>${v.nroCliente || '—'}</td>
       <td>${formatoPesos(v.comision)}</td>
       <td>${v.fecha || v.fechaJornada || '—'}</td>
     </tr>`;
@@ -1729,7 +1840,7 @@ function renderTablaJornadas(jornadas) {
     html += `<tr>
       <td>${j.tecnico}</td>
       <td>${j.fechaJornada || j.fecha || '—'}</td>
-      <td><span class="tag tag-orange">${j.tipoDia || '—'}</span></td>
+      <td><span class="tag tag-cyan">${j.tipoDia || '—'}</span></td>
       <td>${j.totalTickets || '—'}</td>
       <td>${formatoPesos(j.total)}</td>
     </tr>`;
@@ -1802,8 +1913,7 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
   const payload = {
     action: 'gestionarEquipos',
     operacion: id ? 'editar' : 'agregar',
-    id,
-    nombre,
+    id, nombre,
     precio: parseFloat(precio),
     admiteCanje: modalEqCanje === 'si',
     precioCanje: modalEqCanje === 'si' ? parseFloat(precioCanje) : 0
@@ -1815,7 +1925,7 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
       document.getElementById('modal-equipo').classList.remove('open');
       toast(id ? 'Equipo actualizado' : 'Equipo agregado', 'success');
       await cargarEquiposAdmin();
-      equiposCatalogo = []; // forzar recarga en ventas
+      equiposCatalogo = [];
     } else {
       errEl.textContent = data.error || 'Error al guardar';
     }
@@ -1830,7 +1940,7 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
 document.getElementById('btn-nuevo-equipo').addEventListener('click', () => abrirModalEquipo(null));
 
 // ============================================================
-//  NAVEGACIÓN Y LOGOUT
+//  NAVEGACIÓN
 // ============================================================
 document.getElementById('btn-ir-ventas').addEventListener('click', cargarPantallaVentas);
 document.getElementById('btn-ir-jornada').addEventListener('click', cargarPantallaJornada);
@@ -1855,13 +1965,9 @@ document.getElementById('btn-logout-ventas').addEventListener('click', cerrarSes
 document.getElementById('btn-logout-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
 
-// ============================================================
-//  INIT
-// ============================================================
+// INIT
 (async function init() {
-  // Cargar técnicos para el select de login
   await cargarTecnicos();
-  // Renderizar grid de categorías
   renderCategoriasGrid();
 })();
 </script>
