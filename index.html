@@ -134,7 +134,7 @@
       letter-spacing: .06em;
       margin-bottom: 6px;
     }
-    select, input[type="password"], input[type="text"], input[type="number"], input[type="date"] {
+    select, input[type="password"], input[type="text"], input[type="number"], input[type="date"], textarea {
       width: 100%;
       background: var(--card);
       border: 1px solid var(--border-soft);
@@ -148,8 +148,9 @@
       appearance: none;
       -webkit-appearance: none;
     }
-    select:focus, input:focus { border-color: var(--accent); }
+    select:focus, input:focus, textarea:focus { border-color: var(--accent); }
     select option { background: var(--card); }
+    textarea { resize: vertical; min-height: 80px; font-family: var(--font-body); }
 
     .pin-display { display: flex; gap: 10px; justify-content: center; margin: 8px 0 16px; }
     .pin-dot {
@@ -231,11 +232,25 @@
       border: 1px solid var(--warning);
       border-radius: var(--radius);
       padding: 12px 14px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       display: flex; align-items: center; gap: 10px;
       font-size: .88rem;
     }
     .pendientes-banner.hidden { display: none; }
+
+    .rechazos-banner {
+      background: rgba(231, 76, 60, 0.12);
+      border: 1px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: .88rem;
+      cursor: pointer;
+    }
+    .rechazos-banner.hidden { display: none; }
+    .rechazos-banner:active { background: rgba(231, 76, 60, 0.18); }
+    .rechazos-banner-arrow { margin-left: auto; color: var(--danger); font-weight: 700; }
 
     .menu-section-title {
       font-family: var(--font-head);
@@ -418,6 +433,10 @@
       display: flex; align-items: center; justify-content: center;
       padding: 0 4px;
     }
+    .tab-btn .tab-badge.danger {
+      background: var(--danger);
+      color: #fff;
+    }
     .tab-btn .tab-badge.hidden { display: none; }
 
     .tab-panel { display: none; }
@@ -550,6 +569,9 @@
       padding: 14px;
       margin-bottom: 12px;
     }
+    .approval-card.aprobada { border-left-color: var(--success); }
+    .approval-card.rechazada { border-left-color: var(--danger); }
+    .approval-card.pendiente { border-left-color: var(--warning); }
     .approval-card-row {
       display: flex; justify-content: space-between;
       gap: 8px; margin-bottom: 6px;
@@ -569,6 +591,27 @@
       margin-top: 12px;
     }
     .approval-actions .btn { margin: 0; flex: 1; padding: 10px; font-size: .9rem; }
+
+    .motivo-block {
+      background: rgba(231, 76, 60, 0.10);
+      border: 1px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-top: 10px;
+    }
+    .motivo-block-label {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--danger);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+    .motivo-block-text {
+      font-size: .88rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
 
     .equipo-item {
       display: flex; align-items: center; justify-content: space-between;
@@ -611,8 +654,10 @@
       transition: transform .3s cubic-bezier(.34,1.56,.64,1);
       max-height: 90vh; overflow-y: auto;
     }
+    .modal-box.danger { border-top-color: var(--danger); }
     .modal-overlay.open .modal-box { transform: translateY(0); }
     .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; }
+    .modal-subtitle { color: var(--muted); font-size: .85rem; margin-bottom: 14px; line-height: 1.4; }
 
     .tag {
       display: inline-block;
@@ -684,6 +729,19 @@
       color: var(--muted);
       margin-top: 2px;
     }
+
+    .mr-tabs-grupo {
+      margin-bottom: 16px;
+    }
+    .mr-tabs-grupo .tab-bar {
+      margin-bottom: 8px;
+    }
+    .mr-empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 30px 16px;
+      font-size: .9rem;
+    }
   </style>
 </head>
 <body>
@@ -745,6 +803,11 @@
       <div class="greeting">Hola, <span id="menu-nombre"></span></div>
       <div class="greeting-sub" id="menu-mes"></div>
 
+      <div class="rechazos-banner hidden" id="rechazos-banner">
+        ⚠️ <span id="rechazos-text"></span>
+        <span class="rechazos-banner-arrow">→</span>
+      </div>
+
       <div class="pendientes-banner hidden" id="pendientes-banner">
         ⏳ <span id="pendientes-text"></span>
       </div>
@@ -791,6 +854,14 @@
         <div class="menu-text">
           <h3>REGISTRAR JORNADA</h3>
           <p>Producción en días no laborales</p>
+        </div>
+      </button>
+
+      <button class="menu-btn" id="btn-ir-mis-registros">
+        <span class="menu-icon">📊</span>
+        <div class="menu-text">
+          <h3>MIS REGISTROS</h3>
+          <p>Ver mis ventas y jornadas del mes</p>
         </div>
       </button>
 
@@ -926,6 +997,41 @@
       <div class="divider"></div>
 
       <button class="btn btn-primary" id="btn-registrar-jornada">REGISTRAR JORNADA</button>
+    </div>
+  </div>
+
+  <!-- MIS REGISTROS (TÉCNICO) -->
+  <div id="screen-mis-registros" class="screen">
+    <div class="header">
+      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <button class="btn-logout" id="btn-logout-mis-registros">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-mis-registros">←</button>
+        <h2>MIS REGISTROS</h2>
+      </div>
+
+      <!-- Tabs ventas/jornadas -->
+      <div class="mr-tabs-grupo">
+        <div class="tab-bar">
+          <button class="tab-btn active" data-mr-tab="ventas">🤝 VENTAS</button>
+          <button class="tab-btn" data-mr-tab="jornadas">📋 JORNADAS</button>
+        </div>
+
+        <!-- Tabs estado -->
+        <div class="tab-bar">
+          <button class="tab-btn active" data-estado="Aprobada">✓ APROBADAS</button>
+          <button class="tab-btn" data-estado="Rechazada">
+            ✕ RECHAZADAS
+            <span class="tab-badge danger hidden" id="badge-rechazadas">0</span>
+          </button>
+          <button class="tab-btn" data-estado="Pendiente">⏳ PENDIENTES</button>
+        </div>
+      </div>
+
+      <div class="loading-msg" id="mr-loading"><span class="spinner"></span>Cargando…</div>
+      <div id="mr-lista"></div>
     </div>
   </div>
 
@@ -1143,6 +1249,23 @@
   </div>
 </div>
 
+<!-- MODAL MOTIVO RECHAZO -->
+<div class="modal-overlay" id="modal-rechazo">
+  <div class="modal-box danger">
+    <div class="modal-title">MOTIVO DEL RECHAZO</div>
+    <div class="modal-subtitle">
+      El técnico verá este mensaje en su pantalla "Mis Registros" para saber qué corregir.
+    </div>
+    <div class="form-group">
+      <label>Motivo</label>
+      <textarea id="modal-motivo-texto" placeholder="Ej: N° de cliente inexistente, equipo no corresponde, etc."></textarea>
+    </div>
+    <button class="btn btn-danger" id="btn-confirmar-rechazo">CONFIRMAR RECHAZO</button>
+    <button class="btn btn-secondary" id="btn-cancelar-rechazo" style="margin-top:8px;">CANCELAR</button>
+    <div class="error-msg" id="modal-rechazo-error"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1158,6 +1281,7 @@ let movilesLista = [];
 let localidadesLista = [];
 let ticketsJornada = [];
 let modalTicketCat = null;
+let rechazoEnCurso = null;
 
 let chartVentasTecnico = null;
 let chartEquipos = null;
@@ -1273,7 +1397,6 @@ function llenarSelectTecnicos() {
     op.textContent = t.nombre;
     sel.appendChild(op);
   });
-  // Opción Admin al final
   const opAdmin = document.createElement('option');
   opAdmin.value = '__ADMIN__';
   opAdmin.textContent = '⚙️ Administrador';
@@ -1312,7 +1435,6 @@ async function intentarLogin() {
   }
   if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
-  // Si es admin, no mandamos nombre
   const nombreLogin = (tecnico === '__ADMIN__') ? '' : tecnico;
 
   document.getElementById('btn-login').textContent = 'Verificando…';
@@ -1349,6 +1471,9 @@ async function cargarMenuPrincipal() {
   document.getElementById('menu-mes').textContent = mesActualNombre().toUpperCase();
   document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
 
+  // Mis Registros solo para tecnicos
+  document.getElementById('btn-ir-mis-registros').style.display = session.esAdmin ? 'none' : 'flex';
+
   mostrarPantalla('menu');
 
   try {
@@ -1374,7 +1499,38 @@ async function cargarMenuPrincipal() {
       }
     }
   } catch(e) { console.warn('No se pudo cargar resumen:', e); }
+
+  // Cargar alerta de rechazos solo para tecnicos
+  if (!session.esAdmin) {
+    cargarAlertaRechazos();
+  }
 }
+
+async function cargarAlertaRechazos() {
+  try {
+    const data = await api({ accion: 'obtenerMisRegistros', tecnico: session.usuario });
+    if (!data.ok) return;
+    const rechV = (data.ventas || []).filter(v => v.estado === 'Rechazada').length;
+    const rechJ = (data.jornadas || []).filter(j => j.estado === 'Rechazada').length;
+    const total = rechV + rechJ;
+
+    const banner = document.getElementById('rechazos-banner');
+    if (total > 0) {
+      const partes = [];
+      if (rechV) partes.push(`${rechV} venta${rechV > 1 ? 's' : ''}`);
+      if (rechJ) partes.push(`${rechJ} jornada${rechJ > 1 ? 's' : ''}`);
+      document.getElementById('rechazos-text').innerHTML =
+        `<strong>${partes.join(' y ')}</strong> rechazada${total > 1 ? 's' : ''} · tocá para ver el motivo`;
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  } catch(e) { console.warn('No se pudo cargar alerta de rechazos:', e); }
+}
+
+document.getElementById('rechazos-banner').addEventListener('click', () => {
+  cargarMisRegistros('Rechazada');
+});
 
 // ============================================================
 //  VENTAS
@@ -1712,6 +1868,131 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
 });
 
 // ============================================================
+//  MIS REGISTROS (TECNICO)
+// ============================================================
+let mrTabActual = 'ventas';
+let mrEstadoActual = 'Aprobada';
+let mrDatosCache = { ventas: [], jornadas: [] };
+
+async function cargarMisRegistros(estadoInicial) {
+  mostrarPantalla('mis-registros');
+
+  // Si viene un estado especifico (ej: desde el banner de rechazos)
+  if (estadoInicial) {
+    mrEstadoActual = estadoInicial;
+    document.querySelectorAll('[data-estado]').forEach(b => {
+      b.classList.toggle('active', b.dataset.estado === estadoInicial);
+    });
+  }
+
+  document.getElementById('mr-loading').style.display = 'block';
+  document.getElementById('mr-lista').innerHTML = '';
+
+  try {
+    const data = await api({
+      accion: 'obtenerMisRegistros',
+      tecnico: session.usuario
+    });
+    if (data.ok) {
+      mrDatosCache.ventas = data.ventas || [];
+      mrDatosCache.jornadas = data.jornadas || [];
+      actualizarBadgeRechazadas();
+      renderMisRegistros();
+    } else {
+      document.getElementById('mr-lista').innerHTML = '<div class="error-msg">Error al cargar registros</div>';
+    }
+  } catch(e) {
+    document.getElementById('mr-lista').innerHTML = '<div class="error-msg">Error de conexión</div>';
+  } finally {
+    document.getElementById('mr-loading').style.display = 'none';
+  }
+}
+
+function actualizarBadgeRechazadas() {
+  const totalRechazadas = mrDatosCache.ventas.filter(v => v.estado === 'Rechazada').length
+                        + mrDatosCache.jornadas.filter(j => j.estado === 'Rechazada').length;
+  const badge = document.getElementById('badge-rechazadas');
+  badge.textContent = totalRechazadas;
+  badge.classList.toggle('hidden', totalRechazadas === 0);
+}
+
+function renderMisRegistros() {
+  const lista = document.getElementById('mr-lista');
+  const datos = mrTabActual === 'ventas' ? mrDatosCache.ventas : mrDatosCache.jornadas;
+  const filtrados = datos.filter(d => d.estado === mrEstadoActual);
+
+  if (!filtrados.length) {
+    const labelEstado = mrEstadoActual === 'Aprobada' ? 'aprobadas' :
+                        mrEstadoActual === 'Rechazada' ? 'rechazadas' : 'pendientes';
+    const tipoLabel = mrTabActual === 'ventas' ? 'ventas' : 'jornadas';
+    lista.innerHTML = `<div class="mr-empty">No tenés ${tipoLabel} ${labelEstado} en el mes.</div>`;
+    return;
+  }
+
+  lista.innerHTML = '';
+  filtrados.forEach(item => {
+    const card = document.createElement('div');
+    const estadoClase = mrEstadoActual === 'Aprobada' ? 'aprobada' :
+                        mrEstadoActual === 'Rechazada' ? 'rechazada' : 'pendiente';
+    card.className = `approval-card ${estadoClase}`;
+
+    if (mrTabActual === 'ventas') {
+      card.innerHTML = `
+        <div class="approval-card-row principal">
+          <span>${item.equipo}</span>
+          <span style="color:var(--accent);">${formatoPesos(item.comision)}</span>
+        </div>
+        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${item.cliente || '—'}</span></div>
+        <div class="approval-card-row"><span class="label">Pago</span><span class="value">${item.formaPago}</span></div>
+        <div class="approval-card-row"><span class="label">Fecha</span><span class="value">${item.fecha}</span></div>
+        ${item.estado === 'Rechazada' && item.motivoRechazo ? `
+          <div class="motivo-block">
+            <div class="motivo-block-label">⚠ Motivo del rechazo</div>
+            <div class="motivo-block-text">${item.motivoRechazo}</div>
+          </div>
+        ` : ''}
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="approval-card-row principal">
+          <span>${item.categoria}</span>
+          <span style="color:var(--accent);">${formatoPesos(item.precio)}</span>
+        </div>
+        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${item.cliente || '—'}</span></div>
+        <div class="approval-card-row"><span class="label">Día</span><span class="value">${item.fecha} (${item.tipoDia})</span></div>
+        ${item.estado === 'Rechazada' && item.motivoRechazo ? `
+          <div class="motivo-block">
+            <div class="motivo-block-label">⚠ Motivo del rechazo</div>
+            <div class="motivo-block-text">${item.motivoRechazo}</div>
+          </div>
+        ` : ''}
+      `;
+    }
+    lista.appendChild(card);
+  });
+}
+
+// Click en tabs ventas/jornadas
+document.querySelectorAll('[data-mr-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    mrTabActual = btn.dataset.mrTab;
+    document.querySelectorAll('[data-mr-tab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMisRegistros();
+  });
+});
+
+// Click en tabs aprobada/rechazada/pendiente
+document.querySelectorAll('[data-estado]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    mrEstadoActual = btn.dataset.estado;
+    document.querySelectorAll('[data-estado]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMisRegistros();
+  });
+});
+
+// ============================================================
 //  PANEL ADMIN
 // ============================================================
 function cargarPantallaAdmin() {
@@ -1720,11 +2001,12 @@ function cargarPantallaAdmin() {
   actualizarBadgePendientes();
 }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('#screen-admin .tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    if (!tab) return;
+    document.querySelectorAll('#screen-admin .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#screen-admin .tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
     if (tab === 'dashboard') cargarDashboard();
@@ -2068,14 +2350,21 @@ function renderAprobaciones(ventas, jornadas) {
 }
 
 window.aprobar = async function(tipo, fila, rechazar = false) {
-  const accion = rechazar
-    ? (tipo === 'venta' ? 'rechazarVenta' : 'rechazarJornada')
-    : (tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada');
+  // Si es rechazo, abrir modal para pedir motivo
+  if (rechazar) {
+    rechazoEnCurso = { tipo, fila };
+    document.getElementById('modal-motivo-texto').value = '';
+    document.getElementById('modal-rechazo-error').textContent = '';
+    document.getElementById('modal-rechazo').classList.add('open');
+    return;
+  }
 
+  // Aprobacion directa
+  const accion = tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada';
   try {
     const data = await apiPost({ accion, fila });
     if (data.ok) {
-      toast(rechazar ? 'Rechazada' : 'Aprobada ✓', 'success');
+      toast('Aprobada ✓', 'success');
       cargarAprobaciones();
       actualizarBadgePendientes();
     } else {
@@ -2085,6 +2374,47 @@ window.aprobar = async function(tipo, fila, rechazar = false) {
     toast('Error de conexión', 'error');
   }
 };
+
+document.getElementById('btn-cancelar-rechazo').addEventListener('click', () => {
+  document.getElementById('modal-rechazo').classList.remove('open');
+  rechazoEnCurso = null;
+});
+
+document.getElementById('btn-confirmar-rechazo').addEventListener('click', async () => {
+  const motivo = document.getElementById('modal-motivo-texto').value.trim();
+  const errEl = document.getElementById('modal-rechazo-error');
+
+  if (!motivo) {
+    errEl.textContent = 'Escribí un motivo para que el técnico sepa qué corregir';
+    return;
+  }
+  if (!rechazoEnCurso) return;
+
+  const { tipo, fila } = rechazoEnCurso;
+  const accion = tipo === 'venta' ? 'rechazarVenta' : 'rechazarJornada';
+
+  const btn = document.getElementById('btn-confirmar-rechazo');
+  btn.textContent = 'Rechazando…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({ accion, fila, motivo });
+    if (data.ok) {
+      toast('Rechazada ✕', 'success');
+      document.getElementById('modal-rechazo').classList.remove('open');
+      rechazoEnCurso = null;
+      cargarAprobaciones();
+      actualizarBadgePendientes();
+    } else {
+      errEl.textContent = data.error || 'Error al rechazar';
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión';
+  } finally {
+    btn.textContent = 'CONFIRMAR RECHAZO';
+    btn.disabled = false;
+  }
+});
 
 // ============================================================
 //  CERTIFICACIÓN
@@ -2146,7 +2476,6 @@ async function actualizarPreviewCert() {
   }
 }
 
-// DESCARGA DIRECTA via base64 (NUEVA - funciona sin pop-ups)
 document.getElementById('btn-descargar-cert').addEventListener('click', async () => {
   const mes = document.getElementById('cert-mes').value;
   if (!mes) { toast('Seleccioná el mes', 'error'); return; }
@@ -2158,7 +2487,6 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
   try {
     const data = await apiPost({ accion: 'descargarCertificacion', mes });
     if (data.ok && data.base64) {
-      // Convertir base64 a Blob
       const byteChars = atob(data.base64);
       const byteArrays = [];
       for (let offset = 0; offset < byteChars.length; offset += 512) {
@@ -2173,7 +2501,6 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      // Disparar descarga sin pop-up
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -2446,10 +2773,12 @@ document.getElementById('btn-nuevo-equipo').addEventListener('click', () => abri
 // ============================================================
 document.getElementById('btn-ir-ventas').addEventListener('click', cargarPantallaVentas);
 document.getElementById('btn-ir-jornada').addEventListener('click', cargarPantallaJornada);
+document.getElementById('btn-ir-mis-registros').addEventListener('click', () => cargarMisRegistros());
 document.getElementById('btn-ir-admin').addEventListener('click', cargarPantallaAdmin);
 
 document.getElementById('back-ventas').addEventListener('click', () => mostrarPantalla('menu'));
 document.getElementById('back-jornada').addEventListener('click', () => mostrarPantalla('menu'));
+document.getElementById('back-mis-registros').addEventListener('click', () => mostrarPantalla('menu'));
 document.getElementById('back-admin').addEventListener('click', () => mostrarPantalla('menu'));
 
 function cerrarSesion() {
@@ -2466,6 +2795,7 @@ function cerrarSesion() {
 document.getElementById('btn-logout-menu').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-ventas').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-jornada').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-mis-registros').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
 
 // INIT
