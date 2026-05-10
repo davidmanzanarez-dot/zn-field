@@ -12,10 +12,10 @@
       --bg:        #050d1a;
       --surface:   #0a1830;
       --card:      #0f2040;
-      --border:    #00d4ff;
+      --border:    #1e9cd7;
       --border-soft: #1a3560;
-      --accent:    #00d4ff;
-      --accent2:   #4dd0e1;
+      --accent:    #1e9cd7;
+      --accent2:   #5cb8e3;
       --text:      #e8eaf0;
       --muted:     #7a93b3;
       --success:   #2ecc71;
@@ -45,23 +45,30 @@
     .screen.active { display: flex; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
-    .header {
-      background: var(--surface);
-      border-bottom: 2px solid var(--accent);
-      padding: 14px 18px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 50;
-    }
-    .header-logo {
+    /* ===== LOGO ===== */
+    .logo-wrap { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 32px; height: 32px; flex-shrink: 0; }
+    .logo-text {
       font-family: var(--font-head);
       font-weight: 800;
       font-size: 1.35rem;
-      letter-spacing: .04em;
+      letter-spacing: .01em;
       color: #fff;
+      line-height: 1;
     }
-    .header-logo .ss { color: var(--accent); }
-    .header-logo .servicios { color: #fff; }
+    .logo-text .ss { color: var(--accent); }
+    .logo-text .servicios { color: #fff; }
+    .logo-icon-big { width: 54px; height: 54px; }
+    .logo-text-big { font-size: 2.1rem; letter-spacing: 0; }
 
+    /* ===== HEADER ===== */
+    .header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 12px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
     .header-user {
       font-family: var(--font-head);
       font-size: .95rem;
@@ -90,12 +97,11 @@
       margin: 0 auto;
     }
 
+    /* ===== LOGIN ===== */
     #screen-login {
       justify-content: center; align-items: center;
       padding: 24px 20px;
-      background:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,212,255,.10) 0%, transparent 60%),
-        var(--bg);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(30,156,215,.12) 0%, transparent 60%), var(--bg);
     }
     .login-box {
       width: 100%; max-width: 360px;
@@ -104,23 +110,16 @@
       border-top: 3px solid var(--accent);
       border-radius: var(--radius);
       padding: 32px 24px;
-      box-shadow: 0 0 24px rgba(0,212,255,.08);
+      box-shadow: 0 0 24px rgba(30,156,215,.10);
     }
-    .login-brand { text-align: center; margin-bottom: 28px; }
-    .login-brand h1 {
-      font-family: var(--font-head);
-      font-weight: 800;
-      font-size: 2rem;
-      letter-spacing: .05em;
-      line-height: 1;
-      color: #fff;
+    .login-brand {
+      text-align: center; margin-bottom: 28px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
     }
-    .login-brand h1 .ss { color: var(--accent); }
-    .login-brand h1 .servicios { color: #fff; }
     .login-brand p {
       color: var(--muted);
       font-size: .82rem;
-      margin-top: 4px;
       letter-spacing: .04em;
       text-transform: uppercase;
     }
@@ -178,6 +177,7 @@
     .numpad-btn.delete { font-size: 1rem; color: var(--muted); }
     .numpad-btn.zero { grid-column: 2; }
 
+    /* ===== BOTONES ===== */
     .btn {
       display: block; width: 100%;
       padding: 14px;
@@ -191,7 +191,7 @@
       transition: opacity .2s, transform .1s;
     }
     .btn:active { transform: scale(.97); }
-    .btn-primary { background: var(--accent); color: #050d1a; }
+    .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { opacity: .9; }
     .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border-soft); }
     .btn-success { background: var(--success); color: #fff; }
@@ -201,6 +201,7 @@
     .btn-icon { display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn + .btn { margin-top: 10px; }
 
+    /* ===== MENÚ HOME ===== */
     .greeting { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
     .greeting span { color: var(--accent); }
     .greeting-sub { color: var(--muted); font-size: .85rem; margin-bottom: 22px; }
@@ -282,6 +283,7 @@
     .menu-btn .menu-text p { font-size: .78rem; color: var(--muted); margin-top: 1px; }
     .menu-btn.admin-btn { border-left-color: var(--accent2); }
 
+    /* ===== SECCIÓN GENÉRICA ===== */
     .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .section-header .back-btn {
       background: var(--card);
@@ -299,6 +301,7 @@
       letter-spacing: .03em;
     }
 
+    /* ===== EQUIPO SELECTOR ===== */
     .equipo-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .equipo-card {
       background: var(--card);
@@ -308,7 +311,7 @@
       cursor: pointer;
       transition: border-color .15s, background .15s;
     }
-    .equipo-card.selected { border-color: var(--accent); background: rgba(0,212,255,.10); }
+    .equipo-card.selected { border-color: var(--accent); background: rgba(30,156,215,.10); }
     .equipo-card .eq-nombre { font-family: var(--font-head); font-size: .98rem; font-weight: 700; }
     .equipo-card .eq-precio { font-size: .78rem; color: var(--muted); margin-top: 3px; }
 
@@ -328,47 +331,129 @@
       color: var(--success);
     }
 
-    .categoria-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-    .cat-btn {
-      background: var(--card);
-      border: 2px solid var(--border-soft);
-      color: var(--text);
-      border-radius: var(--radius);
-      padding: 12px 8px;
-      cursor: pointer;
-      font-family: var(--font-body);
-      font-size: .88rem; font-weight: 500;
-      text-align: center;
-      transition: border-color .15s, background .15s;
-    }
-    .cat-btn.selected { border-color: var(--accent); background: rgba(0,212,255,.10); }
-    .cat-btn.no-pago { border-style: dashed; color: var(--muted); }
-    .cat-btn.no-pago.selected { border-color: var(--muted); background: rgba(122,147,179,.08); }
-
-    .ticket-item {
+    /* ===== JORNADA REDISEÑO (CHIPS) ===== */
+    .jornada-info-block {
       background: var(--surface);
       border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      margin-bottom: 8px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px;
+      border-radius: 12px;
+      padding: 4px 14px;
+      margin-bottom: 20px;
     }
-    .ticket-item-info { flex: 1; min-width: 0; }
-    .ticket-item-info .t-cat { font-family: var(--font-head); font-weight: 700; font-size: .95rem; }
-    .ticket-item-info .t-cli { font-size: .82rem; color: var(--muted); margin-top: 2px; }
-    .ticket-item-precio {
-      font-family: var(--font-head);
-      font-size: .9rem; font-weight: 700;
-      color: var(--accent2);
+    .jornada-info-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
     }
-    .ticket-item .t-delete {
-      background: none; border: none;
-      color: var(--danger);
-      cursor: pointer; font-size: 1.1rem;
-      padding: 4px 8px;
+    .jornada-info-row + .jornada-info-row { border-top: 1px solid var(--border-soft); }
+    .jornada-info-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--accent); font-size: 14px;
+    }
+    .jornada-info-content { flex: 1; min-width: 0; }
+    .jornada-info-label {
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .jornada-info-content input,
+    .jornada-info-content select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      width: 100%;
+      outline: none;
+      padding: 0;
+    }
+    .jornada-info-content input::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(1.5); opacity: 0.6;
     }
 
+    .cat-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 6px;
+    }
+    .cat-name {
+      font-size: 13px; color: var(--text);
+      width: 100px; flex-shrink: 0; font-weight: 500;
+    }
+    .cat-name.disabled { color: var(--muted); }
+    .cat-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 9px;
+      padding: 11px 13px;
+      font-size: 14px; color: var(--text);
+      font-family: inherit;
+      outline: none; min-width: 0;
+    }
+    .cat-input::placeholder { color: var(--muted); font-size: 12px; }
+    .cat-input:focus { border-color: var(--accent); background: var(--card); }
+    .cat-row.has-tickets .cat-input { border-color: var(--accent); }
+    .cat-count {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      color: var(--muted);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .cat-row.has-tickets .cat-count {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .clients-list {
+      padding: 4px 0 10px 110px;
+      display: flex; flex-wrap: wrap; gap: 5px;
+    }
+    .client-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      font-size: 12px;
+      padding: 4px 9px 4px 11px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .client-tag .x {
+      color: var(--accent2);
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .jornada-section-label {
+      font-size: 11px;
+      color: var(--accent2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 12px 0 10px;
+      font-weight: 600;
+    }
+    .jornada-section-label.muted { color: var(--muted); }
+    .divider-jornada {
+      border-top: 1px solid var(--border-soft);
+      margin: 16px 0 14px;
+    }
+    .total-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline; padding: 10px 4px 16px;
+    }
+    .total-label { font-size: 12px; color: var(--accent2); }
+    .total-amount {
+      font-size: 24px; font-weight: 700;
+      color: var(--accent); letter-spacing: -0.5px;
+      font-family: var(--font-head);
+    }
+
+    /* ===== TOAST ===== */
     .toast {
       position: fixed;
       bottom: 20px; left: 50%;
@@ -402,6 +487,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ===== TABS ===== */
     .tab-bar {
       display: flex; gap: 6px; margin-bottom: 20px;
       overflow-x: auto; scrollbar-width: none;
@@ -421,7 +507,7 @@
       transition: background .15s, color .15s, border-color .15s;
       position: relative;
     }
-    .tab-btn.active { background: var(--accent); color: #050d1a; border-color: var(--accent); }
+    .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
     .tab-btn .tab-badge {
       position: absolute;
       top: -6px; right: -6px;
@@ -433,15 +519,12 @@
       display: flex; align-items: center; justify-content: center;
       padding: 0 4px;
     }
-    .tab-btn .tab-badge.danger {
-      background: var(--danger);
-      color: #fff;
-    }
+    .tab-btn .tab-badge.danger { background: var(--danger); color: #fff; }
     .tab-btn .tab-badge.hidden { display: none; }
-
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeIn .2s ease; }
 
+    /* ===== KPI / DASHBOARD ADMIN ===== */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .kpi-card {
       background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
@@ -468,7 +551,7 @@
     .kpi-card .kpi-value {
       font-family: var(--font-head);
       font-size: 1.4rem; font-weight: 800;
-      color: var(--text); line-height: 1.1;
+      line-height: 1.1;
     }
     .kpi-card .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
@@ -484,15 +567,11 @@
       font-size: 1rem; font-weight: 800;
       letter-spacing: .04em; text-align: center;
       margin-bottom: 16px;
-      color: var(--text);
     }
     .podium-title .icon { color: var(--gold); margin-right: 4px; }
-
     .podium-container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 8px;
+      display: flex; justify-content: center;
+      align-items: flex-end; gap: 8px;
       margin-bottom: 8px;
     }
     .podium-spot { flex: 1; max-width: 120px; text-align: center; }
@@ -500,10 +579,8 @@
     .podium-name {
       font-family: var(--font-head);
       font-size: .85rem; font-weight: 700;
-      color: var(--text);
       margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .podium-value {
       font-family: var(--font-head);
@@ -540,7 +617,6 @@
       font-size: .95rem; font-weight: 700;
       letter-spacing: .04em;
       margin-bottom: 12px;
-      color: var(--text);
       display: flex; align-items: center; gap: 6px;
     }
     .chart-wrap { position: relative; width: 100%; height: 240px; }
@@ -561,6 +637,7 @@
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
+    /* ===== APPROVAL / DETAIL CARDS ===== */
     .approval-card {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -568,7 +645,10 @@
       border-radius: var(--radius);
       padding: 14px;
       margin-bottom: 12px;
+      transition: background .15s, transform .1s;
     }
+    .approval-card.clickable { cursor: pointer; }
+    .approval-card.clickable:active { transform: scale(.99); }
     .approval-card.aprobada { border-left-color: var(--success); }
     .approval-card.rechazada { border-left-color: var(--danger); }
     .approval-card.pendiente { border-left-color: var(--warning); }
@@ -607,12 +687,43 @@
       letter-spacing: .06em;
       margin-bottom: 4px;
     }
-    .motivo-block-text {
-      font-size: .88rem;
-      color: var(--text);
-      line-height: 1.4;
+    .motivo-block-text { font-size: .88rem; line-height: 1.4; }
+    .motivo-block.big {
+      padding: 14px;
+      margin-top: 0;
+      margin-bottom: 16px;
     }
+    .motivo-block.big .motivo-block-text { font-size: .95rem; }
 
+    /* ===== DETAIL ===== */
+    .detail-block {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 4px 14px;
+      margin-bottom: 18px;
+    }
+    .detail-row {
+      display: flex; justify-content: space-between;
+      padding: 10px 0; font-size: .9rem;
+      gap: 10px;
+    }
+    .detail-row + .detail-row { border-top: 1px solid var(--border-soft); }
+    .detail-label {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .detail-value {
+      font-weight: 600;
+      text-align: right;
+      word-break: break-word;
+    }
+    .detail-value.accent { color: var(--accent); font-family: var(--font-head); }
+    .detail-value.success { color: var(--success); font-family: var(--font-head); }
+
+    /* ===== EQUIPO ADMIN ===== */
     .equipo-item {
       display: flex; align-items: center; justify-content: space-between;
       background: var(--card);
@@ -634,6 +745,7 @@
       display: flex; align-items: center; justify-content: center;
     }
 
+    /* ===== MODALS ===== */
     .modal-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,.75);
@@ -656,9 +768,10 @@
     }
     .modal-box.danger { border-top-color: var(--danger); }
     .modal-overlay.open .modal-box { transform: translateY(0); }
-    .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; }
+    .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; }
     .modal-subtitle { color: var(--muted); font-size: .85rem; margin-bottom: 14px; line-height: 1.4; }
 
+    /* ===== TAGS ===== */
     .tag {
       display: inline-block;
       padding: 2px 8px;
@@ -667,11 +780,12 @@
       letter-spacing: .04em; text-transform: uppercase;
     }
     .tag-green { background: rgba(46,204,113,.15); color: var(--success); }
-    .tag-cyan { background: rgba(0,212,255,.15); color: var(--accent); }
+    .tag-cyan { background: rgba(30,156,215,.15); color: var(--accent); }
     .tag-gray { background: rgba(122,147,179,.15); color: var(--muted); }
     .tag-warning { background: rgba(243,156,18,.15); color: var(--warning); }
     .tag-danger { background: rgba(231,76,60,.15); color: var(--danger); }
 
+    /* ===== RADIO CHIPS ===== */
     .radio-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
     .radio-chip {
       flex: 1; min-width: 80px;
@@ -687,20 +801,12 @@
     .radio-chip.selected {
       border-color: var(--accent);
       color: var(--text);
-      background: rgba(0,212,255,.10);
+      background: rgba(30,156,215,.10);
     }
 
     .divider { height: 1px; background: var(--border-soft); margin: 20px 0; }
 
-    .badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--accent); color: #050d1a;
-      border-radius: 50%;
-      width: 20px; height: 20px;
-      font-size: .7rem; font-weight: 800;
-      margin-left: 6px;
-    }
-
+    /* ===== CERTIFICACIÓN ===== */
     .cert-preview {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -720,7 +826,6 @@
     .cert-preview-row .v-num {
       font-family: var(--font-head);
       font-size: 1.4rem; font-weight: 800;
-      color: var(--text);
     }
     .cert-preview-row .v-num.warning { color: var(--warning); }
     .cert-preview-row .v-num.accent { color: var(--accent); }
@@ -730,28 +835,43 @@
       margin-top: 2px;
     }
 
-    .mr-tabs-grupo {
-      margin-bottom: 16px;
-    }
-    .mr-tabs-grupo .tab-bar {
-      margin-bottom: 8px;
-    }
+    .mr-tabs-grupo .tab-bar:first-child { margin-bottom: 8px; }
     .mr-empty {
       color: var(--muted);
       text-align: center;
       padding: 30px 16px;
       font-size: .9rem;
     }
+
+    /* ===== INFO BOX ===== */
+    .info-resend {
+      background: rgba(30, 156, 215, 0.08);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 11px 13px;
+      font-size: .85rem;
+      color: var(--accent2);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- LOGIN -->
+  <!-- ============ LOGIN ============ -->
   <div id="screen-login" class="screen active">
     <div class="login-box">
       <div class="login-brand">
-        <h1><span class="ss">SS</span><span class="servicios">Servicios</span></h1>
+        <div class="logo-wrap">
+          <svg class="logo-icon logo-icon-big" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#1e9cd7"/>
+            <path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/>
+            <circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/>
+            <circle cx="50" cy="62" r="6" fill="#1e9cd7"/>
+          </svg>
+          <span class="logo-text logo-text-big"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+        </div>
         <p>Técnicos Zona Norte</p>
       </div>
 
@@ -790,10 +910,13 @@
     </div>
   </div>
 
-  <!-- MENÚ PRINCIPAL -->
+  <!-- ============ MENÚ ============ -->
   <div id="screen-menu" class="screen">
     <div class="header">
-      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
       <div style="display:flex;align-items:center;">
         <span class="header-user" id="header-user-name"></span>
         <button class="btn-logout" id="btn-logout-menu">SALIR</button>
@@ -843,65 +966,56 @@
 
       <button class="menu-btn" id="btn-ir-ventas">
         <span class="menu-icon">🤝</span>
-        <div class="menu-text">
-          <h3>REGISTRAR VENTA</h3>
-          <p>Comisiones por venta de equipos</p>
-        </div>
+        <div class="menu-text"><h3>REGISTRAR VENTA</h3><p>Comisiones por venta de equipos</p></div>
       </button>
 
       <button class="menu-btn" id="btn-ir-jornada">
         <span class="menu-icon">📋</span>
-        <div class="menu-text">
-          <h3>REGISTRAR JORNADA</h3>
-          <p>Producción en días no laborales</p>
-        </div>
+        <div class="menu-text"><h3>REGISTRAR JORNADA</h3><p>Producción en días no laborales</p></div>
       </button>
 
       <button class="menu-btn" id="btn-ir-mis-registros">
         <span class="menu-icon">📊</span>
-        <div class="menu-text">
-          <h3>MIS REGISTROS</h3>
-          <p>Ver mis ventas y jornadas del mes</p>
-        </div>
+        <div class="menu-text"><h3>MIS REGISTROS</h3><p>Ver mis ventas y jornadas del mes</p></div>
       </button>
 
       <div id="admin-menu-section" style="display:none;">
         <div class="menu-section-title">Administrador</div>
         <button class="menu-btn admin-btn" id="btn-ir-admin">
           <span class="menu-icon">⚙️</span>
-          <div class="menu-text">
-            <h3>PANEL DE GESTIÓN</h3>
-            <p>Aprobaciones, certificación y análisis</p>
-          </div>
+          <div class="menu-text"><h3>PANEL DE GESTIÓN</h3><p>Aprobaciones, certificación y análisis</p></div>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- REGISTRAR VENTA -->
+  <!-- ============ REGISTRAR/EDITAR VENTA ============ -->
   <div id="screen-ventas" class="screen">
     <div class="header">
-      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
       <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
     </div>
     <div class="content">
       <div class="section-header">
         <button class="back-btn" id="back-ventas">←</button>
-        <h2>NUEVA VENTA</h2>
+        <h2 id="ventas-title">NUEVA VENTA</h2>
+      </div>
+
+      <div id="venta-editando-info" class="info-resend" style="display:none;">
+        ℹ️ Al guardar, la venta vuelve a <strong style="color: var(--accent);">Pendiente</strong> para nueva revisión.
       </div>
 
       <div class="form-group">
         <label>Localidad</label>
-        <select id="venta-localidad">
-          <option value="">— seleccioná localidad —</option>
-        </select>
+        <select id="venta-localidad"><option value="">— seleccioná localidad —</option></select>
       </div>
 
       <div class="form-group">
         <label>Móvil</label>
-        <select id="venta-movil">
-          <option value="">— seleccioná móvil —</option>
-        </select>
+        <select id="venta-movil"><option value="">— seleccioná móvil —</option></select>
       </div>
 
       <div class="menu-section-title">Equipo vendido</div>
@@ -924,9 +1038,7 @@
       <div id="dupla-section" style="display:none;margin-top:12px;">
         <div class="form-group">
           <label>Compañero/a</label>
-          <select id="companero-select">
-            <option value="">— seleccioná compañero/a —</option>
-          </select>
+          <select id="companero-select"><option value="">— seleccioná compañero/a —</option></select>
         </div>
       </div>
 
@@ -957,10 +1069,13 @@
     </div>
   </div>
 
-  <!-- REGISTRAR JORNADA -->
+  <!-- ============ REGISTRAR JORNADA (REDISEÑO) ============ -->
   <div id="screen-jornada" class="screen">
     <div class="header">
-      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
       <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -969,41 +1084,56 @@
         <h2>REGISTRAR JORNADA</h2>
       </div>
 
-      <div class="form-group">
-        <label>Fecha de la jornada</label>
-        <input type="date" id="fecha-jornada" />
+      <div class="jornada-info-block">
+        <div class="jornada-info-row">
+          <div class="jornada-info-icon">📅</div>
+          <div class="jornada-info-content">
+            <div class="jornada-info-label">Fecha de la jornada</div>
+            <input type="date" id="fecha-jornada" />
+          </div>
+        </div>
+        <div class="jornada-info-row">
+          <div class="jornada-info-icon">📍</div>
+          <div class="jornada-info-content">
+            <div class="jornada-info-label">Localidad</div>
+            <select id="jornada-localidad"><option value="">— seleccioná localidad —</option></select>
+          </div>
+        </div>
+        <div class="jornada-info-row">
+          <div class="jornada-info-icon">🚐</div>
+          <div class="jornada-info-content">
+            <div class="jornada-info-label">Móvil</div>
+            <select id="jornada-movil"><option value="">— seleccioná móvil —</option></select>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Localidad</label>
-        <select id="jornada-localidad">
-          <option value="">— seleccioná localidad —</option>
-        </select>
+      <div class="jornada-section-label">Clientes por categoría</div>
+      <div id="categorias-pagas"></div>
+
+      <div class="divider-jornada"></div>
+
+      <div class="jornada-section-label muted">Sin pago</div>
+      <div id="categorias-sin-pago"></div>
+
+      <div class="divider-jornada"></div>
+
+      <div class="total-row">
+        <div class="total-label" id="total-tickets">0 tickets · total jornada</div>
+        <div class="total-amount" id="total-amount">$0</div>
       </div>
-
-      <div class="form-group">
-        <label>Móvil</label>
-        <select id="jornada-movil">
-          <option value="">— seleccioná móvil —</option>
-        </select>
-      </div>
-
-      <div class="divider"></div>
-
-      <div id="tickets-lista" style="margin-bottom:16px;"></div>
-
-      <button class="btn btn-secondary btn-icon" id="btn-agregar-ticket-modal">+ AGREGAR TICKET</button>
-
-      <div class="divider"></div>
 
       <button class="btn btn-primary" id="btn-registrar-jornada">REGISTRAR JORNADA</button>
     </div>
   </div>
 
-  <!-- MIS REGISTROS (TÉCNICO) -->
+  <!-- ============ MIS REGISTROS ============ -->
   <div id="screen-mis-registros" class="screen">
     <div class="header">
-      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
       <button class="btn-logout" id="btn-logout-mis-registros">SALIR</button>
     </div>
     <div class="content">
@@ -1012,14 +1142,12 @@
         <h2>MIS REGISTROS</h2>
       </div>
 
-      <!-- Tabs ventas/jornadas -->
       <div class="mr-tabs-grupo">
         <div class="tab-bar">
           <button class="tab-btn active" data-mr-tab="ventas">🤝 VENTAS</button>
           <button class="tab-btn" data-mr-tab="jornadas">📋 JORNADAS</button>
         </div>
 
-        <!-- Tabs estado -->
         <div class="tab-bar">
           <button class="tab-btn active" data-estado="Aprobada">✓ APROBADAS</button>
           <button class="tab-btn" data-estado="Rechazada">
@@ -1035,10 +1163,69 @@
     </div>
   </div>
 
-  <!-- PANEL ADMIN -->
+  <!-- ============ DETALLE DE REGISTRO RECHAZADO ============ -->
+  <div id="screen-detalle" class="screen">
+    <div class="header">
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
+      <button class="btn-logout" id="btn-logout-detalle">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-detalle">←</button>
+        <h2 id="detalle-title">DETALLE</h2>
+      </div>
+      <div id="detalle-contenido"></div>
+    </div>
+  </div>
+
+  <!-- ============ EDITAR JORNADA ============ -->
+  <div id="screen-editar-jornada" class="screen">
+    <div class="header">
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
+      <button class="btn-logout" id="btn-logout-editar-jornada">SALIR</button>
+    </div>
+    <div class="content">
+      <div class="section-header">
+        <button class="back-btn" id="back-editar-jornada">←</button>
+        <h2>EDITAR JORNADA</h2>
+      </div>
+
+      <div class="info-resend">
+        ℹ️ Al guardar, la jornada vuelve a <strong style="color: var(--accent);">Pendiente</strong> para nueva revisión.
+      </div>
+
+      <div class="form-group">
+        <label>Fecha de la jornada</label>
+        <input type="date" id="edit-jornada-fecha" />
+      </div>
+
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="edit-jornada-categoria"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Número de cliente</label>
+        <input type="text" id="edit-jornada-cliente" placeholder="Ej: 123456" inputmode="numeric" />
+      </div>
+
+      <button class="btn btn-primary" id="btn-guardar-edicion-jornada">GUARDAR Y REENVIAR</button>
+    </div>
+  </div>
+
+  <!-- ============ PANEL ADMIN ============ -->
   <div id="screen-admin" class="screen">
     <div class="header">
-      <div class="header-logo"><span class="ss">SS</span><span class="servicios">Servicios</span></div>
+      <div class="logo-wrap">
+        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
+        <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+      </div>
       <button class="btn-logout" id="btn-logout-admin">SALIR</button>
     </div>
     <div class="content">
@@ -1059,11 +1246,9 @@
         <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
       </div>
 
-      <!-- DASHBOARD -->
       <div class="tab-panel active" id="tab-dashboard">
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
-
           <div class="kpi-grid">
             <div class="kpi-card">
               <div class="kpi-icon">💰</div>
@@ -1100,22 +1285,16 @@
 
           <div class="chart-card">
             <div class="chart-card-title">📊 Ventas por técnico</div>
-            <div class="chart-wrap">
-              <canvas id="chart-ventas-tecnico"></canvas>
-            </div>
+            <div class="chart-wrap"><canvas id="chart-ventas-tecnico"></canvas></div>
           </div>
 
           <div class="chart-card">
             <div class="chart-card-title">🥇 Equipos más vendidos</div>
-            <div class="chart-wrap tall">
-              <canvas id="chart-equipos"></canvas>
-            </div>
+            <div class="chart-wrap tall"><canvas id="chart-equipos"></canvas></div>
           </div>
-
         </div>
       </div>
 
-      <!-- APROBACIONES -->
       <div class="tab-panel" id="tab-aprobaciones">
         <div class="loading-msg" id="aprob-loading"><span class="spinner"></span>Cargando pendientes…</div>
         <div id="aprob-content" style="display:none;">
@@ -1127,41 +1306,26 @@
         </div>
       </div>
 
-      <!-- CERTIFICACIÓN -->
       <div class="tab-panel" id="tab-certificacion">
         <div class="form-group">
           <label>Mes a certificar</label>
-          <select id="cert-mes">
-            <option value="">Cargando…</option>
-          </select>
+          <select id="cert-mes"><option value="">Cargando…</option></select>
         </div>
-
-        <div class="cert-preview" id="cert-preview-box">
+        <div class="cert-preview">
           <div class="cert-preview-row">
-            <div class="item">
-              <div class="v-num accent" id="cert-aprobadas-v">—</div>
-              <div class="v-label">Ventas OK</div>
-            </div>
-            <div class="item">
-              <div class="v-num accent" id="cert-aprobadas-j">—</div>
-              <div class="v-label">Jornadas OK</div>
-            </div>
-            <div class="item">
-              <div class="v-num warning" id="cert-pendientes">—</div>
-              <div class="v-label">Pendientes</div>
-            </div>
+            <div class="item"><div class="v-num accent" id="cert-aprobadas-v">—</div><div class="v-label">Ventas OK</div></div>
+            <div class="item"><div class="v-num accent" id="cert-aprobadas-j">—</div><div class="v-label">Jornadas OK</div></div>
+            <div class="item"><div class="v-num warning" id="cert-pendientes">—</div><div class="v-label">Pendientes</div></div>
           </div>
         </div>
-
         <button class="btn btn-primary btn-icon" id="btn-descargar-cert">
           📥 DESCARGAR CERTIFICACIÓN
         </button>
         <p class="loading-msg" style="font-size:.78rem;margin-top:8px;">
-          Solo se incluyen las ventas y jornadas <strong>aprobadas</strong>. Después podés pegar los links de tickets en el Excel.
+          Solo se incluyen las ventas y jornadas <strong>aprobadas</strong>.
         </p>
       </div>
 
-      <!-- Catálogo -->
       <div class="tab-panel" id="tab-equipos">
         <button class="btn btn-secondary btn-sm btn-icon" id="btn-nuevo-equipo" style="margin-bottom:14px;">
           + NUEVO EQUIPO
@@ -1171,25 +1335,19 @@
         </div>
       </div>
 
-      <!-- Ventas -->
       <div class="tab-panel" id="tab-ventas-tab">
         <div class="form-group">
           <label>Filtrar por mes</label>
-          <select id="filtro-mes-ventas">
-            <option value="">Mes actual</option>
-          </select>
+          <select id="filtro-mes-ventas"><option value="">Mes actual</option></select>
         </div>
         <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="ventas-admin-content"></div>
       </div>
 
-      <!-- Jornadas -->
       <div class="tab-panel" id="tab-jornadas-tab">
         <div class="form-group">
           <label>Filtrar por mes</label>
-          <select id="filtro-mes-jornadas">
-            <option value="">Mes actual</option>
-          </select>
+          <select id="filtro-mes-jornadas"><option value="">Mes actual</option></select>
         </div>
         <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="jornadas-admin-content"></div>
@@ -1231,24 +1389,6 @@
   </div>
 </div>
 
-<!-- MODAL TICKET -->
-<div class="modal-overlay" id="modal-ticket">
-  <div class="modal-box">
-    <div class="modal-title">AGREGAR TICKET</div>
-    <div class="form-group">
-      <label>Categoría</label>
-      <div class="categoria-grid" id="modal-ticket-cats"></div>
-    </div>
-    <div class="form-group">
-      <label>Número de cliente</label>
-      <input type="text" id="modal-ticket-cliente" placeholder="Ej: 123456" inputmode="numeric" />
-    </div>
-    <button class="btn btn-primary" id="btn-confirmar-ticket">AGREGAR</button>
-    <button class="btn btn-secondary" id="btn-cancelar-ticket" style="margin-top:8px;">CANCELAR</button>
-    <div class="error-msg" id="modal-ticket-error"></div>
-  </div>
-</div>
-
 <!-- MODAL MOTIVO RECHAZO -->
 <div class="modal-overlay" id="modal-rechazo">
   <div class="modal-box danger">
@@ -1266,12 +1406,21 @@
   </div>
 </div>
 
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-overlay" id="modal-eliminar">
+  <div class="modal-box danger">
+    <div class="modal-title">¿ELIMINAR REGISTRO?</div>
+    <div class="modal-subtitle">
+      Esta acción <strong>no se puede deshacer</strong>. El registro se borrará completamente del sistema.
+    </div>
+    <button class="btn btn-danger" id="btn-confirmar-eliminar">SÍ, ELIMINAR</button>
+    <button class="btn btn-secondary" id="btn-cancelar-eliminar" style="margin-top:8px;">CANCELAR</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  CONFIGURACIÓN
-// ============================================================
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHfCx8ZWo6vLgp-29AP_yFVuPRTR3YPLB4lRPlE8AUhyL5a8m7wCH9kix_gQdYe-_O/exec';
 
 const session = { usuario: null, esAdmin: false, movil: '' };
@@ -1279,9 +1428,11 @@ let equiposCatalogo = [];
 let tecnicosLista = [];
 let movilesLista = [];
 let localidadesLista = [];
-let ticketsJornada = [];
-let modalTicketCat = null;
 let rechazoEnCurso = null;
+let eliminarEnCurso = null;
+let registroActual = null;
+let editandoVenta = null;
+let editandoJornada = null;
 
 let chartVentasTecnico = null;
 let chartEquipos = null;
@@ -1297,9 +1448,13 @@ const CATEGORIAS = [
   { nombre: 'Visita No Concretada', pago: false }
 ];
 
-// ============================================================
-//  UTILIDADES
-// ============================================================
+function nombreCatCorto(nombre) {
+  return nombre
+    .replace('Instalacion ', 'Inst. ')
+    .replace('Servicio Tecnico', 'Serv. Téc.')
+    .replace('Visita No Concretada', 'Visita N/C');
+}
+
 function mostrarPantalla(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
@@ -1351,6 +1506,13 @@ function fechaToBackend(yyyymmdd) {
   return `${d}/${m}/${a}`;
 }
 
+function fechaToInput(ddmmyyyy) {
+  if (!ddmmyyyy) return '';
+  const partes = String(ddmmyyyy).split('/');
+  if (partes.length !== 3) return '';
+  return `${partes[2]}-${partes[1].padStart(2,'0')}-${partes[0].padStart(2,'0')}`;
+}
+
 function hoy() {
   return new Date().toISOString().split('T')[0];
 }
@@ -1367,25 +1529,21 @@ async function cargarTecnicos() {
       tecnicosLista = data.tecnicos;
       llenarSelectTecnicos();
     }
-  } catch(e) { console.warn('No se pudieron cargar técnicos:', e); }
+  } catch(e) {}
 }
 
 async function cargarMoviles() {
   try {
     const data = await api({ accion: 'obtenerMoviles' });
-    if (data.ok && Array.isArray(data.moviles)) {
-      movilesLista = data.moviles;
-    }
-  } catch(e) { console.warn('No se pudieron cargar móviles:', e); }
+    if (data.ok && Array.isArray(data.moviles)) movilesLista = data.moviles;
+  } catch(e) {}
 }
 
 async function cargarLocalidades() {
   try {
     const data = await api({ accion: 'obtenerLocalidades' });
-    if (data.ok && Array.isArray(data.localidades)) {
-      localidadesLista = data.localidades;
-    }
-  } catch(e) { console.warn('No se pudieron cargar localidades:', e); }
+    if (data.ok && Array.isArray(data.localidades)) localidadesLista = data.localidades;
+  } catch(e) {}
 }
 
 function llenarSelectTecnicos() {
@@ -1429,14 +1587,10 @@ async function intentarLogin() {
   const errEl = document.getElementById('login-error');
   errEl.textContent = '';
 
-  if (!tecnico) {
-    errEl.textContent = 'Seleccioná un técnico o Administrador';
-    return;
-  }
+  if (!tecnico) { errEl.textContent = 'Seleccioná un técnico o Administrador'; return; }
   if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
   const nombreLogin = (tecnico === '__ADMIN__') ? '' : tecnico;
-
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
@@ -1462,7 +1616,7 @@ async function intentarLogin() {
 }
 
 // ============================================================
-//  MENÚ PRINCIPAL
+//  MENÚ
 // ============================================================
 async function cargarMenuPrincipal() {
   const nombreMostrar = session.esAdmin ? 'Administrador' : session.usuario;
@@ -1470,8 +1624,6 @@ async function cargarMenuPrincipal() {
   document.getElementById('header-user-name').textContent = nombreMostrar;
   document.getElementById('menu-mes').textContent = mesActualNombre().toUpperCase();
   document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
-
-  // Mis Registros solo para tecnicos
   document.getElementById('btn-ir-mis-registros').style.display = session.esAdmin ? 'none' : 'flex';
 
   mostrarPantalla('menu');
@@ -1498,12 +1650,9 @@ async function cargarMenuPrincipal() {
         banner.classList.add('hidden');
       }
     }
-  } catch(e) { console.warn('No se pudo cargar resumen:', e); }
+  } catch(e) {}
 
-  // Cargar alerta de rechazos solo para tecnicos
-  if (!session.esAdmin) {
-    cargarAlertaRechazos();
-  }
+  if (!session.esAdmin) cargarAlertaRechazos();
 }
 
 async function cargarAlertaRechazos() {
@@ -1525,7 +1674,7 @@ async function cargarAlertaRechazos() {
     } else {
       banner.classList.add('hidden');
     }
-  } catch(e) { console.warn('No se pudo cargar alerta de rechazos:', e); }
+  } catch(e) {}
 }
 
 document.getElementById('rechazos-banner').addEventListener('click', () => {
@@ -1533,15 +1682,16 @@ document.getElementById('rechazos-banner').addEventListener('click', () => {
 });
 
 // ============================================================
-//  VENTAS
+//  VENTAS (registrar y editar)
 // ============================================================
 let equipoSeleccionado = null;
 let tipoVenta = 'directa';
 let modoTrabajo = 'solo';
 let metodoPago = 'Contado';
 
-async function cargarPantallaVentas() {
+async function cargarPantallaVentas(modoEdicion = null) {
   mostrarPantalla('ventas');
+
   document.getElementById('fecha-venta').value = hoy();
   document.getElementById('nro-cliente').value = '';
 
@@ -1560,6 +1710,43 @@ async function cargarPantallaVentas() {
 
   await cargarEquipos();
   llenarSelectCompanero();
+
+  if (modoEdicion) {
+    document.getElementById('ventas-title').textContent = 'EDITAR VENTA';
+    document.getElementById('venta-editando-info').style.display = 'block';
+    document.getElementById('btn-registrar-venta').textContent = 'GUARDAR Y REENVIAR';
+    editandoVenta = modoEdicion;
+
+    document.getElementById('venta-localidad').value = modoEdicion.localidad || '';
+    document.getElementById('venta-movil').value = modoEdicion.movil || '';
+    document.getElementById('nro-cliente').value = modoEdicion.cliente || '';
+    document.getElementById('fecha-venta').value = fechaToInput(modoEdicion.fecha);
+
+    setTimeout(() => {
+      const eq = equiposCatalogo.find(e => e.nombre === modoEdicion.equipo);
+      if (eq) {
+        const card = document.querySelector(`.equipo-card[data-id="${eq.id}"]`);
+        if (card) seleccionarEquipo(eq, card);
+      }
+
+      modoTrabajo = modoEdicion.dupla ? 'dupla' : 'solo';
+      resetChips('modo-trabajo-group', modoTrabajo);
+      document.getElementById('dupla-section').style.display = modoTrabajo === 'dupla' ? 'block' : 'none';
+      if (modoEdicion.companero) {
+        document.getElementById('companero-select').value = modoEdicion.companero;
+      }
+
+      metodoPago = modoEdicion.formaPago || 'Contado';
+      resetChips('metodo-pago-group', metodoPago);
+
+      calcularComision();
+    }, 300);
+  } else {
+    document.getElementById('ventas-title').textContent = 'NUEVA VENTA';
+    document.getElementById('venta-editando-info').style.display = 'none';
+    document.getElementById('btn-registrar-venta').textContent = 'REGISTRAR VENTA';
+    editandoVenta = null;
+  }
 }
 
 function llenarSelectLocalidades(selectId) {
@@ -1611,10 +1798,7 @@ function renderEquiposSelector() {
     const card = document.createElement('div');
     card.className = 'equipo-card';
     card.dataset.id = eq.id;
-    card.innerHTML = `
-      <div class="eq-nombre">${eq.nombre}</div>
-      <div class="eq-precio">${formatoPesos(eq.precioVenta)}</div>
-    `;
+    card.innerHTML = `<div class="eq-nombre">${eq.nombre}</div><div class="eq-precio">${formatoPesos(eq.precioVenta)}</div>`;
     card.addEventListener('click', () => seleccionarEquipo(eq, card));
     cont.appendChild(card);
   });
@@ -1704,11 +1888,11 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
   }
 
   const btn = document.getElementById('btn-registrar-venta');
-  btn.textContent = 'Registrando…';
+  const originalText = btn.textContent;
+  btn.textContent = editandoVenta ? 'Guardando…' : 'Registrando…';
   btn.disabled = true;
 
   const payload = {
-    accion: 'registrarVenta',
     tecnico: session.usuario,
     localidad: localidad,
     movil: movil,
@@ -1723,110 +1907,131 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
     fechaJornada: fechaToBackend(fecha)
   };
 
+  if (editandoVenta) {
+    payload.accion = 'editarVenta';
+    payload.fila = editandoVenta.fila;
+  } else {
+    payload.accion = 'registrarVenta';
+  }
+
   try {
     const data = await apiPost(payload);
     if (data.ok) {
-      toast('¡Venta registrada! Esperando aprobación', 'success');
+      toast(editandoVenta ? '¡Venta reenviada! Esperando aprobación' : '¡Venta registrada! Esperando aprobación', 'success');
+      editandoVenta = null;
       setTimeout(() => mostrarPantalla('menu'), 1200);
     } else {
-      toast(data.error || 'Error al registrar', 'error');
+      toast(data.error || 'Error', 'error');
     }
   } catch(e) {
     toast('Error de conexión', 'error');
   } finally {
-    btn.textContent = 'REGISTRAR VENTA';
+    btn.textContent = originalText;
     btn.disabled = false;
   }
 });
 
 // ============================================================
-//  JORNADAS
+//  JORNADAS - REDISEÑO CON CHIPS
 // ============================================================
-async function cargarPantallaJornada() {
-  ticketsJornada = [];
-  renderTicketsLista();
-  document.getElementById('fecha-jornada').value = hoy();
+let ticketsPorCategoria = {};
 
+async function cargarPantallaJornada() {
+  ticketsPorCategoria = {};
+  CATEGORIAS.forEach(c => ticketsPorCategoria[c.nombre] = []);
+
+  document.getElementById('fecha-jornada').value = hoy();
   llenarSelectLocalidades('jornada-localidad');
   llenarSelectMoviles('jornada-movil', session.movil);
 
+  renderCategoriasJornada();
+  recalcularTotalJornada();
   mostrarPantalla('jornada');
 }
 
-function renderTicketsLista() {
-  const cont = document.getElementById('tickets-lista');
-  if (!ticketsJornada.length) {
-    cont.innerHTML = '<div class="loading-msg">Aún no agregaste tickets</div>';
-    return;
-  }
-  cont.innerHTML = '<div class="menu-section-title">Tickets cargados (' + ticketsJornada.length + ')</div>';
-  ticketsJornada.forEach((t, i) => {
-    const item = document.createElement('div');
-    item.className = 'ticket-item';
-    const cat = CATEGORIAS.find(c => c.nombre === t.categoria);
-    const paga = cat ? cat.pago : false;
-    item.innerHTML = `
-      <div class="ticket-item-info">
-        <div class="t-cat">${t.categoria}</div>
-        <div class="t-cli">Cliente: ${t.nroCliente || '—'}</div>
-      </div>
-      <div class="ticket-item-precio">${paga ? '$20K' : 'sin pago'}</div>
-      <button class="t-delete" onclick="eliminarTicket(${i})">✕</button>
-    `;
-    cont.appendChild(item);
-  });
-}
+function renderCategoriasJornada() {
+  const contPagas = document.getElementById('categorias-pagas');
+  const contSinPago = document.getElementById('categorias-sin-pago');
+  contPagas.innerHTML = '';
+  contSinPago.innerHTML = '';
 
-window.eliminarTicket = function(idx) {
-  ticketsJornada.splice(idx, 1);
-  renderTicketsLista();
-};
-
-document.getElementById('btn-agregar-ticket-modal').addEventListener('click', () => {
-  abrirModalTicket();
-});
-
-function abrirModalTicket() {
-  modalTicketCat = null;
-  document.getElementById('modal-ticket-cliente').value = '';
-  document.getElementById('modal-ticket-error').textContent = '';
-  renderModalCategorias();
-  document.getElementById('modal-ticket').classList.add('open');
-}
-
-function renderModalCategorias() {
-  const cont = document.getElementById('modal-ticket-cats');
-  cont.innerHTML = '';
   CATEGORIAS.forEach(cat => {
-    const btn = document.createElement('div');
-    btn.className = 'cat-btn' + (cat.pago ? '' : ' no-pago');
-    btn.dataset.nombre = cat.nombre;
-    btn.textContent = cat.nombre;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#modal-ticket-cats .cat-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      modalTicketCat = cat.nombre;
+    const wrapper = document.createElement('div');
+    const row = document.createElement('div');
+    row.className = 'cat-row';
+    row.dataset.categoria = cat.nombre;
+
+    const tickets = ticketsPorCategoria[cat.nombre] || [];
+    if (tickets.length > 0) row.classList.add('has-tickets');
+
+    row.innerHTML = `
+      <div class="cat-name${!cat.pago ? ' disabled' : ''}">${nombreCatCorto(cat.nombre)}</div>
+      <input class="cat-input" placeholder="Agregar N° cliente y Enter…" inputmode="numeric">
+      <div class="cat-count">${tickets.length}</div>
+    `;
+
+    const input = row.querySelector('.cat-input');
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        e.preventDefault();
+        agregarTicketJornada(cat.nombre, input.value.trim());
+        input.value = '';
+      }
     });
-    cont.appendChild(btn);
+
+    wrapper.appendChild(row);
+
+    if (tickets.length > 0) {
+      const list = document.createElement('div');
+      list.className = 'clients-list';
+      tickets.forEach((cliente, idx) => {
+        const tag = document.createElement('span');
+        tag.className = 'client-tag';
+        tag.innerHTML = `${cliente} <span class="x">×</span>`;
+        tag.querySelector('.x').addEventListener('click', () => {
+          eliminarTicketJornada(cat.nombre, idx);
+        });
+        list.appendChild(tag);
+      });
+      wrapper.appendChild(list);
+    }
+
+    if (cat.pago) contPagas.appendChild(wrapper);
+    else contSinPago.appendChild(wrapper);
   });
 }
 
-document.getElementById('btn-cancelar-ticket').addEventListener('click', () => {
-  document.getElementById('modal-ticket').classList.remove('open');
-});
+function agregarTicketJornada(categoria, nroCliente) {
+  if (!ticketsPorCategoria[categoria]) ticketsPorCategoria[categoria] = [];
+  ticketsPorCategoria[categoria].push(nroCliente);
+  renderCategoriasJornada();
+  recalcularTotalJornada();
+  // Focus en el mismo input para seguir cargando
+  setTimeout(() => {
+    const row = document.querySelector(`.cat-row[data-categoria="${categoria}"]`);
+    if (row) row.querySelector('.cat-input').focus();
+  }, 50);
+}
 
-document.getElementById('btn-confirmar-ticket').addEventListener('click', () => {
-  const errEl = document.getElementById('modal-ticket-error');
-  const nroCliente = document.getElementById('modal-ticket-cliente').value.trim();
+function eliminarTicketJornada(categoria, idx) {
+  if (!ticketsPorCategoria[categoria]) return;
+  ticketsPorCategoria[categoria].splice(idx, 1);
+  renderCategoriasJornada();
+  recalcularTotalJornada();
+}
 
-  if (!modalTicketCat) { errEl.textContent = 'Seleccioná una categoría'; return; }
-  if (!nroCliente) { errEl.textContent = 'Ingresá el N° de cliente'; return; }
-
-  ticketsJornada.push({ categoria: modalTicketCat, nroCliente: nroCliente });
-  renderTicketsLista();
-  document.getElementById('modal-ticket').classList.remove('open');
-  toast('Ticket agregado', 'success');
-});
+function recalcularTotalJornada() {
+  let totalTickets = 0;
+  let totalMonto = 0;
+  CATEGORIAS.forEach(cat => {
+    const tickets = ticketsPorCategoria[cat.nombre] || [];
+    totalTickets += tickets.length;
+    if (cat.pago) totalMonto += tickets.length * 20000;
+  });
+  document.getElementById('total-tickets').textContent =
+    totalTickets + ' ticket' + (totalTickets !== 1 ? 's' : '') + ' · total jornada';
+  document.getElementById('total-amount').textContent = formatoPesos(totalMonto);
+}
 
 document.getElementById('btn-registrar-jornada').addEventListener('click', async () => {
   const localidad = document.getElementById('jornada-localidad').value;
@@ -1836,7 +2041,16 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
   if (!fecha) { toast('Ingresá la fecha de la jornada', 'error'); return; }
   if (!localidad) { toast('Seleccioná la localidad', 'error'); return; }
   if (!movil) { toast('Seleccioná el móvil', 'error'); return; }
-  if (!ticketsJornada.length) { toast('Agregá al menos un ticket', 'error'); return; }
+
+  const tickets = [];
+  CATEGORIAS.forEach(cat => {
+    const lista = ticketsPorCategoria[cat.nombre] || [];
+    lista.forEach(cliente => {
+      tickets.push({ categoria: cat.nombre, nroCliente: cliente });
+    });
+  });
+
+  if (!tickets.length) { toast('Agregá al menos un ticket', 'error'); return; }
 
   const btn = document.getElementById('btn-registrar-jornada');
   btn.textContent = 'Registrando…';
@@ -1848,7 +2062,7 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
     fechaJornada: fechaToBackend(fecha),
     localidad: localidad,
     movil: movil,
-    tickets: JSON.stringify(ticketsJornada)
+    tickets: JSON.stringify(tickets)
   };
 
   try {
@@ -1868,7 +2082,7 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
 });
 
 // ============================================================
-//  MIS REGISTROS (TECNICO)
+//  MIS REGISTROS
 // ============================================================
 let mrTabActual = 'ventas';
 let mrEstadoActual = 'Aprobada';
@@ -1877,7 +2091,6 @@ let mrDatosCache = { ventas: [], jornadas: [] };
 async function cargarMisRegistros(estadoInicial) {
   mostrarPantalla('mis-registros');
 
-  // Si viene un estado especifico (ej: desde el banner de rechazos)
   if (estadoInicial) {
     mrEstadoActual = estadoInicial;
     document.querySelectorAll('[data-estado]').forEach(b => {
@@ -1889,10 +2102,7 @@ async function cargarMisRegistros(estadoInicial) {
   document.getElementById('mr-lista').innerHTML = '';
 
   try {
-    const data = await api({
-      accion: 'obtenerMisRegistros',
-      tecnico: session.usuario
-    });
+    const data = await api({ accion: 'obtenerMisRegistros', tecnico: session.usuario });
     if (data.ok) {
       mrDatosCache.ventas = data.ventas || [];
       mrDatosCache.jornadas = data.jornadas || [];
@@ -1930,11 +2140,17 @@ function renderMisRegistros() {
   }
 
   lista.innerHTML = '';
-  filtrados.forEach(item => {
+  filtrados.forEach((item, idx) => {
     const card = document.createElement('div');
     const estadoClase = mrEstadoActual === 'Aprobada' ? 'aprobada' :
                         mrEstadoActual === 'Rechazada' ? 'rechazada' : 'pendiente';
     card.className = `approval-card ${estadoClase}`;
+
+    // Solo las rechazadas son clickeables
+    if (mrEstadoActual === 'Rechazada') {
+      card.classList.add('clickable');
+      card.addEventListener('click', () => abrirDetalleRechazado(item));
+    }
 
     if (mrTabActual === 'ventas') {
       card.innerHTML = `
@@ -1949,6 +2165,9 @@ function renderMisRegistros() {
           <div class="motivo-block">
             <div class="motivo-block-label">⚠ Motivo del rechazo</div>
             <div class="motivo-block-text">${item.motivoRechazo}</div>
+          </div>
+          <div style="text-align:right;font-size:.78rem;color:var(--accent);margin-top:8px;">
+            Tocá para editar o eliminar →
           </div>
         ` : ''}
       `;
@@ -1965,6 +2184,9 @@ function renderMisRegistros() {
             <div class="motivo-block-label">⚠ Motivo del rechazo</div>
             <div class="motivo-block-text">${item.motivoRechazo}</div>
           </div>
+          <div style="text-align:right;font-size:.78rem;color:var(--accent);margin-top:8px;">
+            Tocá para editar o eliminar →
+          </div>
         ` : ''}
       `;
     }
@@ -1972,7 +2194,6 @@ function renderMisRegistros() {
   });
 }
 
-// Click en tabs ventas/jornadas
 document.querySelectorAll('[data-mr-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     mrTabActual = btn.dataset.mrTab;
@@ -1982,7 +2203,6 @@ document.querySelectorAll('[data-mr-tab]').forEach(btn => {
   });
 });
 
-// Click en tabs aprobada/rechazada/pendiente
 document.querySelectorAll('[data-estado]').forEach(btn => {
   btn.addEventListener('click', () => {
     mrEstadoActual = btn.dataset.estado;
@@ -1993,7 +2213,173 @@ document.querySelectorAll('[data-estado]').forEach(btn => {
 });
 
 // ============================================================
-//  PANEL ADMIN
+//  DETALLE DE REGISTRO RECHAZADO
+// ============================================================
+function abrirDetalleRechazado(item) {
+  registroActual = item;
+  const esVenta = mrTabActual === 'ventas';
+
+  document.getElementById('detalle-title').textContent = esVenta ? 'VENTA RECHAZADA' : 'JORNADA RECHAZADA';
+
+  const cont = document.getElementById('detalle-contenido');
+
+  let detalleHTML = `
+    <div class="motivo-block big">
+      <div class="motivo-block-label">⚠ Motivo del rechazo</div>
+      <div class="motivo-block-text">${item.motivoRechazo || 'Sin motivo especificado'}</div>
+    </div>
+
+    <div class="detail-block">
+  `;
+
+  if (esVenta) {
+    detalleHTML += `
+      <div class="detail-row"><div class="detail-label">Equipo</div><div class="detail-value">${item.equipo}</div></div>
+      <div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${item.cliente || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Localidad</div><div class="detail-value">${item.localidad || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Móvil</div><div class="detail-value">${item.movil || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Forma de pago</div><div class="detail-value">${item.formaPago}</div></div>
+      <div class="detail-row"><div class="detail-label">Modalidad</div><div class="detail-value">${item.dupla ? 'Dupla c/ ' + item.companero : 'Solo'}</div></div>
+      <div class="detail-row"><div class="detail-label">Fecha</div><div class="detail-value">${item.fecha}</div></div>
+      <div class="detail-row"><div class="detail-label">Tu comisión</div><div class="detail-value accent">${formatoPesos(item.comision)}</div></div>
+    `;
+  } else {
+    detalleHTML += `
+      <div class="detail-row"><div class="detail-label">Categoría</div><div class="detail-value">${item.categoria}</div></div>
+      <div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${item.cliente || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Localidad</div><div class="detail-value">${item.localidad || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Móvil</div><div class="detail-value">${item.movil || '—'}</div></div>
+      <div class="detail-row"><div class="detail-label">Día</div><div class="detail-value">${item.fecha} (${item.tipoDia})</div></div>
+      <div class="detail-row"><div class="detail-label">Precio</div><div class="detail-value accent">${formatoPesos(item.precio)}</div></div>
+    `;
+  }
+
+  detalleHTML += `
+    </div>
+
+    <div class="approval-actions">
+      <button class="btn btn-danger" id="btn-detalle-eliminar">✕ ELIMINAR</button>
+      <button class="btn btn-primary" id="btn-detalle-editar">✎ EDITAR Y REENVIAR</button>
+    </div>
+  `;
+
+  cont.innerHTML = detalleHTML;
+
+  document.getElementById('btn-detalle-eliminar').addEventListener('click', () => {
+    eliminarEnCurso = { tipo: esVenta ? 'venta' : 'jornada', fila: item.fila };
+    document.getElementById('modal-eliminar').classList.add('open');
+  });
+
+  document.getElementById('btn-detalle-editar').addEventListener('click', () => {
+    if (esVenta) {
+      cargarPantallaVentas(item);
+    } else {
+      abrirEdicionJornada(item);
+    }
+  });
+
+  mostrarPantalla('detalle');
+}
+
+// ============================================================
+//  EDITAR JORNADA
+// ============================================================
+function abrirEdicionJornada(item) {
+  editandoJornada = item;
+
+  // Llenar select de categorías
+  const sel = document.getElementById('edit-jornada-categoria');
+  sel.innerHTML = '';
+  CATEGORIAS.forEach(cat => {
+    const op = document.createElement('option');
+    op.value = cat.nombre;
+    op.textContent = cat.nombre + (cat.pago ? '' : ' (sin pago)');
+    if (cat.nombre === item.categoria) op.selected = true;
+    sel.appendChild(op);
+  });
+
+  document.getElementById('edit-jornada-fecha').value = fechaToInput(item.fecha);
+  document.getElementById('edit-jornada-cliente').value = item.cliente || '';
+
+  mostrarPantalla('editar-jornada');
+}
+
+document.getElementById('btn-guardar-edicion-jornada').addEventListener('click', async () => {
+  if (!editandoJornada) return;
+
+  const fecha = document.getElementById('edit-jornada-fecha').value;
+  const categoria = document.getElementById('edit-jornada-categoria').value;
+  const nroCliente = document.getElementById('edit-jornada-cliente').value.trim();
+
+  if (!fecha) { toast('Ingresá la fecha', 'error'); return; }
+  if (!categoria) { toast('Seleccioná una categoría', 'error'); return; }
+  if (!nroCliente) { toast('Ingresá el N° de cliente', 'error'); return; }
+
+  const btn = document.getElementById('btn-guardar-edicion-jornada');
+  btn.textContent = 'Guardando…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({
+      accion: 'editarJornada',
+      fila: editandoJornada.fila,
+      fechaJornada: fechaToBackend(fecha),
+      categoria: categoria,
+      nroCliente: nroCliente
+    });
+
+    if (data.ok) {
+      toast('¡Jornada reenviada! Esperando aprobación', 'success');
+      editandoJornada = null;
+      setTimeout(() => mostrarPantalla('menu'), 1200);
+    } else {
+      toast(data.error || 'Error', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = 'GUARDAR Y REENVIAR';
+    btn.disabled = false;
+  }
+});
+
+// ============================================================
+//  MODAL ELIMINAR
+// ============================================================
+document.getElementById('btn-cancelar-eliminar').addEventListener('click', () => {
+  document.getElementById('modal-eliminar').classList.remove('open');
+  eliminarEnCurso = null;
+});
+
+document.getElementById('btn-confirmar-eliminar').addEventListener('click', async () => {
+  if (!eliminarEnCurso) return;
+
+  const accion = eliminarEnCurso.tipo === 'venta' ? 'eliminarVenta' : 'eliminarJornada';
+  const btn = document.getElementById('btn-confirmar-eliminar');
+  btn.textContent = 'Eliminando…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({ accion, fila: eliminarEnCurso.fila });
+    if (data.ok) {
+      toast('Registro eliminado ✓', 'success');
+      document.getElementById('modal-eliminar').classList.remove('open');
+      eliminarEnCurso = null;
+      mostrarPantalla('mis-registros');
+      cargarMisRegistros();
+    } else {
+      toast(data.error || 'Error al eliminar', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = 'SÍ, ELIMINAR';
+    btn.disabled = false;
+  }
+});
+
+// ============================================================
+//  ADMIN
 // ============================================================
 function cargarPantallaAdmin() {
   mostrarPantalla('admin');
@@ -2030,9 +2416,6 @@ async function actualizarBadgePendientes() {
   } catch(e) {}
 }
 
-// ============================================================
-//  DASHBOARD
-// ============================================================
 async function cargarDashboard() {
   const loading = document.getElementById('dashboard-loading');
   const content = document.getElementById('dashboard-content');
@@ -2060,7 +2443,6 @@ async function cargarDashboard() {
 
   } catch(e) {
     loading.innerHTML = '<div class="error-msg">Error al cargar el dashboard</div>';
-    console.error(e);
   }
 }
 
@@ -2088,9 +2470,7 @@ function procesarYRenderizarTodo(ventas) {
       comisionesTec[tec2] = (comisionesTec[tec2] || 0) + com;
       ventasTec[tec2] = (ventasTec[tec2] || 0) + 1;
     }
-    if (equipo) {
-      equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
-    }
+    if (equipo) equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
   });
 
   renderPodio(comisionesTec);
@@ -2100,9 +2480,7 @@ function procesarYRenderizarTodo(ventas) {
 
 function renderPodio(comisionesTec) {
   const cont = document.getElementById('podium-container');
-  const ranking = Object.entries(comisionesTec)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
+  const ranking = Object.entries(comisionesTec).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
   if (!ranking.length) {
     cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin ventas aprobadas</div>';
@@ -2146,11 +2524,7 @@ function renderChartVentasTecnico(ventasTec, comisionesTec) {
   const valoresVentas = ordenados.map(e => e[1]);
 
   if (chartVentasTecnico) chartVentasTecnico.destroy();
-
-  if (!labels.length) {
-    ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>';
-    return;
-  }
+  if (!labels.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
 
   chartVentasTecnico = new Chart(ctx, {
     type: 'bar',
@@ -2159,16 +2533,14 @@ function renderChartVentasTecnico(ventasTec, comisionesTec) {
       datasets: [{
         label: 'Equipos vendidos',
         data: valoresVentas,
-        backgroundColor: 'rgba(0, 212, 255, 0.6)',
-        borderColor: 'rgba(0, 212, 255, 1)',
+        backgroundColor: 'rgba(30, 156, 215, 0.6)',
+        borderColor: 'rgba(30, 156, 215, 1)',
         borderWidth: 2,
         borderRadius: 6
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -2182,15 +2554,8 @@ function renderChartVentasTecnico(ventasTec, comisionesTec) {
         }
       },
       scales: {
-        x: {
-          ticks: { color: '#7a93b3', font: { size: 11 }, stepSize: 1 },
-          grid: { color: 'rgba(26, 53, 96, 0.3)' },
-          beginAtZero: true
-        },
-        y: {
-          ticks: { color: '#e8eaf0', font: { size: 11 } },
-          grid: { display: false }
-        }
+        x: { ticks: { color: '#7a93b3', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(26, 53, 96, 0.3)' }, beginAtZero: true },
+        y: { ticks: { color: '#e8eaf0', font: { size: 11 } }, grid: { display: false } }
       }
     }
   });
@@ -2213,15 +2578,11 @@ function renderChartEquipos(equiposCount) {
   }
 
   if (chartEquipos) chartEquipos.destroy();
-
-  if (!labels.length) {
-    ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>';
-    return;
-  }
+  if (!labels.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
 
   const colores = [
-    'rgba(0, 212, 255, 0.85)',
-    'rgba(77, 208, 225, 0.85)',
+    'rgba(30, 156, 215, 0.85)',
+    'rgba(92, 184, 227, 0.85)',
     'rgba(0, 168, 232, 0.85)',
     'rgba(100, 181, 246, 0.85)',
     'rgba(38, 198, 218, 0.85)',
@@ -2230,28 +2591,11 @@ function renderChartEquipos(equiposCount) {
 
   chartEquipos = new Chart(ctx, {
     type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: valores,
-        backgroundColor: colores,
-        borderColor: '#0a1830',
-        borderWidth: 2
-      }]
-    },
+    data: { labels: labels, datasets: [{ data: valores, backgroundColor: colores, borderColor: '#0a1830', borderWidth: 2 }] },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            color: '#e8eaf0',
-            padding: 10,
-            font: { size: 11 },
-            boxWidth: 14, boxHeight: 14
-          }
-        },
+        legend: { position: 'bottom', labels: { color: '#e8eaf0', padding: 10, font: { size: 11 }, boxWidth: 14, boxHeight: 14 } },
         tooltip: {
           callbacks: {
             label: (ctx) => {
@@ -2267,7 +2611,7 @@ function renderChartEquipos(equiposCount) {
 }
 
 // ============================================================
-//  APROBACIONES
+//  APROBACIONES ADMIN
 // ============================================================
 async function cargarAprobaciones() {
   const loading = document.getElementById('aprob-loading');
@@ -2277,12 +2621,8 @@ async function cargarAprobaciones() {
 
   try {
     const data = await api({ accion: 'obtenerPendientes' });
-    if (data.ok) {
-      renderAprobaciones(data.ventas || [], data.jornadas || []);
-    }
-  } catch(e) {
-    console.error(e);
-  } finally {
+    if (data.ok) renderAprobaciones(data.ventas || [], data.jornadas || []);
+  } catch(e) {} finally {
     loading.style.display = 'none';
     content.style.display = 'block';
   }
@@ -2350,7 +2690,6 @@ function renderAprobaciones(ventas, jornadas) {
 }
 
 window.aprobar = async function(tipo, fila, rechazar = false) {
-  // Si es rechazo, abrir modal para pedir motivo
   if (rechazar) {
     rechazoEnCurso = { tipo, fila };
     document.getElementById('modal-motivo-texto').value = '';
@@ -2359,7 +2698,6 @@ window.aprobar = async function(tipo, fila, rechazar = false) {
     return;
   }
 
-  // Aprobacion directa
   const accion = tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada';
   try {
     const data = await apiPost({ accion, fila });
@@ -2384,10 +2722,7 @@ document.getElementById('btn-confirmar-rechazo').addEventListener('click', async
   const motivo = document.getElementById('modal-motivo-texto').value.trim();
   const errEl = document.getElementById('modal-rechazo-error');
 
-  if (!motivo) {
-    errEl.textContent = 'Escribí un motivo para que el técnico sepa qué corregir';
-    return;
-  }
+  if (!motivo) { errEl.textContent = 'Escribí un motivo para que el técnico sepa qué corregir'; return; }
   if (!rechazoEnCurso) return;
 
   const { tipo, fila } = rechazoEnCurso;
@@ -2433,11 +2768,8 @@ async function cargarCertificacion() {
         op.textContent = m;
         sel.appendChild(op);
       });
-      if (data.meses.length === 0) {
-        sel.innerHTML = '<option value="">Sin meses disponibles</option>';
-      } else {
-        actualizarPreviewCert();
-      }
+      if (data.meses.length === 0) sel.innerHTML = '<option value="">Sin meses disponibles</option>';
+      else actualizarPreviewCert();
     }
   } catch(e) {}
 }
@@ -2460,20 +2792,14 @@ async function actualizarPreviewCert() {
     ]);
 
     let aprobV = 0, aprobJ = 0;
-    if (vData.ok && vData.ventas) {
-      aprobV = vData.ventas.filter(v => String(v.datos[12] || '').trim() === 'Aprobada').length;
-    }
-    if (jData.ok && jData.jornadas) {
-      aprobJ = jData.jornadas.filter(j => String(j.datos[9] || '').trim() === 'Aprobada').length;
-    }
+    if (vData.ok && vData.ventas) aprobV = vData.ventas.filter(v => String(v.datos[12] || '').trim() === 'Aprobada').length;
+    if (jData.ok && jData.jornadas) aprobJ = jData.jornadas.filter(j => String(j.datos[9] || '').trim() === 'Aprobada').length;
     const pend = (pData.ventas?.length || 0) + (pData.jornadas?.length || 0);
 
     document.getElementById('cert-aprobadas-v').textContent = aprobV;
     document.getElementById('cert-aprobadas-j').textContent = aprobJ;
     document.getElementById('cert-pendientes').textContent = pend;
-  } catch(e) {
-    console.error(e);
-  }
+  } catch(e) {}
 }
 
 document.getElementById('btn-descargar-cert').addEventListener('click', async () => {
@@ -2492,15 +2818,10 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
       for (let offset = 0; offset < byteChars.length; offset += 512) {
         const slice = byteChars.slice(offset, offset + 512);
         const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
+        for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
         byteArrays.push(new Uint8Array(byteNumbers));
       }
-      const blob = new Blob(byteArrays, {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-
+      const blob = new Blob(byteArrays, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -2509,14 +2830,12 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-
       toast('Certificación descargada ✓', 'success');
     } else {
       toast(data.error || 'Error al generar', 'error');
     }
   } catch(e) {
     toast('Error de conexión', 'error');
-    console.error(e);
   } finally {
     btn.textContent = '📥 DESCARGAR CERTIFICACIÓN';
     btn.disabled = false;
@@ -2524,7 +2843,7 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
 });
 
 // ============================================================
-//  CATÁLOGO ADMIN
+//  CATÁLOGO Y TABLAS ADMIN
 // ============================================================
 async function cargarEquiposAdmin() {
   const cont = document.getElementById('equipos-lista-admin');
@@ -2564,9 +2883,6 @@ function renderEquiposAdmin() {
   });
 }
 
-// ============================================================
-//  VENTAS ADMIN
-// ============================================================
 async function cargarVentasAdmin() {
   await llenarSelectorMesesAdmin('filtro-mes-ventas');
   const loading = document.getElementById('ventas-admin-loading');
@@ -2577,11 +2893,8 @@ async function cargarVentasAdmin() {
     const mes = document.getElementById('filtro-mes-ventas').value || '';
     const data = await api({ accion: 'obtenerVentas', mes });
     loading.style.display = 'none';
-    if (data.ok && data.ventas) {
-      renderTablaVentas(data.ventas);
-    } else {
-      content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
-    }
+    if (data.ok && data.ventas) renderTablaVentas(data.ventas);
+    else content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
   } catch(e) {
     loading.style.display = 'none';
     content.innerHTML = '<div class="error-msg">Error de conexión</div>';
@@ -2629,9 +2942,6 @@ function renderTablaVentas(ventas) {
 
 document.getElementById('filtro-mes-ventas').addEventListener('change', cargarVentasAdmin);
 
-// ============================================================
-//  JORNADAS ADMIN
-// ============================================================
 async function cargarJornadasAdmin() {
   await llenarSelectorMesesAdmin('filtro-mes-jornadas');
   const loading = document.getElementById('jornadas-admin-loading');
@@ -2642,11 +2952,8 @@ async function cargarJornadasAdmin() {
     const mes = document.getElementById('filtro-mes-jornadas').value || '';
     const data = await api({ accion: 'obtenerJornadas', mes });
     loading.style.display = 'none';
-    if (data.ok && data.jornadas) {
-      renderTablaJornadas(data.jornadas);
-    } else {
-      content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
-    }
+    if (data.ok && data.jornadas) renderTablaJornadas(data.jornadas);
+    else content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
   } catch(e) {
     loading.style.display = 'none';
     content.innerHTML = '<div class="error-msg">Error de conexión</div>';
@@ -2771,14 +3078,26 @@ document.getElementById('btn-nuevo-equipo').addEventListener('click', () => abri
 // ============================================================
 //  NAVEGACIÓN
 // ============================================================
-document.getElementById('btn-ir-ventas').addEventListener('click', cargarPantallaVentas);
+document.getElementById('btn-ir-ventas').addEventListener('click', () => cargarPantallaVentas());
 document.getElementById('btn-ir-jornada').addEventListener('click', cargarPantallaJornada);
 document.getElementById('btn-ir-mis-registros').addEventListener('click', () => cargarMisRegistros());
 document.getElementById('btn-ir-admin').addEventListener('click', cargarPantallaAdmin);
 
-document.getElementById('back-ventas').addEventListener('click', () => mostrarPantalla('menu'));
+document.getElementById('back-ventas').addEventListener('click', () => {
+  if (editandoVenta) {
+    editandoVenta = null;
+    mostrarPantalla('mis-registros');
+  } else {
+    mostrarPantalla('menu');
+  }
+});
 document.getElementById('back-jornada').addEventListener('click', () => mostrarPantalla('menu'));
 document.getElementById('back-mis-registros').addEventListener('click', () => mostrarPantalla('menu'));
+document.getElementById('back-detalle').addEventListener('click', () => mostrarPantalla('mis-registros'));
+document.getElementById('back-editar-jornada').addEventListener('click', () => {
+  editandoJornada = null;
+  mostrarPantalla('detalle');
+});
 document.getElementById('back-admin').addEventListener('click', () => mostrarPantalla('menu'));
 
 function cerrarSesion() {
@@ -2796,15 +3115,13 @@ document.getElementById('btn-logout-menu').addEventListener('click', cerrarSesio
 document.getElementById('btn-logout-ventas').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-mis-registros').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-detalle').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-editar-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
 
 // INIT
 (async function init() {
-  await Promise.all([
-    cargarTecnicos(),
-    cargarMoviles(),
-    cargarLocalidades()
-  ]);
+  await Promise.all([cargarTecnicos(), cargarMoviles(), cargarLocalidades()]);
 })();
 </script>
 </body>
