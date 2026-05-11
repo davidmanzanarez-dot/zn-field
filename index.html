@@ -409,6 +409,27 @@
       border-color: var(--accent);
       color: #fff;
     }
+    .cat-add-btn {
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      background: var(--accent);
+      border: none;
+      border-radius: 9px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      transition: transform .1s, opacity .15s;
+      padding: 0;
+    }
+    .cat-add-btn:active { transform: scale(.92); opacity: .85; }
+    .cat-add-btn:disabled {
+      background: var(--surface);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
     .clients-list {
       padding: 4px 0 10px 110px;
       display: flex; flex-wrap: wrap; gap: 5px;
@@ -857,6 +878,7 @@
   </style>
 </head>
 <body>
+
 <div id="app">
 
   <!-- ============ LOGIN ============ -->
@@ -864,13 +886,7 @@
     <div class="login-box">
       <div class="login-brand">
         <div class="logo-wrap">
-          <svg class="logo-icon logo-icon-big" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="48" fill="#1e9cd7"/>
-            <path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/>
-            <circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/>
-            <circle cx="50" cy="62" r="6" fill="#1e9cd7"/>
-          </svg>
-          <span class="logo-text logo-text-big"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+        <span class="logo-text logo-text-big"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
         </div>
         <p>Técnicos Zona Norte</p>
       </div>
@@ -914,7 +930,6 @@
   <div id="screen-menu" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <div style="display:flex;align-items:center;">
@@ -993,7 +1008,6 @@
   <div id="screen-ventas" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
@@ -1073,7 +1087,6 @@
   <div id="screen-jornada" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
@@ -1131,7 +1144,6 @@
   <div id="screen-mis-registros" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-mis-registros">SALIR</button>
@@ -1167,7 +1179,6 @@
   <div id="screen-detalle" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-detalle">SALIR</button>
@@ -1185,7 +1196,6 @@
   <div id="screen-editar-jornada" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-editar-jornada">SALIR</button>
@@ -1223,7 +1233,6 @@
   <div id="screen-admin" class="screen">
     <div class="header">
       <div class="logo-wrap">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#1e9cd7"/><path d="M 35 30 C 35 22, 45 22, 50 28 C 55 22, 65 22, 65 30 C 65 38, 55 42, 50 48 C 45 42, 35 38, 35 30 Z" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="14" fill="#0a1830" opacity="0.85"/><circle cx="50" cy="62" r="6" fill="#1e9cd7"/></svg>
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
       <button class="btn-logout" id="btn-logout-admin">SALIR</button>
@@ -1966,17 +1975,34 @@ function renderCategoriasJornada() {
 
     row.innerHTML = `
       <div class="cat-name${!cat.pago ? ' disabled' : ''}">${nombreCatCorto(cat.nombre)}</div>
-      <input class="cat-input" placeholder="Agregar N° cliente y Enter…" inputmode="numeric">
+      <input class="cat-input" placeholder="N° de cliente" inputmode="numeric">
+      <button class="cat-add-btn" type="button" aria-label="Agregar ticket">+</button>
       <div class="cat-count">${tickets.length}</div>
     `;
 
     const input = row.querySelector('.cat-input');
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && input.value.trim()) {
-        e.preventDefault();
-        agregarTicketJornada(cat.nombre, input.value.trim());
-        input.value = '';
+    const btnAdd = row.querySelector('.cat-add-btn');
+
+    const agregarDesdeInput = () => {
+      const valor = input.value.trim();
+      if (!valor) {
+        input.focus();
+        return;
       }
+      agregarTicketJornada(cat.nombre, valor);
+      input.value = '';
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        agregarDesdeInput();
+      }
+    });
+
+    btnAdd.addEventListener('click', (e) => {
+      e.preventDefault();
+      agregarDesdeInput();
     });
 
     wrapper.appendChild(row);
