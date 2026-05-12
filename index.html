@@ -1415,6 +1415,23 @@
   </div>
 </div>
 
+<!-- MODAL LINK DE TICKET -->
+<div class="modal-overlay" id="modal-link">
+  <div class="modal-box">
+    <div class="modal-title">LINK DEL TICKET</div>
+    <div class="modal-subtitle">
+      Pegá el link del ticket en Aria (opcional). Si no tenés el link a mano, podés aprobar sin pegarlo.
+    </div>
+    <div class="form-group">
+      <label>Link (opcional)</label>
+      <textarea id="modal-link-texto" placeholder="https://aria..."></textarea>
+    </div>
+    <button class="btn btn-success" id="btn-confirmar-aprobar">✓ APROBAR</button>
+    <button class="btn btn-secondary" id="btn-cancelar-aprobar" style="margin-top:8px;">CANCELAR</button>
+    <div class="error-msg" id="modal-link-error"></div>
+  </div>
+</div>
+
 <!-- MODAL CONFIRMAR ELIMINAR -->
 <div class="modal-overlay" id="modal-eliminar">
   <div class="modal-box danger">
@@ -2715,7 +2732,9 @@ function renderAprobaciones(ventas, jornadas) {
   }
 }
 
-window.aprobar = async function(tipo, fila, rechazar = false) {
+let aprobacionEnCurso = null;
+
+window.aprobar = function(tipo, fila, rechazar = false) {
   if (rechazar) {
     rechazoEnCurso = { tipo, fila };
     document.getElementById('modal-motivo-texto').value = '';
@@ -2724,24 +2743,64 @@ window.aprobar = async function(tipo, fila, rechazar = false) {
     return;
   }
 
-  const accion = tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada';
-  try {
-    const data = await apiPost({ accion, fila });
-    if (data.ok) {
-      toast('Aprobada ✓', 'success');
-      cargarAprobaciones();
-      actualizarBadgePendientes();
-    } else {
-      toast(data.error || 'Error', 'error');
-    }
-  } catch(e) {
-    toast('Error de conexión', 'error');
-  }
+  // Aprobar: abre modal pidiendo el link (opcional)
+  aprobacionEnCurso = { tipo, fila };
+  document.getElementById('modal-link-texto').value = '';
+  document.getElementById('modal-link-error').textContent = '';
+  document.getElementById('modal-link').classList.add('open');
 };
 
 document.getElementById('btn-cancelar-rechazo').addEventListener('click', () => {
   document.getElementById('modal-rechazo').classList.remove('open');
   rechazoEnCurso = null;
+});
+
+// Modal aprobar con link
+document.getElementById('btn-cancelar-aprobar').addEventListener('click', () => {
+  document.getElementById('modal-link').classList.remove('open');
+  aprobacionEnCurso = null;
+});
+
+document.getElementById('btn-confirmar-aprobar').addEventListener('click', async () => {
+  if (!aprobacionEnCurso) return;
+
+  const { tipo, fila } = aprobacionEnCurso;
+  const link = document.getElementById('modal-link-texto').value.trim();
+  const accion = tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada';
+
+  const btn = document.getElementById('btn-confirmar-aprobar');
+
+  btn.textContent = 'Aprobando…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({ accion, fila, link });
+
+    if (data.ok) {
+      toast(link ? 'Aprobada con link ✓' : 'Aprobada ✓', 'success');
+
+      document.getElementById('modal-link').classList.remove('open');
+
+      aprobacionEnCurso = null;
+
+      cargarAprobaciones();
+      actualizarBadgePendientes();
+
+    } else {
+      document.getElementById('modal-link-error').textContent =
+        data.error || 'Error al aprobar';
+    }
+
+  } catch(e) {
+
+    document.getElementById('modal-link-error').textContent =
+      'Error de conexión';
+
+  } finally {
+
+    btn.textContent = '✓ APROBAR';
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('btn-confirmar-rechazo').addEventListener('click', async () => {
