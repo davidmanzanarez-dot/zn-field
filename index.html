@@ -864,6 +864,17 @@
       font-size: .9rem;
     }
 
+    /* ===== DASHBOARD MEJORADO ===== */
+    .podium-breakdown { display:flex; gap:4px; justify-content:center; flex-wrap:wrap; margin-bottom:4px; min-height:18px; }
+    .pb-item { font-size:.63rem; color:var(--muted); background:rgba(255,255,255,.05); padding:2px 6px; border-radius:4px; white-space:nowrap; }
+    .kpi-card.total { grid-column:1/-1; }
+    .kpi-card.total::before { background:var(--gold); }
+    .kpi-card.total .kpi-value { color:var(--gold); font-size:1.75rem; }
+    .ranking-pos { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--card); border:1px solid var(--border-soft); font-size:.65rem; font-weight:800; color:var(--muted); margin-right:6px; flex-shrink:0; vertical-align:middle; }
+    .ranking-pos.gold { background:rgba(255,215,0,.15); border-color:var(--gold); color:var(--gold); }
+    .ranking-pos.silver { background:rgba(192,192,192,.12); border-color:var(--silver); color:var(--silver); }
+    .ranking-pos.bronze { background:rgba(205,127,50,.12); border-color:var(--bronze); color:var(--bronze); }
+
     /* ===== INFO BOX ===== */
     .info-resend {
       background: rgba(30, 156, 215, 0.08);
@@ -1259,6 +1270,12 @@
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
           <div class="kpi-grid">
+            <div class="kpi-card total">
+              <div class="kpi-icon">💵</div>
+              <div class="kpi-label">Total a pagar este mes</div>
+              <div class="kpi-value" id="kpi-total-pagar">—</div>
+              <div class="kpi-sub">comisiones + producción · solo aprobadas</div>
+            </div>
             <div class="kpi-card">
               <div class="kpi-icon">💰</div>
               <div class="kpi-label">Comisiones del mes</div>
@@ -1293,8 +1310,13 @@
           </div>
 
           <div class="chart-card">
-            <div class="chart-card-title">📊 Ventas por técnico</div>
-            <div class="chart-wrap"><canvas id="chart-ventas-tecnico"></canvas></div>
+            <div class="chart-card-title">📊 Producción por técnico</div>
+            <div class="chart-wrap tall"><canvas id="chart-ventas-tecnico"></canvas></div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-title">👥 Ranking del mes</div>
+            <div id="ranking-tabla"></div>
           </div>
 
           <div class="chart-card">
@@ -2069,7 +2091,7 @@ function recalcularTotalJornada() {
   CATEGORIAS.forEach(cat => {
     const tickets = ticketsPorCategoria[cat.nombre] || [];
     totalTickets += tickets.length;
-    if (cat.pago) totalMonto += tickets.length * 20000;
+    if (cat.pago) totalMonto += tickets.length * 24000;
   });
   document.getElementById('total-tickets').textContent =
     totalTickets + ' ticket' + (totalTickets !== 1 ? 's' : '') + ' · total jornada';
@@ -2466,8 +2488,9 @@ async function cargarDashboard() {
   content.style.display = 'none';
 
   try {
-    const [ventasData, resumenData] = await Promise.all([
+    const [ventasData, jornadasData, resumenData] = await Promise.all([
       api({ accion: 'obtenerVentas' }),
+      api({ accion: 'obtenerJornadas' }),
       api({ accion: 'obtenerResumen', tecnico: 'ADMIN' })
     ]);
 
@@ -2479,54 +2502,62 @@ async function cargarDashboard() {
       document.getElementById('kpi-ventas').textContent = resumenData.cantidadVentas ?? '0';
       document.getElementById('kpi-jornadas').textContent = resumenData.cantidadJornadas ?? '0';
       document.getElementById('kpi-produccion').textContent = formatoPesos(resumenData.totalJornadas);
+      const totalPagar = (resumenData.totalComision || 0) + (resumenData.totalJornadas || 0);
+      document.getElementById('kpi-total-pagar').textContent = formatoPesos(totalPagar);
     }
 
     const ventas = (ventasData.ok && ventasData.ventas) ? ventasData.ventas : [];
-    procesarYRenderizarTodo(ventas);
+    const jornadas = (jornadasData.ok && jornadasData.jornadas) ? jornadasData.jornadas : [];
+    procesarYRenderizarTodo(ventas, jornadas);
 
   } catch(e) {
     loading.innerHTML = '<div class="error-msg">Error al cargar el dashboard</div>';
   }
 }
 
-function procesarYRenderizarTodo(ventas) {
-  const comisionesTec = {};
-  const ventasTec = {};
+function procesarYRenderizarTodo(ventas, jornadas) {
+  const tecData = {};
   const equiposCount = {};
+
+  function initTec(n) {
+    if (!tecData[n]) tecData[n] = { comisiones: 0, ventasCount: 0, jornadasMonto: 0, jornadasCount: 0 };
+  }
 
   ventas.forEach(v => {
     const f = v.datos;
-    const estado = String(f[12] || '').trim();
-    if (estado !== 'Aprobada') return;
-
-    const tec = f[4];
-    const tec2 = f[10];
+    if (String(f[12] || '').trim() !== 'Aprobada') return;
+    const tec = f[4], tec2 = f[10];
     const com = Number(f[11]) || 0;
     const equipo = f[6] || 'Sin nombre';
     const dupla = String(f[9]).toLowerCase().startsWith('s');
-
-    if (tec) {
-      comisionesTec[tec] = (comisionesTec[tec] || 0) + com;
-      ventasTec[tec] = (ventasTec[tec] || 0) + 1;
-    }
-    if (dupla && tec2) {
-      comisionesTec[tec2] = (comisionesTec[tec2] || 0) + com;
-      ventasTec[tec2] = (ventasTec[tec2] || 0) + 1;
-    }
+    if (tec) { initTec(tec); tecData[tec].comisiones += com; tecData[tec].ventasCount++; }
+    if (dupla && tec2) { initTec(tec2); tecData[tec2].comisiones += com; tecData[tec2].ventasCount++; }
     if (equipo) equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
   });
 
-  renderPodio(comisionesTec);
-  renderChartVentasTecnico(ventasTec, comisionesTec);
+  (jornadas || []).forEach(j => {
+    const f = j.datos;
+    if (String(f[9] || '').trim() !== 'Aprobada') return;
+    const tec = f[5];
+    const precio = Number(f[8]) || 0;
+    if (tec) { initTec(tec); tecData[tec].jornadasMonto += precio; tecData[tec].jornadasCount++; }
+  });
+
+  renderPodio(tecData);
+  renderChartComparativo(tecData);
   renderChartEquipos(equiposCount);
+  renderRankingTable(tecData);
 }
 
-function renderPodio(comisionesTec) {
+function renderPodio(tecData) {
   const cont = document.getElementById('podium-container');
-  const ranking = Object.entries(comisionesTec).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const ranking = Object.entries(tecData)
+    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadasMonto, comisiones: d.comisiones, jornadas: d.jornadasMonto }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 3);
 
   if (!ranking.length) {
-    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin ventas aprobadas</div>';
+    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin datos aprobados</div>';
     return;
   }
 
@@ -2536,14 +2567,19 @@ function renderPodio(comisionesTec) {
 
   cont.innerHTML = '';
   for (let i = 0; i < 3; i++) {
-    const data = ranking[i];
+    const d = ranking[i];
     const div = document.createElement('div');
     div.className = `podium-spot ${clases[i]}`;
-    if (data) {
+    if (d) {
+      const parts = [
+        d.comisiones > 0 ? `🤝 ${formatoPesosCompacto(d.comisiones)}` : '',
+        d.jornadas > 0   ? `📋 ${formatoPesosCompacto(d.jornadas)}` : ''
+      ].filter(Boolean).join('  ');
       div.innerHTML = `
         <div class="podium-medal">${medallas[i]}</div>
-        <div class="podium-name">${data[0]}</div>
-        <div class="podium-value">${formatoPesosCompacto(data[1])}</div>
+        <div class="podium-name">${d.nombre}</div>
+        <div class="podium-value">${formatoPesosCompacto(d.total)}</div>
+        <div class="podium-breakdown">${parts ? `<span class="pb-item">${parts}</span>` : ''}</div>
         <div class="podium-bar">${labels[i]}</div>
       `;
     } else {
@@ -2551,6 +2587,7 @@ function renderPodio(comisionesTec) {
         <div class="podium-medal" style="opacity:.3">${medallas[i]}</div>
         <div class="podium-name" style="color:var(--muted);">—</div>
         <div class="podium-value" style="color:var(--muted);">—</div>
+        <div class="podium-breakdown"></div>
         <div class="podium-bar" style="opacity:.4;">${labels[i]}</div>
       `;
     }
@@ -2558,47 +2595,69 @@ function renderPodio(comisionesTec) {
   }
 }
 
-function renderChartVentasTecnico(ventasTec, comisionesTec) {
+function renderChartComparativo(tecData) {
   const ctx = document.getElementById('chart-ventas-tecnico');
   if (!ctx) return;
 
-  const ordenados = Object.entries(ventasTec).sort((a, b) => b[1] - a[1]);
-  const labels = ordenados.map(e => e[0]);
-  const valoresVentas = ordenados.map(e => e[1]);
+  const ordenados = Object.entries(tecData)
+    .map(([nombre, d]) => ({ nombre, comisiones: d.comisiones, jornadas: d.jornadasMonto, total: d.comisiones + d.jornadasMonto }))
+    .sort((a, b) => b.total - a.total);
 
   if (chartVentasTecnico) chartVentasTecnico.destroy();
-  if (!labels.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
+  if (!ordenados.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
+
+  const labels = ordenados.map(e => e.nombre);
 
   chartVentasTecnico = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: labels,
-      datasets: [{
-        label: 'Equipos vendidos',
-        data: valoresVentas,
-        backgroundColor: 'rgba(30, 156, 215, 0.6)',
-        borderColor: 'rgba(30, 156, 215, 1)',
-        borderWidth: 2,
-        borderRadius: 6
-      }]
+      labels,
+      datasets: [
+        {
+          label: 'Comisiones ventas',
+          data: ordenados.map(e => e.comisiones),
+          backgroundColor: 'rgba(30, 156, 215, 0.75)',
+          borderColor: 'rgba(30, 156, 215, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          stack: 'total'
+        },
+        {
+          label: 'Producción jornadas',
+          data: ordenados.map(e => e.jornadas),
+          backgroundColor: 'rgba(46, 204, 113, 0.65)',
+          borderColor: 'rgba(46, 204, 113, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          stack: 'total'
+        }
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false, indexAxis: 'y',
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          labels: { color: '#7a93b3', font: { size: 11 }, boxWidth: 12, boxHeight: 12, padding: 12 }
+        },
         tooltip: {
           callbacks: {
-            afterLabel: (ctx) => {
-              const tec = ctx.label;
-              const com = comisionesTec[tec] || 0;
-              return 'Comisiones: ' + formatoPesos(com);
-            }
+            label: (ctx) => `${ctx.dataset.label}: ${formatoPesos(ctx.raw)}`,
+            afterBody: (items) => [`Total: ${formatoPesos(ordenados[items[0].dataIndex].total)}`]
           }
         }
       },
       scales: {
-        x: { ticks: { color: '#7a93b3', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(26, 53, 96, 0.3)' }, beginAtZero: true },
-        y: { ticks: { color: '#e8eaf0', font: { size: 11 } }, grid: { display: false } }
+        x: {
+          stacked: true,
+          ticks: { color: '#7a93b3', font: { size: 11 }, callback: v => formatoPesosCompacto(v) },
+          grid: { color: 'rgba(26, 53, 96, 0.3)' }, beginAtZero: true
+        },
+        y: {
+          stacked: true,
+          ticks: { color: '#e8eaf0', font: { size: 11 } },
+          grid: { display: false }
+        }
       }
     }
   });
@@ -2651,6 +2710,58 @@ function renderChartEquipos(equiposCount) {
       }
     }
   });
+}
+
+function renderRankingTable(tecData) {
+  const cont = document.getElementById('ranking-tabla');
+  if (!cont) return;
+
+  const ranking = Object.entries(tecData)
+    .map(([nombre, d]) => ({
+      nombre,
+      comisiones: d.comisiones, ventasCount: d.ventasCount,
+      jornadasMonto: d.jornadasMonto, jornadasCount: d.jornadasCount,
+      total: d.comisiones + d.jornadasMonto
+    }))
+    .sort((a, b) => b.total - a.total);
+
+  if (!ranking.length) {
+    cont.innerHTML = '<div class="mr-empty">Sin datos del mes</div>';
+    return;
+  }
+
+  const posClases = ['gold', 'silver', 'bronze'];
+  const thStyle = 'background:var(--card);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;padding:9px 10px;border-bottom:1px solid var(--border-soft);white-space:nowrap;';
+
+  let html = `<table style="width:100%;border-collapse:collapse;">
+    <thead><tr>
+      <th style="${thStyle}text-align:left;">Técnico</th>
+      <th style="${thStyle}text-align:right;">Ventas</th>
+      <th style="${thStyle}text-align:right;">Jornadas</th>
+      <th style="${thStyle}text-align:right;">Total</th>
+    </tr></thead><tbody>`;
+
+  ranking.forEach((d, i) => {
+    const posClass = i < 3 ? posClases[i] : '';
+    const bg = i % 2 === 1 ? 'background:rgba(255,255,255,.02);' : '';
+    const sep = i < ranking.length - 1 ? 'border-bottom:1px solid var(--border-soft);' : '';
+    const td = `padding:9px 10px;${sep}${bg}`;
+    html += `<tr>
+      <td style="${td}font-weight:600;"><span class="ranking-pos ${posClass}">${i + 1}</span>${d.nombre}</td>
+      <td style="${td}text-align:right;">
+        <div style="font-size:.8rem;color:var(--accent);">${formatoPesos(d.comisiones)}</div>
+        <div style="font-size:.68rem;color:var(--muted);">${d.ventasCount} equipo${d.ventasCount !== 1 ? 's' : ''}</div>
+      </td>
+      <td style="${td}text-align:right;">
+        <div style="font-size:.8rem;color:var(--success);">${formatoPesos(d.jornadasMonto)}</div>
+        <div style="font-size:.68rem;color:var(--muted);">${d.jornadasCount} ticket${d.jornadasCount !== 1 ? 's' : ''}</div>
+      </td>
+      <td style="${td}text-align:right;font-size:.88rem;font-weight:700;font-family:var(--font-head);">${formatoPesos(d.total)}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  cont.innerHTML = html;
 }
 
 // ============================================================
