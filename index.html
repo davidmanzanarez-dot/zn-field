@@ -994,6 +994,10 @@
     .pres-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
     .pres-legend-label { color: #e8eaf0; flex: 1; }
     .pres-legend-val { font-weight: 700; color: #7a93b3; font-size: .78rem; }
+    /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
+    .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
+    .btn-action-sm:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-action-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
   </style>
 </head>
 <body>
@@ -1501,14 +1505,26 @@
             <select id="filtro-tecnico-ventas"><option value="">Todos</option></select>
           </div>
         </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <input type="text" id="filtro-cliente-ventas" placeholder="Buscar N° cliente…" style="font-size:.85rem;" />
+        </div>
         <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="ventas-admin-content"></div>
       </div>
 
       <div class="tab-panel" id="tab-jornadas-tab">
-        <div class="form-group">
-          <label>Filtrar por mes</label>
-          <select id="filtro-mes-jornadas"><option value="">Mes actual</option></select>
+        <div class="filtros-row">
+          <div class="form-group">
+            <label>Mes</label>
+            <select id="filtro-mes-jornadas"><option value="">Mes actual</option></select>
+          </div>
+          <div class="form-group">
+            <label>Técnico</label>
+            <select id="filtro-tecnico-jornadas"><option value="">Todos</option></select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <input type="text" id="filtro-cliente-jornadas" placeholder="Buscar N° cliente…" style="font-size:.85rem;" />
         </div>
         <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="jornadas-admin-content"></div>
@@ -1597,6 +1613,70 @@
   </div>
 </div>
 
+<!-- MODAL EDITAR VENTA (ADMIN) -->
+<div class="modal-overlay" id="modal-editar-venta-admin">
+  <div class="modal-box">
+    <div class="modal-title">EDITAR VENTA</div>
+    <input type="hidden" id="meva-fila" />
+    <input type="hidden" id="meva-mes" />
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" id="meva-fecha" />
+    </div>
+    <div class="form-group">
+      <label>Técnico</label>
+      <select id="meva-tecnico"></select>
+    </div>
+    <div class="form-group">
+      <label>Equipo</label>
+      <select id="meva-equipo"></select>
+    </div>
+    <div class="form-group">
+      <label>Tipo de venta</label>
+      <select id="meva-tipo-venta">
+        <option value="directa">Directa</option>
+        <option value="canje">Canje</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>N° cliente</label>
+      <input type="text" id="meva-cliente" inputmode="numeric" />
+    </div>
+    <div class="form-group">
+      <label>Localidad</label>
+      <select id="meva-localidad"></select>
+    </div>
+    <div class="form-group">
+      <label>Móvil</label>
+      <select id="meva-movil"></select>
+    </div>
+    <div class="form-group">
+      <label>Método de pago</label>
+      <select id="meva-metodo-pago">
+        <option>Contado</option>
+        <option>2 cuotas</option>
+        <option>3 cuotas</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Dupla</label>
+      <select id="meva-dupla">
+        <option value="no">No</option>
+        <option value="si">Sí</option>
+      </select>
+    </div>
+    <div id="meva-companero-section" style="display:none;">
+      <div class="form-group">
+        <label>Compañero/a</label>
+        <select id="meva-companero"></select>
+      </div>
+    </div>
+    <div class="error-msg" id="meva-error"></div>
+    <button class="btn btn-primary" id="btn-guardar-venta-admin">GUARDAR</button>
+    <button class="btn btn-secondary" id="btn-cancelar-venta-admin" style="margin-top:8px;">CANCELAR</button>
+  </div>
+</div>
+
 <!-- MODO PRESENTACIÓN -->
 <div id="modo-presentacion">
   <div class="pres-header">
@@ -1650,6 +1730,9 @@ let dashboardTecData = {};
 let dashboardEquiposCount = {};
 // Caché de ventas admin para filtros cliente
 let ventasAdminCache = [];
+let jornadasAdminCache = [];
+let ventasAdminFiltradas = [];
+let editandoVentaAdmin = null;
 
 const CATEGORIAS = [
   { nombre: 'Instalacion FO',       pago: true  },
@@ -1673,6 +1756,9 @@ function mostrarPantalla(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo(0, 0);
+  if (session.esAdmin) {
+    document.body.classList.toggle('admin-desktop', window.innerWidth > 1024);
+  }
 }
 
 function toast(msg, tipo = 'info', duracion = 3000) {
@@ -1816,7 +1902,11 @@ async function intentarLogin() {
       pinIngresado = '';
       actualizarDotsPIN();
       document.getElementById('btn-login').textContent = 'INGRESAR';
-      await cargarMenuPrincipal();
+      if (session.esAdmin) {
+        cargarPantallaAdmin();
+      } else {
+        await cargarMenuPrincipal();
+      }
     } else {
       errEl.textContent = data.error || 'PIN incorrecto';
       pinIngresado = '';
@@ -1840,6 +1930,7 @@ async function cargarMenuPrincipal() {
   document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
   document.getElementById('btn-ir-mis-registros').style.display = session.esAdmin ? 'none' : 'flex';
   document.getElementById('btn-ir-ventas').style.display = session.esAdmin ? 'none' : 'flex';
+  document.getElementById('btn-ir-jornada').style.display = session.esAdmin ? 'none' : 'flex';
 
   mostrarPantalla('menu');
 
@@ -2615,14 +2706,12 @@ document.getElementById('btn-confirmar-eliminar').addEventListener('click', asyn
 // ============================================================
 function cargarPantallaAdmin() {
   mostrarPantalla('admin');
-  // Activar layout escritorio solo para admin en pantalla grande
-  if (window.innerWidth > 1024) document.body.classList.add('admin-desktop');
   cargarDashboard();
   actualizarBadgePendientes();
 }
 
 window.addEventListener('resize', () => {
-  if (session.esAdmin && document.getElementById('screen-admin').classList.contains('active')) {
+  if (session.esAdmin) {
     document.body.classList.toggle('admin-desktop', window.innerWidth > 1024);
   }
 });
@@ -3315,9 +3404,10 @@ function poblarFiltroTecnicoVentas(ventas) {
 
 function aplicarFiltrosVentas() {
   const tecnico = document.getElementById('filtro-tecnico-ventas')?.value || '';
-  const filtradas = tecnico
-    ? ventasAdminCache.filter(v => v.datos[4] === tecnico)
-    : ventasAdminCache;
+  const cliente = (document.getElementById('filtro-cliente-ventas')?.value || '').trim().toLowerCase();
+  let filtradas = ventasAdminCache;
+  if (tecnico) filtradas = filtradas.filter(v => v.datos[4] === tecnico);
+  if (cliente) filtradas = filtradas.filter(v => String(v.datos[5] || '').toLowerCase().includes(cliente));
   renderTablaVentas(filtradas);
 }
 
@@ -3338,12 +3428,13 @@ async function llenarSelectorMesesAdmin(selectId) {
 }
 
 function renderTablaVentas(ventas) {
+  ventasAdminFiltradas = ventas;
   if (!ventas.length) {
     document.getElementById('ventas-admin-content').innerHTML = '<div class="loading-msg">Sin ventas registradas</div>';
     return;
   }
-  let html = '<table class="data-table"><thead><tr><th>Fecha</th><th>Técnico</th><th>Equipo</th><th>Cliente</th><th>Comisión</th><th>Estado</th></tr></thead><tbody>';
-  ventas.forEach(v => {
+  let html = '<table class="data-table"><thead><tr><th>Fecha</th><th>Técnico</th><th>Equipo</th><th>Cliente</th><th>Comisión</th><th>Estado</th><th></th></tr></thead><tbody>';
+  ventas.forEach((v, idx) => {
     const f = v.datos;
     const estado = String(f[12] || 'Pendiente').trim();
     const claseTag = estado === 'Aprobada' ? 'tag-green' : estado === 'Rechazada' ? 'tag-danger' : 'tag-warning';
@@ -3354,6 +3445,10 @@ function renderTablaVentas(ventas) {
       <td>${f[5] || '—'}</td>
       <td>${formatoPesos(f[11])}</td>
       <td><span class="tag ${claseTag}">${estado}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="btn-action-sm" onclick="abrirEditarVentaAdmin(ventasAdminFiltradas[${idx}])">✏️</button>
+        <button class="btn-action-sm danger" onclick="eliminarVentaAdmin(${v.fila})">🗑️</button>
+      </td>
     </tr>`;
   });
   html += '</tbody></table>';
@@ -3362,6 +3457,7 @@ function renderTablaVentas(ventas) {
 
 document.getElementById('filtro-mes-ventas').addEventListener('change', cargarVentasAdmin);
 document.getElementById('filtro-tecnico-ventas').addEventListener('change', aplicarFiltrosVentas);
+document.getElementById('filtro-cliente-ventas').addEventListener('input', aplicarFiltrosVentas);
 
 async function cargarJornadasAdmin() {
   await llenarSelectorMesesAdmin('filtro-mes-jornadas');
@@ -3373,12 +3469,41 @@ async function cargarJornadasAdmin() {
     const mes = document.getElementById('filtro-mes-jornadas').value || '';
     const data = await api({ accion: 'obtenerJornadas', mes });
     loading.style.display = 'none';
-    if (data.ok && data.jornadas) renderTablaJornadas(data.jornadas);
-    else content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
+    if (data.ok && data.jornadas) {
+      jornadasAdminCache = data.jornadas;
+      poblarFiltroTecnicoJornadas(data.jornadas);
+      aplicarFiltrosJornadas();
+    } else {
+      content.innerHTML = '<div class="loading-msg">Sin datos para mostrar</div>';
+    }
   } catch(e) {
     loading.style.display = 'none';
     content.innerHTML = '<div class="error-msg">Error de conexión</div>';
   }
+}
+
+function poblarFiltroTecnicoJornadas(jornadas) {
+  const sel = document.getElementById('filtro-tecnico-jornadas');
+  if (!sel) return;
+  const anterior = sel.value;
+  const tecnicos = new Set();
+  jornadas.forEach(j => { if (j.datos[5]) tecnicos.add(j.datos[5]); });
+  sel.innerHTML = '<option value="">Todos</option>';
+  Array.from(tecnicos).sort().forEach(t => {
+    const op = document.createElement('option');
+    op.value = t; op.textContent = t;
+    if (t === anterior) op.selected = true;
+    sel.appendChild(op);
+  });
+}
+
+function aplicarFiltrosJornadas() {
+  const tecnico = document.getElementById('filtro-tecnico-jornadas')?.value || '';
+  const cliente = (document.getElementById('filtro-cliente-jornadas')?.value || '').trim().toLowerCase();
+  let filtradas = jornadasAdminCache;
+  if (tecnico) filtradas = filtradas.filter(j => j.datos[5] === tecnico);
+  if (cliente) filtradas = filtradas.filter(j => String(j.datos[6] || '').toLowerCase().includes(cliente));
+  renderTablaJornadas(filtradas);
 }
 
 function renderTablaJornadas(jornadas) {
@@ -3405,6 +3530,141 @@ function renderTablaJornadas(jornadas) {
 }
 
 document.getElementById('filtro-mes-jornadas').addEventListener('change', cargarJornadasAdmin);
+document.getElementById('filtro-tecnico-jornadas').addEventListener('change', aplicarFiltrosJornadas);
+document.getElementById('filtro-cliente-jornadas').addEventListener('input', aplicarFiltrosJornadas);
+
+// ============================================================
+//  EDITAR / ELIMINAR VENTAS (ADMIN)
+// ============================================================
+async function abrirEditarVentaAdmin(v) {
+  if (!equiposCatalogo.length) {
+    try {
+      const data = await api({ accion: 'obtenerEquipos' });
+      if (data.ok) equiposCatalogo = data.equipos;
+    } catch(e) {}
+  }
+  editandoVentaAdmin = v;
+  const mes = document.getElementById('filtro-mes-ventas').value || '';
+  document.getElementById('meva-fila').value = v.fila;
+  document.getElementById('meva-mes').value = mes;
+  document.getElementById('meva-fecha').value = fechaToInput(v.datos[0]);
+  document.getElementById('meva-cliente').value = v.datos[5] || '';
+  document.getElementById('meva-metodo-pago').value = v.datos[7] || 'Contado';
+
+  const esDupla = String(v.datos[9]).toLowerCase().startsWith('s');
+  document.getElementById('meva-dupla').value = esDupla ? 'si' : 'no';
+  document.getElementById('meva-companero-section').style.display = esDupla ? 'block' : 'none';
+
+  const selTec = document.getElementById('meva-tecnico');
+  selTec.innerHTML = '';
+  tecnicosLista.forEach(t => {
+    const op = document.createElement('option');
+    op.value = t.nombre; op.textContent = t.nombre;
+    if (t.nombre === v.datos[4]) op.selected = true;
+    selTec.appendChild(op);
+  });
+
+  const selComp = document.getElementById('meva-companero');
+  selComp.innerHTML = '<option value="">—</option>';
+  tecnicosLista.forEach(t => {
+    const op = document.createElement('option');
+    op.value = t.nombre; op.textContent = t.nombre;
+    if (t.nombre === v.datos[10]) op.selected = true;
+    selComp.appendChild(op);
+  });
+
+  const selEq = document.getElementById('meva-equipo');
+  selEq.innerHTML = '';
+  equiposCatalogo.forEach(eq => {
+    const op = document.createElement('option');
+    op.value = eq.nombre; op.textContent = eq.nombre;
+    if (eq.nombre === v.datos[6]) op.selected = true;
+    selEq.appendChild(op);
+  });
+
+  llenarSelectLocalidades('meva-localidad');
+  document.getElementById('meva-localidad').value = v.datos[2] || '';
+  llenarSelectMoviles('meva-movil', '');
+  document.getElementById('meva-movil').value = v.datos[3] || '';
+
+  document.getElementById('meva-error').textContent = '';
+  document.getElementById('modal-editar-venta-admin').classList.add('open');
+}
+window.abrirEditarVentaAdmin = abrirEditarVentaAdmin;
+
+async function eliminarVentaAdmin(fila) {
+  if (!confirm('¿Eliminar esta venta? Esta acción no se puede deshacer.')) return;
+  const mes = document.getElementById('filtro-mes-ventas').value || '';
+  try {
+    const data = await apiPost({ accion: 'eliminarVenta', fila, mes });
+    if (data.ok) {
+      toast('Venta eliminada ✓', 'success');
+      cargarVentasAdmin();
+    } else {
+      toast(data.error || 'Error al eliminar', 'error');
+    }
+  } catch(e) {
+    toast('Error de conexión', 'error');
+  }
+}
+window.eliminarVentaAdmin = eliminarVentaAdmin;
+
+document.getElementById('meva-dupla').addEventListener('change', e => {
+  document.getElementById('meva-companero-section').style.display = e.target.value === 'si' ? 'block' : 'none';
+});
+
+document.getElementById('btn-cancelar-venta-admin').addEventListener('click', () => {
+  document.getElementById('modal-editar-venta-admin').classList.remove('open');
+  editandoVentaAdmin = null;
+});
+
+document.getElementById('btn-guardar-venta-admin').addEventListener('click', async () => {
+  const fila = Number(document.getElementById('meva-fila').value);
+  const mes = document.getElementById('meva-mes').value;
+  const fecha = document.getElementById('meva-fecha').value;
+  const tecnico = document.getElementById('meva-tecnico').value;
+  const equipoNombre = document.getElementById('meva-equipo').value;
+  const tipoVenta = document.getElementById('meva-tipo-venta').value;
+  const nroCliente = document.getElementById('meva-cliente').value.trim();
+  const localidad = document.getElementById('meva-localidad').value;
+  const movil = document.getElementById('meva-movil').value;
+  const metodoPago = document.getElementById('meva-metodo-pago').value;
+  const dupla = document.getElementById('meva-dupla').value === 'si';
+  const companero = dupla ? document.getElementById('meva-companero').value : '';
+  const errEl = document.getElementById('meva-error');
+
+  if (!fecha) { errEl.textContent = 'Ingresá la fecha'; return; }
+  if (!tecnico) { errEl.textContent = 'Seleccioná el técnico'; return; }
+  if (!equipoNombre) { errEl.textContent = 'Seleccioná el equipo'; return; }
+
+  const btn = document.getElementById('btn-guardar-venta-admin');
+  btn.textContent = 'Guardando…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiPost({
+      accion: 'editarVentaAdmin',
+      fila, mes,
+      fecha: fechaToBackend(fecha),
+      tecnico, equipoNombre, tipoVenta,
+      nroCliente, localidad, movil,
+      metodoPago, dupla, companero
+    });
+    if (data.ok) {
+      toast('Venta actualizada ✓', 'success');
+      document.getElementById('modal-editar-venta-admin').classList.remove('open');
+      editandoVentaAdmin = null;
+      cargarVentasAdmin();
+    } else {
+      errEl.textContent = data.error || 'Error al guardar';
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión';
+  } finally {
+    btn.textContent = 'GUARDAR';
+    btn.disabled = false;
+  }
+});
 
 // ============================================================
 //  MODAL EQUIPO
