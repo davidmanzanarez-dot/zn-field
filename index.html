@@ -6,7 +6,6 @@
   <title>SSServicios · Técnicos Zona Norte</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       /* Paleta "Charcoal Sky" */
@@ -546,104 +545,6 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeIn .2s ease; }
 
-    /* ===== KPI / DASHBOARD ADMIN ===== */
-    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .kpi-card {
-      background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 14px 12px;
-      position: relative; overflow: hidden;
-    }
-    .kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: var(--accent);
-    }
-    .kpi-card.gold::before { background: var(--gold); }
-    .kpi-card.success::before { background: var(--success); }
-    .kpi-card.warning::before { background: var(--warning); }
-    .kpi-card .kpi-icon { font-size: 1.3rem; margin-bottom: 6px; opacity: .8; }
-    .kpi-card .kpi-label {
-      font-size: .68rem; font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase; letter-spacing: .06em;
-      margin-bottom: 4px;
-    }
-    .kpi-card .kpi-value {
-      font-family: var(--font-head);
-      font-size: 1.4rem; font-weight: 800;
-      line-height: 1.1;
-    }
-    .kpi-card .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
-
-    .podium-section {
-      background: var(--surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 18px 14px;
-      margin-bottom: 20px;
-    }
-    .podium-title {
-      font-family: var(--font-head);
-      font-size: 1rem; font-weight: 800;
-      letter-spacing: .04em; text-align: center;
-      margin-bottom: 16px;
-    }
-    .podium-title .icon { color: var(--gold); margin-right: 4px; }
-    .podium-container {
-      display: flex; justify-content: center;
-      align-items: flex-end; gap: 8px;
-      margin-bottom: 8px;
-    }
-    .podium-spot { flex: 1; max-width: 120px; text-align: center; }
-    .podium-medal { font-size: 2rem; margin-bottom: 4px; }
-    .podium-name {
-      font-family: var(--font-head);
-      font-size: .85rem; font-weight: 700;
-      margin-bottom: 4px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .podium-value {
-      font-family: var(--font-head);
-      font-size: .9rem; font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-    .podium-bar {
-      width: 100%;
-      border-radius: 6px 6px 0 0;
-      background: linear-gradient(180deg, var(--card), var(--surface));
-      border: 1px solid var(--border-soft);
-      border-bottom: none;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-head);
-      font-size: 1.2rem; font-weight: 800;
-    }
-    .podium-spot.first .podium-bar { height: 90px; border-color: var(--gold); color: var(--gold); }
-    .podium-spot.second .podium-bar { height: 70px; border-color: var(--silver); color: var(--silver); }
-    .podium-spot.third .podium-bar { height: 50px; border-color: var(--bronze); color: var(--bronze); }
-    .podium-spot.first { order: 2; }
-    .podium-spot.second { order: 1; }
-    .podium-spot.third { order: 3; }
-
-    .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 16px 14px;
-      margin-bottom: 16px;
-    }
-    .chart-card-title {
-      font-family: var(--font-head);
-      font-size: .95rem; font-weight: 700;
-      letter-spacing: .04em;
-      margin-bottom: 12px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .chart-wrap { position: relative; width: 100%; height: 240px; }
-    .chart-wrap.tall { height: 280px; }
-
     .data-table-wrap { overflow-x: auto; border-radius: var(--radius); }
     .data-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
     .data-table th {
@@ -865,17 +766,6 @@
       font-size: .9rem;
     }
 
-    /* ===== DASHBOARD MEJORADO ===== */
-    .podium-breakdown { display:flex; gap:4px; justify-content:center; flex-wrap:wrap; margin-bottom:4px; min-height:18px; }
-    .pb-item { font-size:.63rem; color:var(--muted); background:rgba(255,255,255,.05); padding:2px 6px; border-radius:4px; white-space:nowrap; }
-    .kpi-card.total { grid-column:1/-1; }
-    .kpi-card.total::before { background:var(--gold); }
-    .kpi-card.total .kpi-value { color:var(--gold); font-size:1.75rem; }
-    .ranking-pos { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--card); border:1px solid var(--border-soft); font-size:.65rem; font-weight:800; color:var(--muted); margin-right:6px; flex-shrink:0; vertical-align:middle; }
-    .ranking-pos.gold { background:rgba(255,215,0,.15); border-color:var(--gold); color:var(--gold); }
-    .ranking-pos.silver { background:rgba(192,192,192,.12); border-color:var(--silver); color:var(--silver); }
-    .ranking-pos.bronze { background:rgba(205,127,50,.12); border-color:var(--bronze); color:var(--bronze); }
-
     /* ===== INFO BOX ===== */
     .info-resend {
       background: rgba(30, 123, 196, 0.08);
@@ -923,78 +813,51 @@
       body.admin-desktop #screen-admin .content { max-width: none; margin: 0; padding: 24px 32px 40px; }
       body.admin-desktop #screen-admin .section-header { display: none; }
       body.admin-desktop #screen-admin .tab-bar { display: none; }
-      body.admin-desktop .kpi-grid { grid-template-columns: repeat(3, 1fr); }
-      body.admin-desktop .kpi-card.total { grid-column: 1 / 2; }
       body.admin-desktop .data-table { font-size: .88rem; }
       body.admin-desktop .data-table th, body.admin-desktop .data-table td { padding: 8px 14px; }
-      body.admin-desktop .chart-wrap { height: 300px; }
     }
 
     /* ===== FILTROS DOBLES ADMIN ===== */
     .filtros-row { display: flex; gap: 10px; margin-bottom: 4px; }
     .filtros-row .form-group { flex: 1; margin-bottom: 0; }
 
-    /* ===== MODO PRESENTACIÓN ===== */
-    #modo-presentacion {
-      display: none; position: fixed; inset: 0;
-      background: #1c1c1e; z-index: 900; overflow-y: auto;
-      padding: 28px 36px 48px; flex-direction: column; gap: 22px;
+    /* ===== GRID GERENCIAL (DASHBOARD) ===== */
+    .dash-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .dash-kpi-card {
+      background: var(--surface); border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 12px 14px 14px;
     }
-    #modo-presentacion.activo { display: flex; }
-    .pres-header {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid #3a3a3c; padding-bottom: 14px;
+    .dash-kpi-card.alt { border-left-color: var(--accent2); }
+    .dash-kpi-card .dkc-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+    .dash-kpi-card .dkc-value { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
+    .dash-kpi-card.alt .dkc-value { color: var(--accent2); }
+    .dash-kpi-card .dkc-sub { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+    .dash-main-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .dash-rank-card, .dash-eq-card, .dash-pago-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 14px; }
+    .dash-eq-card { margin-bottom: 12px; }
+    .dash-card-title { font-family: var(--font-head); font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+    .dash-rank-row { display: flex; align-items: center; padding: 7px 10px; border-radius: 6px; margin-bottom: 2px; gap: 10px; }
+    .dash-rank-row.leader { background: var(--card); }
+    .dash-rank-row.leader .drr-name { color: var(--accent2); font-weight: 700; }
+    .drr-pos { font-family: var(--font-head); font-size: .75rem; font-weight: 800; color: var(--muted); width: 18px; flex-shrink: 0; text-align: center; }
+    .drr-name { flex: 1; font-size: .85rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .drr-total { font-family: var(--font-head); font-size: .85rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .dash-eq-bar-row { margin-bottom: 8px; }
+    .dash-eq-bar-name { font-size: .8rem; font-weight: 600; margin-bottom: 3px; display: flex; justify-content: space-between; }
+    .dash-eq-bar-name span { color: var(--muted); font-size: .72rem; }
+    .dash-eq-bar-bg { height: 4px; background: var(--card); border-radius: 4px; overflow: hidden; }
+    .dash-eq-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); }
+    .dash-pago-blocks { display: flex; gap: 6px; }
+    .dash-pago-block { flex: 1; background: var(--card); border-radius: 6px; padding: 10px 6px; text-align: center; }
+    .dash-pago-block .dpb-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+    .dash-pago-block.alt .dpb-val { color: var(--accent2); }
+    .dash-pago-block .dpb-label { font-size: .62rem; color: var(--muted); margin-top: 2px; }
+    @media (min-width: 700px) {
+      .dash-kpi-row { grid-template-columns: repeat(4, 1fr); }
+      .dash-main-row { grid-template-columns: 1.2fr 1fr; }
     }
-    .pres-title {
-      font-family: var(--font-head); font-size: 1.5rem; font-weight: 800;
-      color: #32ade6; letter-spacing: .06em; text-transform: uppercase;
-    }
-    .pres-mes { font-family: var(--font-head); font-size: .95rem; color: #98989f; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
-    .btn-salir-pres {
-      background: transparent; border: 1px solid #3a3a3c; color: #98989f;
-      font-family: var(--font-head); font-size: .85rem; font-weight: 700;
-      padding: 8px 18px; border-radius: 8px; cursor: pointer; letter-spacing: .05em;
-      transition: border-color .2s, color .2s;
-    }
-    .btn-salir-pres:hover { border-color: #32ade6; color: #32ade6; }
-    .pres-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .pres-grid.wide { grid-template-columns: 1.4fr 1fr; }
-    .pres-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .pres-kpi-card {
-      background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px;
-      padding: 20px 18px; position: relative; overflow: hidden;
-    }
-    .pres-kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #1e7bc4;
-    }
-    .pres-kpi-card.gold::before { background: #ffd700; }
-    .pres-kpi-card.green::before { background: #30d158; }
-    .pres-kpi-card.big { grid-column: 1 / -1; }
-    .pres-kpi-label { font-size: .7rem; font-weight: 700; color: #98989f; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
-    .pres-kpi-value { font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; color: #32ade6; line-height: 1; }
-    .pres-kpi-card.gold .pres-kpi-value { color: #ffd700; font-size: 2.6rem; }
-    .pres-kpi-card.green .pres-kpi-value { color: #30d158; }
-    .pres-kpi-sub { font-size: .72rem; color: #98989f; margin-top: 4px; }
-    .pres-podium-wrap { background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; }
-    .pres-podium-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; color: #ffd700; letter-spacing: .05em; text-align: center; margin-bottom: 18px; }
-    .pres-podium-cont { display: flex; justify-content: center; align-items: flex-end; gap: 12px; }
-    .pres-ps { flex: 1; max-width: 200px; text-align: center; }
-    .pres-ps.first { order: 2; } .pres-ps.second { order: 1; } .pres-ps.third { order: 3; }
-    .pres-medal { font-size: 2.8rem; margin-bottom: 6px; }
-    .pres-pname { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; color: #f2f2f7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .pres-ptotal { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; color: #32ade6; margin-bottom: 10px; }
-    .pres-pbar { width: 100%; border-radius: 8px 8px 0 0; background: #3a3a3c; border: 1px solid #48484a; border-bottom: none; display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; }
-    .pres-ps.first .pres-pbar { height: 120px; border-color: #ffd700; color: #ffd700; }
-    .pres-ps.second .pres-pbar { height: 85px; border-color: #c0c0c0; color: #c0c0c0; }
-    .pres-ps.third .pres-pbar { height: 60px; border-color: #cd7f32; color: #cd7f32; }
-    .pres-chart-card { background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; }
-    .pres-chart-ttl { font-family: var(--font-head); font-size: 1rem; font-weight: 800; color: #32ade6; letter-spacing: .05em; margin-bottom: 14px; text-align: center; }
-    .pres-canvas-wrap { display: flex; justify-content: center; }
-    .pres-donut-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
-    .pres-legend-row { display: flex; align-items: center; gap: 10px; font-size: .82rem; }
-    .pres-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .pres-legend-label { color: #f2f2f7; flex: 1; }
-    .pres-legend-val { font-weight: 700; color: #98989f; font-size: .78rem; }
     /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
     .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
     .btn-action-sm:hover { border-color: var(--accent); color: var(--accent); }
@@ -1393,64 +1256,24 @@
       </div>
 
       <div class="tab-panel active" id="tab-dashboard">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-          <button class="btn btn-secondary btn-sm btn-icon" id="btn-modo-presentacion">🖥️ MODO PRESENTACIÓN</button>
-        </div>
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
-          <div class="kpi-grid">
-            <div class="kpi-card total">
-              <div class="kpi-icon">💵</div>
-              <div class="kpi-label">Total a pagar este mes</div>
-              <div class="kpi-value" id="kpi-total-pagar">—</div>
-              <div class="kpi-sub">comisiones + producción · solo aprobadas</div>
+          <div class="dash-kpi-row" id="dash-kpis"></div>
+          <div class="dash-main-row">
+            <div class="dash-rank-card">
+              <div class="dash-card-title">Ranking del mes</div>
+              <div id="dash-ranking"></div>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-icon">💰</div>
-              <div class="kpi-label">Comisiones del mes</div>
-              <div class="kpi-value" id="kpi-comisiones">—</div>
-              <div class="kpi-sub">aprobadas</div>
+            <div>
+              <div class="dash-eq-card">
+                <div class="dash-card-title">Top equipos</div>
+                <div id="dash-equipos"></div>
+              </div>
+              <div class="dash-pago-card">
+                <div class="dash-card-title">Modalidad de pago</div>
+                <div class="dash-pago-blocks" id="dash-pago"></div>
+              </div>
             </div>
-            <div class="kpi-card success">
-              <div class="kpi-icon">📦</div>
-              <div class="kpi-label">Equipos vendidos</div>
-              <div class="kpi-value" id="kpi-ventas">—</div>
-              <div class="kpi-sub">unidades</div>
-            </div>
-            <div class="kpi-card">
-              <div class="kpi-icon">📋</div>
-              <div class="kpi-label">Tickets jornada</div>
-              <div class="kpi-value" id="kpi-jornadas">—</div>
-              <div class="kpi-sub">aprobados</div>
-            </div>
-            <div class="kpi-card gold">
-              <div class="kpi-icon">⚡</div>
-              <div class="kpi-label">Producción jornadas</div>
-              <div class="kpi-value" id="kpi-produccion">—</div>
-              <div class="kpi-sub">total a pagar</div>
-            </div>
-          </div>
-
-          <div class="podium-section">
-            <div class="podium-title"><span class="icon">🏆</span> TOP 3 DEL MES</div>
-            <div class="podium-container" id="podium-container">
-              <div class="loading-msg" style="grid-column:1/-1;">Sin datos</div>
-            </div>
-          </div>
-
-          <div class="chart-card">
-            <div class="chart-card-title">📊 Producción por técnico</div>
-            <div class="chart-wrap tall"><canvas id="chart-ventas-tecnico"></canvas></div>
-          </div>
-
-          <div class="chart-card">
-            <div class="chart-card-title">👥 Ranking del mes</div>
-            <div id="ranking-tabla"></div>
-          </div>
-
-          <div class="chart-card">
-            <div class="chart-card-title">🥇 Equipos más vendidos</div>
-            <div class="chart-wrap tall"><canvas id="chart-equipos"></canvas></div>
           </div>
         </div>
       </div>
@@ -1505,6 +1328,15 @@
             <label>Técnico</label>
             <select id="filtro-tecnico-ventas"><option value="">Todos</option></select>
           </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="filtro-estado-ventas">
+              <option value="">Todos</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Aprobada">Aprobada</option>
+              <option value="Rechazada">Rechazada</option>
+            </select>
+          </div>
         </div>
         <div class="form-group" style="margin-bottom:8px;">
           <input type="text" id="filtro-cliente-ventas" placeholder="Buscar N° cliente…" style="font-size:.85rem;" />
@@ -1522,6 +1354,15 @@
           <div class="form-group">
             <label>Técnico</label>
             <select id="filtro-tecnico-jornadas"><option value="">Todos</option></select>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="filtro-estado-jornadas">
+              <option value="">Todos</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Aprobada">Aprobada</option>
+              <option value="Rechazada">Rechazada</option>
+            </select>
           </div>
         </div>
         <div class="form-group" style="margin-bottom:8px;">
@@ -1678,33 +1519,6 @@
   </div>
 </div>
 
-<!-- MODO PRESENTACIÓN -->
-<div id="modo-presentacion">
-  <div class="pres-header">
-    <div>
-      <div class="pres-title">SSServicios · Zona Norte</div>
-      <div class="pres-mes" id="pres-mes-label"></div>
-    </div>
-    <button class="btn-salir-pres" id="btn-salir-pres">✕ SALIR (ESC)</button>
-  </div>
-  <div class="pres-grid wide">
-    <div class="pres-podium-wrap" id="pres-podium"></div>
-    <div class="pres-kpi-grid" id="pres-kpis"></div>
-  </div>
-  <div class="pres-grid">
-    <div class="pres-chart-card">
-      <div class="pres-chart-ttl">🥇 Top 5 Equipos Más Vendidos</div>
-      <div class="pres-canvas-wrap"><canvas id="pres-canvas-equipos" width="400" height="260"></canvas></div>
-      <div class="pres-donut-legend" id="pres-legend-equipos"></div>
-    </div>
-    <div class="pres-chart-card">
-      <div class="pres-chart-ttl">💳 Modalidad de Pago</div>
-      <div class="pres-canvas-wrap"><canvas id="pres-canvas-pago" width="400" height="260"></canvas></div>
-      <div class="pres-donut-legend" id="pres-legend-pago"></div>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1721,14 +1535,6 @@ let registroActual = null;
 let editandoVenta = null;
 let editandoJornada = null;
 
-let chartVentasTecnico = null;
-let chartEquipos = null;
-
-// Datos del dashboard en memoria para el modo presentación
-let dashboardVentas = [];
-let dashboardJornadas = [];
-let dashboardTecData = {};
-let dashboardEquiposCount = {};
 // Caché de ventas admin para filtros cliente
 let ventasAdminCache = [];
 let jornadasAdminCache = [];
@@ -2770,284 +2576,131 @@ async function cargarDashboard() {
   content.style.display = 'none';
 
   try {
-    const [ventasData, jornadasData, resumenData] = await Promise.all([
+    const [ventasData, jornadasData] = await Promise.all([
       api({ accion: 'obtenerVentas' }),
-      api({ accion: 'obtenerJornadas' }),
-      api({ accion: 'obtenerResumen', tecnico: 'ADMIN' })
+      api({ accion: 'obtenerJornadas' })
     ]);
 
     loading.style.display = 'none';
     content.style.display = 'block';
 
-    if (resumenData.ok) {
-      document.getElementById('kpi-comisiones').textContent = formatoPesos(resumenData.totalComision);
-      document.getElementById('kpi-ventas').textContent = resumenData.cantidadVentas ?? '0';
-      document.getElementById('kpi-jornadas').textContent = resumenData.cantidadJornadas ?? '0';
-      document.getElementById('kpi-produccion').textContent = formatoPesos(resumenData.totalJornadas);
-      const totalPagar = (resumenData.totalComision || 0) + (resumenData.totalJornadas || 0);
-      document.getElementById('kpi-total-pagar').textContent = formatoPesos(totalPagar);
-    }
-
     const ventas = (ventasData.ok && ventasData.ventas) ? ventasData.ventas : [];
     const jornadas = (jornadasData.ok && jornadasData.jornadas) ? jornadasData.jornadas : [];
-    dashboardVentas = ventas;
-    dashboardJornadas = jornadas;
-    procesarYRenderizarTodo(ventas, jornadas);
+    renderDashboard(ventas, jornadas);
 
   } catch(e) {
     loading.innerHTML = '<div class="error-msg">Error al cargar el dashboard</div>';
   }
 }
 
-function procesarYRenderizarTodo(ventas, jornadas) {
+function renderDashboard(ventas, jornadas) {
   const tecData = {};
   const equiposCount = {};
-
-  function initTec(n) {
-    if (!tecData[n]) tecData[n] = { comisiones: 0, ventasCount: 0, jornadasMonto: 0, jornadasCount: 0 };
-  }
+  const pagosCount = {};
+  let totalComisiones = 0, totalVentasCount = 0;
+  let totalJornadasMonto = 0, totalJornadasCount = 0;
 
   ventas.forEach(v => {
     const f = v.datos;
     if (String(f[12] || '').trim() !== 'Aprobada') return;
     const tec = f[4], tec2 = f[10];
     const com = Number(f[11]) || 0;
-    const equipo = f[6] || 'Sin nombre';
     const dupla = String(f[9]).toLowerCase().startsWith('s');
-    if (tec) { initTec(tec); tecData[tec].comisiones += com; tecData[tec].ventasCount++; }
-    if (dupla && tec2) { initTec(tec2); tecData[tec2].comisiones += com; tecData[tec2].ventasCount++; }
-    if (equipo) equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
+    const equipo = f[6] || 'Sin nombre';
+    const pago = String(f[7] || 'Contado').trim();
+
+    totalComisiones += com;
+    totalVentasCount++;
+    pagosCount[pago] = (pagosCount[pago] || 0) + 1;
+    equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
+
+    if (!tecData[tec]) tecData[tec] = { comisiones: 0, jornadas: 0 };
+    tecData[tec].comisiones += com;
+    if (dupla && tec2) {
+      if (!tecData[tec2]) tecData[tec2] = { comisiones: 0, jornadas: 0 };
+      tecData[tec2].comisiones += com;
+    }
   });
 
-  (jornadas || []).forEach(j => {
+  jornadas.forEach(j => {
     const f = j.datos;
     if (String(f[9] || '').trim() !== 'Aprobada') return;
     const tec = f[5];
     const precio = Number(f[8]) || 0;
-    if (tec) { initTec(tec); tecData[tec].jornadasMonto += precio; tecData[tec].jornadasCount++; }
+    totalJornadasMonto += precio;
+    totalJornadasCount++;
+    if (!tecData[tec]) tecData[tec] = { comisiones: 0, jornadas: 0 };
+    tecData[tec].jornadas += precio;
   });
 
-  dashboardTecData = tecData;
-  dashboardEquiposCount = equiposCount;
-  renderPodio(tecData);
-  renderChartComparativo(tecData);
-  renderChartEquipos(equiposCount);
-  renderRankingTable(tecData);
+  renderDashKPIs(totalVentasCount, totalComisiones, totalJornadasCount, totalJornadasMonto);
+  renderDashRanking(tecData);
+  renderDashEquipos(equiposCount);
+  renderDashPago(pagosCount);
 }
 
-function renderPodio(tecData) {
-  const cont = document.getElementById('podium-container');
+function renderDashKPIs(ventasCount, comisiones, jornadasCount, jornadasMonto) {
+  document.getElementById('dash-kpis').innerHTML = `
+    <div class="dash-kpi-card">
+      <div class="dkc-label">Ventas aprobadas</div>
+      <div class="dkc-value">${ventasCount}</div>
+      <div class="dkc-sub">equipos</div>
+    </div>
+    <div class="dash-kpi-card alt">
+      <div class="dkc-label">Comisiones</div>
+      <div class="dkc-value">${formatoPesosCompacto(comisiones)}</div>
+      <div class="dkc-sub">aprobadas</div>
+    </div>
+    <div class="dash-kpi-card">
+      <div class="dkc-label">Tickets jornada</div>
+      <div class="dkc-value">${jornadasCount}</div>
+      <div class="dkc-sub">aprobados</div>
+    </div>
+    <div class="dash-kpi-card alt">
+      <div class="dkc-label">Producción</div>
+      <div class="dkc-value">${formatoPesosCompacto(jornadasMonto)}</div>
+      <div class="dkc-sub">jornadas</div>
+    </div>`;
+}
+
+function renderDashRanking(tecData) {
   const ranking = Object.entries(tecData)
-    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadasMonto, comisiones: d.comisiones, jornadas: d.jornadasMonto }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 3);
-
-  if (!ranking.length) {
-    cont.innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Sin datos aprobados</div>';
-    return;
-  }
-
-  const medallas = ['🥇', '🥈', '🥉'];
-  const clases = ['first', 'second', 'third'];
-  const labels = ['1°', '2°', '3°'];
-
-  cont.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
-    const d = ranking[i];
-    const div = document.createElement('div');
-    div.className = `podium-spot ${clases[i]}`;
-    if (d) {
-      const parts = [
-        d.comisiones > 0 ? `🤝 ${formatoPesosCompacto(d.comisiones)}` : '',
-        d.jornadas > 0   ? `📋 ${formatoPesosCompacto(d.jornadas)}` : ''
-      ].filter(Boolean).join('  ');
-      div.innerHTML = `
-        <div class="podium-medal">${medallas[i]}</div>
-        <div class="podium-name">${d.nombre}</div>
-        <div class="podium-value">${formatoPesosCompacto(d.total)}</div>
-        <div class="podium-breakdown">${parts ? `<span class="pb-item">${parts}</span>` : ''}</div>
-        <div class="podium-bar">${labels[i]}</div>
-      `;
-    } else {
-      div.innerHTML = `
-        <div class="podium-medal" style="opacity:.3">${medallas[i]}</div>
-        <div class="podium-name" style="color:var(--muted);">—</div>
-        <div class="podium-value" style="color:var(--muted);">—</div>
-        <div class="podium-breakdown"></div>
-        <div class="podium-bar" style="opacity:.4;">${labels[i]}</div>
-      `;
-    }
-    cont.appendChild(div);
-  }
-}
-
-function renderChartComparativo(tecData) {
-  const ctx = document.getElementById('chart-ventas-tecnico');
-  if (!ctx) return;
-
-  const ordenados = Object.entries(tecData)
-    .map(([nombre, d]) => ({ nombre, comisiones: d.comisiones, jornadas: d.jornadasMonto, total: d.comisiones + d.jornadasMonto }))
+    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadas }))
     .sort((a, b) => b.total - a.total);
 
-  if (chartVentasTecnico) chartVentasTecnico.destroy();
-  if (!ordenados.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
-
-  const labels = ordenados.map(e => e.nombre);
-
-  chartVentasTecnico = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Comisiones ventas',
-          data: ordenados.map(e => e.comisiones),
-          backgroundColor: 'rgba(30, 123, 196, 0.75)',
-          borderColor: 'rgba(30, 123, 196, 1)',
-          borderWidth: 1,
-          borderRadius: 4,
-          stack: 'total'
-        },
-        {
-          label: 'Producción jornadas',
-          data: ordenados.map(e => e.jornadas),
-          backgroundColor: 'rgba(46, 204, 113, 0.65)',
-          borderColor: 'rgba(46, 204, 113, 1)',
-          borderWidth: 1,
-          borderRadius: 4,
-          stack: 'total'
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
-      plugins: {
-        legend: {
-          display: true,
-          labels: { color: '#98989f', font: { size: 11 }, boxWidth: 12, boxHeight: 12, padding: 12 }
-        },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${formatoPesos(ctx.raw)}`,
-            afterBody: (items) => [`Total: ${formatoPesos(ordenados[items[0].dataIndex].total)}`]
-          }
-        }
-      },
-      scales: {
-        x: {
-          stacked: true,
-          ticks: { color: '#98989f', font: { size: 11 }, callback: v => formatoPesosCompacto(v) },
-          grid: { color: 'rgba(72, 72, 74, 0.3)' }, beginAtZero: true
-        },
-        y: {
-          stacked: true,
-          ticks: { color: '#f2f2f7', font: { size: 11 } },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-}
-
-function renderChartEquipos(equiposCount) {
-  const ctx = document.getElementById('chart-equipos');
-  if (!ctx) return;
-
-  const ordenados = Object.entries(equiposCount).sort((a, b) => b[1] - a[1]);
-  let labels, valores;
-  if (ordenados.length > 6) {
-    const top = ordenados.slice(0, 5);
-    const resto = ordenados.slice(5).reduce((acc, e) => acc + e[1], 0);
-    labels = [...top.map(e => e[0]), 'Otros'];
-    valores = [...top.map(e => e[1]), resto];
-  } else {
-    labels = ordenados.map(e => e[0]);
-    valores = ordenados.map(e => e[1]);
-  }
-
-  if (chartEquipos) chartEquipos.destroy();
-  if (!labels.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
-
-  const colores = [
-    'rgba(30, 123, 196, 0.85)',
-    'rgba(50, 173, 230, 0.85)',
-    'rgba(100, 200, 255, 0.85)',
-    'rgba(130, 170, 220, 0.85)',
-    'rgba(64, 156, 200, 0.85)',
-    'rgba(152, 152, 159, 0.85)'
-  ];
-
-  chartEquipos = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels: labels, datasets: [{ data: valores, backgroundColor: colores, borderColor: '#1c1c1e', borderWidth: 2 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#f2f2f7', padding: 10, font: { size: 11 }, boxWidth: 14, boxHeight: 14 } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct = ((ctx.parsed / total) * 100).toFixed(0);
-              return `${ctx.label}: ${ctx.parsed} (${pct}%)`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-function renderRankingTable(tecData) {
-  const cont = document.getElementById('ranking-tabla');
-  if (!cont) return;
-
-  const ranking = Object.entries(tecData)
-    .map(([nombre, d]) => ({
-      nombre,
-      comisiones: d.comisiones, ventasCount: d.ventasCount,
-      jornadasMonto: d.jornadasMonto, jornadasCount: d.jornadasCount,
-      total: d.comisiones + d.jornadasMonto
-    }))
-    .sort((a, b) => b.total - a.total);
-
+  const cont = document.getElementById('dash-ranking');
   if (!ranking.length) {
-    cont.innerHTML = '<div class="mr-empty">Sin datos del mes</div>';
+    cont.innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
     return;
   }
+  cont.innerHTML = ranking.map((d, i) => `
+    <div class="dash-rank-row${i === 0 ? ' leader' : ''}">
+      <div class="drr-pos">${i + 1}</div>
+      <div class="drr-name">${d.nombre}</div>
+      <div class="drr-total">${formatoPesosCompacto(d.total)}</div>
+    </div>`).join('');
+}
 
-  const posClases = ['gold', 'silver', 'bronze'];
-  const thStyle = 'background:var(--card);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;padding:9px 10px;border-bottom:1px solid var(--border-soft);white-space:nowrap;';
+function renderDashEquipos(equiposCount) {
+  const cont = document.getElementById('dash-equipos');
+  const ordenados = Object.entries(equiposCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  if (!ordenados.length) { cont.innerHTML = '<div class="mr-empty">Sin datos</div>'; return; }
+  const max = ordenados[0][1];
+  cont.innerHTML = ordenados.map(([nombre, cant]) => `
+    <div class="dash-eq-bar-row">
+      <div class="dash-eq-bar-name">${nombre}<span>${cant} u.</span></div>
+      <div class="dash-eq-bar-bg"><div class="dash-eq-bar-fill" style="width:${(cant / max * 100).toFixed(0)}%"></div></div>
+    </div>`).join('');
+}
 
-  let html = `<table style="width:100%;border-collapse:collapse;">
-    <thead><tr>
-      <th style="${thStyle}text-align:left;">Técnico</th>
-      <th style="${thStyle}text-align:right;">Ventas</th>
-      <th style="${thStyle}text-align:right;">Jornadas</th>
-      <th style="${thStyle}text-align:right;">Total</th>
-    </tr></thead><tbody>`;
-
-  ranking.forEach((d, i) => {
-    const posClass = i < 3 ? posClases[i] : '';
-    const bg = i % 2 === 1 ? 'background:rgba(255,255,255,.02);' : '';
-    const sep = i < ranking.length - 1 ? 'border-bottom:1px solid var(--border-soft);' : '';
-    const td = `padding:9px 10px;${sep}${bg}`;
-    html += `<tr>
-      <td style="${td}font-weight:600;"><span class="ranking-pos ${posClass}">${i + 1}</span>${d.nombre}</td>
-      <td style="${td}text-align:right;">
-        <div style="font-size:.8rem;color:var(--accent);">${formatoPesos(d.comisiones)}</div>
-        <div style="font-size:.68rem;color:var(--muted);">${d.ventasCount} equipo${d.ventasCount !== 1 ? 's' : ''}</div>
-      </td>
-      <td style="${td}text-align:right;">
-        <div style="font-size:.8rem;color:var(--success);">${formatoPesos(d.jornadasMonto)}</div>
-        <div style="font-size:.68rem;color:var(--muted);">${d.jornadasCount} ticket${d.jornadasCount !== 1 ? 's' : ''}</div>
-      </td>
-      <td style="${td}text-align:right;font-size:.88rem;font-weight:700;font-family:var(--font-head);">${formatoPesos(d.total)}</td>
-    </tr>`;
-  });
-
-  html += '</tbody></table>';
-  cont.innerHTML = html;
+function renderDashPago(pagosCount) {
+  const cont = document.getElementById('dash-pago');
+  const tipos = ['Contado', '2 cuotas', '3 cuotas'];
+  cont.innerHTML = tipos.map((t, i) => `
+    <div class="dash-pago-block${i % 2 === 1 ? ' alt' : ''}">
+      <div class="dpb-val">${pagosCount[t] || 0}</div>
+      <div class="dpb-label">${t}</div>
+    </div>`).join('');
 }
 
 // ============================================================
@@ -3405,9 +3058,11 @@ function poblarFiltroTecnicoVentas(ventas) {
 
 function aplicarFiltrosVentas() {
   const tecnico = document.getElementById('filtro-tecnico-ventas')?.value || '';
+  const estado = document.getElementById('filtro-estado-ventas')?.value || '';
   const cliente = (document.getElementById('filtro-cliente-ventas')?.value || '').trim().toLowerCase();
   let filtradas = ventasAdminCache;
   if (tecnico) filtradas = filtradas.filter(v => v.datos[4] === tecnico);
+  if (estado) filtradas = filtradas.filter(v => String(v.datos[12] || 'Pendiente').trim() === estado);
   if (cliente) filtradas = filtradas.filter(v => String(v.datos[5] || '').toLowerCase().includes(cliente));
   renderTablaVentas(filtradas);
 }
@@ -3458,6 +3113,7 @@ function renderTablaVentas(ventas) {
 
 document.getElementById('filtro-mes-ventas').addEventListener('change', cargarVentasAdmin);
 document.getElementById('filtro-tecnico-ventas').addEventListener('change', aplicarFiltrosVentas);
+document.getElementById('filtro-estado-ventas').addEventListener('change', aplicarFiltrosVentas);
 document.getElementById('filtro-cliente-ventas').addEventListener('input', aplicarFiltrosVentas);
 
 async function cargarJornadasAdmin() {
@@ -3500,9 +3156,11 @@ function poblarFiltroTecnicoJornadas(jornadas) {
 
 function aplicarFiltrosJornadas() {
   const tecnico = document.getElementById('filtro-tecnico-jornadas')?.value || '';
+  const estado = document.getElementById('filtro-estado-jornadas')?.value || '';
   const cliente = (document.getElementById('filtro-cliente-jornadas')?.value || '').trim().toLowerCase();
   let filtradas = jornadasAdminCache;
   if (tecnico) filtradas = filtradas.filter(j => j.datos[5] === tecnico);
+  if (estado) filtradas = filtradas.filter(j => String(j.datos[9] || 'Pendiente').trim() === estado);
   if (cliente) filtradas = filtradas.filter(j => String(j.datos[6] || '').toLowerCase().includes(cliente));
   renderTablaJornadas(filtradas);
 }
@@ -3532,6 +3190,7 @@ function renderTablaJornadas(jornadas) {
 
 document.getElementById('filtro-mes-jornadas').addEventListener('change', cargarJornadasAdmin);
 document.getElementById('filtro-tecnico-jornadas').addEventListener('change', aplicarFiltrosJornadas);
+document.getElementById('filtro-estado-jornadas').addEventListener('change', aplicarFiltrosJornadas);
 document.getElementById('filtro-cliente-jornadas').addEventListener('input', aplicarFiltrosJornadas);
 
 // ============================================================
@@ -3801,202 +3460,6 @@ document.getElementById('btn-logout-mis-registros').addEventListener('click', ce
 document.getElementById('btn-logout-detalle').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-editar-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
-
-// ============================================================
-//  MODO PRESENTACIÓN
-// ============================================================
-document.getElementById('btn-modo-presentacion').addEventListener('click', abrirModoPresentacion);
-document.getElementById('btn-salir-pres').addEventListener('click', cerrarModoPresentacion);
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('modo-presentacion').classList.contains('activo')) {
-    cerrarModoPresentacion();
-  }
-});
-
-function abrirModoPresentacion() {
-  const overlay = document.getElementById('modo-presentacion');
-  overlay.classList.add('activo');
-  try { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); } catch(e) {}
-  document.getElementById('pres-mes-label').textContent = mesActualNombre().toUpperCase();
-  renderPresentacionPodio();
-  renderPresentacionKPIs();
-  renderPresentacionDonutEquipos();
-  renderPresentacionDonutPago();
-}
-
-function cerrarModoPresentacion() {
-  document.getElementById('modo-presentacion').classList.remove('activo');
-  try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e) {}
-}
-
-function renderPresentacionPodio() {
-  const cont = document.getElementById('pres-podium');
-  const ranking = Object.entries(dashboardTecData)
-    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadasMonto, comisiones: d.comisiones, jornadas: d.jornadasMonto }))
-    .sort((a, b) => b.total - a.total).slice(0, 3);
-
-  const medallas = ['🥇', '🥈', '🥉'];
-  const clases = ['first', 'second', 'third'];
-  const labels = ['1°', '2°', '3°'];
-
-  let html = `<div class="pres-podium-title">🏆 RANKING DEL MES</div><div class="pres-podium-cont">`;
-  for (let i = 0; i < 3; i++) {
-    const d = ranking[i];
-    html += `<div class="pres-ps ${clases[i]}">`;
-    if (d) {
-      const desglose = [
-        d.comisiones > 0 ? `🤝 ${formatoPesosCompacto(d.comisiones)}` : '',
-        d.jornadas > 0   ? `📋 ${formatoPesosCompacto(d.jornadas)}` : ''
-      ].filter(Boolean).join('  ');
-      html += `
-        <div class="pres-medal">${medallas[i]}</div>
-        <div class="pres-pname">${d.nombre}</div>
-        <div class="pres-ptotal">${formatoPesosCompacto(d.total)}</div>
-        ${desglose ? `<div style="font-size:.72rem;color:#98989f;margin-bottom:8px;">${desglose}</div>` : '<div style="margin-bottom:8px;"></div>'}
-        <div class="pres-pbar">${labels[i]}</div>`;
-    } else {
-      html += `
-        <div class="pres-medal" style="opacity:.3">${medallas[i]}</div>
-        <div class="pres-pname" style="color:#3a3a3c;">—</div>
-        <div class="pres-ptotal" style="color:#3a3a3c;">—</div>
-        <div style="margin-bottom:8px;"></div>
-        <div class="pres-pbar" style="opacity:.3;">${labels[i]}</div>`;
-    }
-    html += `</div>`;
-  }
-  html += `</div>`;
-  cont.innerHTML = html;
-}
-
-function renderPresentacionKPIs() {
-  const cont = document.getElementById('pres-kpis');
-  let totalComisiones = 0, totalJornadas = 0, totalVentas = 0, totalTickets = 0;
-  Object.values(dashboardTecData).forEach(d => {
-    totalComisiones += d.comisiones;
-    totalJornadas   += d.jornadasMonto;
-    totalVentas     += d.ventasCount;
-    totalTickets    += d.jornadasCount;
-  });
-  const totalPagar = totalComisiones + totalJornadas;
-  const destac = Object.entries(dashboardTecData)
-    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadasMonto }))
-    .sort((a, b) => b.total - a.total)[0];
-
-  cont.innerHTML = `
-    <div class="pres-kpi-card gold big">
-      <div class="pres-kpi-label">💵 Total a pagar</div>
-      <div class="pres-kpi-value">${formatoPesos(totalPagar)}</div>
-      <div class="pres-kpi-sub">comisiones + jornadas aprobadas</div>
-    </div>
-    <div class="pres-kpi-card">
-      <div class="pres-kpi-label">💰 Comisiones</div>
-      <div class="pres-kpi-value">${formatoPesos(totalComisiones)}</div>
-      <div class="pres-kpi-sub">${totalVentas} equipo${totalVentas !== 1 ? 's' : ''}</div>
-    </div>
-    <div class="pres-kpi-card green">
-      <div class="pres-kpi-label">📋 Jornadas</div>
-      <div class="pres-kpi-value">${formatoPesos(totalJornadas)}</div>
-      <div class="pres-kpi-sub">${totalTickets} ticket${totalTickets !== 1 ? 's' : ''}</div>
-    </div>
-    ${destac ? `<div class="pres-kpi-card">
-      <div class="pres-kpi-label">⭐ Técnico destacado</div>
-      <div class="pres-kpi-value" style="font-size:1.4rem;">${destac.nombre}</div>
-      <div class="pres-kpi-sub">${formatoPesos(destac.total)} en total</div>
-    </div>` : ''}`;
-}
-
-const PRES_COLORES = ['#1e7bc4','#32ade6','#64c8ff','#82aaf0','#409cc8','#98989f'];
-
-function dibujarDonutCanvas(canvas, datos) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-  const total = datos.reduce((a, b) => a + b.valor, 0);
-  if (!total) {
-    ctx.fillStyle = '#98989f';
-    ctx.font = '14px Barlow, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Sin datos aprobados', w / 2, h / 2);
-    return;
-  }
-  const cx = w / 2, cy = h / 2;
-  const radio = Math.min(w, h) * 0.4;
-  const radioInt = radio * 0.58;
-  let startAngle = -Math.PI / 2;
-  datos.forEach(d => {
-    const angle = (d.valor / total) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radio, startAngle, startAngle + angle);
-    ctx.closePath();
-    ctx.fillStyle = d.color;
-    ctx.fill();
-    ctx.strokeStyle = '#1c1c1e';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    startAngle += angle;
-  });
-  // Agujero central
-  ctx.beginPath();
-  ctx.arc(cx, cy, radioInt, 0, Math.PI * 2);
-  ctx.fillStyle = '#2c2c2e';
-  ctx.fill();
-  // Total al centro
-  ctx.fillStyle = '#98989f';
-  ctx.font = '700 11px Barlow Condensed, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('TOTAL', cx, cy - 13);
-  ctx.fillStyle = '#32ade6';
-  ctx.font = '800 22px Barlow Condensed, sans-serif';
-  ctx.fillText(total, cx, cy + 10);
-}
-
-function renderPresentacionDonutEquipos() {
-  const canvas = document.getElementById('pres-canvas-equipos');
-  const legendCont = document.getElementById('pres-legend-equipos');
-  const ordenados = Object.entries(dashboardEquiposCount).sort((a, b) => b[1] - a[1]);
-  let datos;
-  if (ordenados.length > 5) {
-    const top = ordenados.slice(0, 5);
-    const otros = ordenados.slice(5).reduce((a, b) => a + b[1], 0);
-    datos = [...top.map(([nombre, valor], i) => ({ nombre, valor, color: PRES_COLORES[i] })),
-             { nombre: 'Otros', valor: otros, color: PRES_COLORES[5] }];
-  } else {
-    datos = ordenados.map(([nombre, valor], i) => ({ nombre, valor, color: PRES_COLORES[i] }));
-  }
-  dibujarDonutCanvas(canvas, datos);
-  legendCont.innerHTML = datos.map(d => `
-    <div class="pres-legend-row">
-      <div class="pres-legend-dot" style="background:${d.color}"></div>
-      <span class="pres-legend-label">${d.nombre}</span>
-      <span class="pres-legend-val">${d.valor}</span>
-    </div>`).join('');
-}
-
-function renderPresentacionDonutPago() {
-  const canvas = document.getElementById('pres-canvas-pago');
-  const legendCont = document.getElementById('pres-legend-pago');
-  const pagosCount = { 'Contado': 0, '2 cuotas': 0, '3 cuotas': 0 };
-  dashboardVentas.forEach(v => {
-    const f = v.datos;
-    if (String(f[12] || '').trim() !== 'Aprobada') return;
-    const pago = String(f[7] || 'Contado').trim();
-    pagosCount[pago] = (pagosCount[pago] !== undefined ? pagosCount[pago] : 0) + 1;
-  });
-  const pagoColores = { 'Contado': '#1e7bc4', '2 cuotas': '#32ade6', '3 cuotas': '#64c8ff' };
-  const datos = Object.entries(pagosCount)
-    .filter(([, v]) => v > 0)
-    .map(([nombre, valor]) => ({ nombre, valor, color: pagoColores[nombre] || '#98989f' }));
-  dibujarDonutCanvas(canvas, datos);
-  legendCont.innerHTML = datos.map(d => `
-    <div class="pres-legend-row">
-      <div class="pres-legend-dot" style="background:${d.color}"></div>
-      <span class="pres-legend-label">${d.nombre}</span>
-      <span class="pres-legend-val">${d.valor}</span>
-    </div>`).join('');
-}
 
 // INIT
 (async function init() {
