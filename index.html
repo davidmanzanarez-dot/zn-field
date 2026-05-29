@@ -9,18 +9,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:        #050d1a;
-      --surface:   #0a1830;
-      --card:      #0f2040;
-      --border:    #1e9cd7;
-      --border-soft: #1a3560;
-      --accent:    #1e9cd7;
-      --accent2:   #5cb8e3;
-      --text:      #e8eaf0;
-      --muted:     #7a93b3;
-      --success:   #2ecc71;
-      --danger:    #e74c3c;
-      --warning:   #f39c12;
+      /* Paleta "Charcoal Sky" */
+      --bg:        #1c1c1e;
+      --surface:   #2c2c2e;
+      --card:      #3a3a3c;
+      --border:    #1e7bc4;
+      --border-soft: #48484a;
+      --accent:    #1e7bc4;
+      --accent2:   #32ade6;
+      --text:      #f2f2f7;
+      --muted:     #98989f;
+      --success:   #30d158;
+      --danger:    #ff453a;
+      --warning:   #ffd60a;
       --gold:      #ffd700;
       --silver:    #c0c0c0;
       --bronze:    #cd7f32;
@@ -101,7 +102,7 @@
     #screen-login {
       justify-content: center; align-items: center;
       padding: 24px 20px;
-      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(30,156,215,.12) 0%, transparent 60%), var(--bg);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(30,123,196,.12) 0%, transparent 60%), var(--bg);
     }
     .login-box {
       width: 100%; max-width: 360px;
@@ -110,7 +111,7 @@
       border-top: 3px solid var(--accent);
       border-radius: var(--radius);
       padding: 32px 24px;
-      box-shadow: 0 0 24px rgba(30,156,215,.10);
+      box-shadow: 0 0 24px rgba(30,123,196,.10);
     }
     .login-brand {
       text-align: center; margin-bottom: 28px;
@@ -311,7 +312,7 @@
       cursor: pointer;
       transition: border-color .15s, background .15s;
     }
-    .equipo-card.selected { border-color: var(--accent); background: rgba(30,156,215,.10); }
+    .equipo-card.selected { border-color: var(--accent); background: rgba(30,123,196,.10); }
     .equipo-card .eq-nombre { font-family: var(--font-head); font-size: .98rem; font-weight: 700; }
     .equipo-card .eq-precio { font-size: .78rem; color: var(--muted); margin-top: 3px; }
 
@@ -533,7 +534,7 @@
       position: absolute;
       top: -6px; right: -6px;
       background: var(--warning);
-      color: #050d1a;
+      color: #1c1c1e;
       border-radius: 50%;
       min-width: 20px; height: 20px;
       font-size: .7rem; font-weight: 800;
@@ -801,7 +802,7 @@
       letter-spacing: .04em; text-transform: uppercase;
     }
     .tag-green { background: rgba(46,204,113,.15); color: var(--success); }
-    .tag-cyan { background: rgba(30,156,215,.15); color: var(--accent); }
+    .tag-cyan { background: rgba(30,123,196,.15); color: var(--accent); }
     .tag-gray { background: rgba(122,147,179,.15); color: var(--muted); }
     .tag-warning { background: rgba(243,156,18,.15); color: var(--warning); }
     .tag-danger { background: rgba(231,76,60,.15); color: var(--danger); }
@@ -822,7 +823,7 @@
     .radio-chip.selected {
       border-color: var(--accent);
       color: var(--text);
-      background: rgba(30,156,215,.10);
+      background: rgba(30,123,196,.10);
     }
 
     .divider { height: 1px; background: var(--border-soft); margin: 20px 0; }
@@ -877,7 +878,7 @@
 
     /* ===== INFO BOX ===== */
     .info-resend {
-      background: rgba(30, 156, 215, 0.08);
+      background: rgba(30, 123, 196, 0.08);
       border: 1px solid var(--accent);
       border-radius: var(--radius);
       padding: 11px 13px;
@@ -915,7 +916,7 @@
       border-left: 3px solid transparent;
     }
     .admin-sidebar-btn:hover { background: var(--card); color: var(--text); }
-    .admin-sidebar-btn.active { background: rgba(30,156,215,.12); color: var(--accent); border-left-color: var(--accent); }
+    .admin-sidebar-btn.active { background: rgba(30,123,196,.12); color: var(--accent); border-left-color: var(--accent); }
     .admin-sidebar-btn .tab-badge { position: static; margin-left: auto; }
     @media (min-width: 1025px) {
       body.admin-desktop .admin-sidebar { display: flex; }
@@ -936,64 +937,64 @@
     /* ===== MODO PRESENTACIÓN ===== */
     #modo-presentacion {
       display: none; position: fixed; inset: 0;
-      background: #02080f; z-index: 900; overflow-y: auto;
+      background: #1c1c1e; z-index: 900; overflow-y: auto;
       padding: 28px 36px 48px; flex-direction: column; gap: 22px;
     }
     #modo-presentacion.activo { display: flex; }
     .pres-header {
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid #1a3560; padding-bottom: 14px;
+      border-bottom: 1px solid #3a3a3c; padding-bottom: 14px;
     }
     .pres-title {
       font-family: var(--font-head); font-size: 1.5rem; font-weight: 800;
-      color: #1e9cd7; letter-spacing: .06em; text-transform: uppercase;
+      color: #32ade6; letter-spacing: .06em; text-transform: uppercase;
     }
-    .pres-mes { font-family: var(--font-head); font-size: .95rem; color: #7a93b3; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+    .pres-mes { font-family: var(--font-head); font-size: .95rem; color: #98989f; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
     .btn-salir-pres {
-      background: transparent; border: 1px solid #1a3560; color: #7a93b3;
+      background: transparent; border: 1px solid #3a3a3c; color: #98989f;
       font-family: var(--font-head); font-size: .85rem; font-weight: 700;
       padding: 8px 18px; border-radius: 8px; cursor: pointer; letter-spacing: .05em;
       transition: border-color .2s, color .2s;
     }
-    .btn-salir-pres:hover { border-color: #1e9cd7; color: #1e9cd7; }
+    .btn-salir-pres:hover { border-color: #32ade6; color: #32ade6; }
     .pres-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .pres-grid.wide { grid-template-columns: 1.4fr 1fr; }
     .pres-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .pres-kpi-card {
-      background: #071426; border: 1px solid #1a3560; border-radius: 14px;
+      background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px;
       padding: 20px 18px; position: relative; overflow: hidden;
     }
     .pres-kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #1e9cd7;
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #1e7bc4;
     }
     .pres-kpi-card.gold::before { background: #ffd700; }
-    .pres-kpi-card.green::before { background: #2ecc71; }
+    .pres-kpi-card.green::before { background: #30d158; }
     .pres-kpi-card.big { grid-column: 1 / -1; }
-    .pres-kpi-label { font-size: .7rem; font-weight: 700; color: #7a93b3; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
-    .pres-kpi-value { font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; color: #1e9cd7; line-height: 1; }
+    .pres-kpi-label { font-size: .7rem; font-weight: 700; color: #98989f; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+    .pres-kpi-value { font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; color: #32ade6; line-height: 1; }
     .pres-kpi-card.gold .pres-kpi-value { color: #ffd700; font-size: 2.6rem; }
-    .pres-kpi-card.green .pres-kpi-value { color: #2ecc71; }
-    .pres-kpi-sub { font-size: .72rem; color: #7a93b3; margin-top: 4px; }
-    .pres-podium-wrap { background: #071426; border: 1px solid #1a3560; border-radius: 14px; padding: 20px; }
+    .pres-kpi-card.green .pres-kpi-value { color: #30d158; }
+    .pres-kpi-sub { font-size: .72rem; color: #98989f; margin-top: 4px; }
+    .pres-podium-wrap { background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; }
     .pres-podium-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; color: #ffd700; letter-spacing: .05em; text-align: center; margin-bottom: 18px; }
     .pres-podium-cont { display: flex; justify-content: center; align-items: flex-end; gap: 12px; }
     .pres-ps { flex: 1; max-width: 200px; text-align: center; }
     .pres-ps.first { order: 2; } .pres-ps.second { order: 1; } .pres-ps.third { order: 3; }
     .pres-medal { font-size: 2.8rem; margin-bottom: 6px; }
-    .pres-pname { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; color: #e8eaf0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .pres-ptotal { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; color: #1e9cd7; margin-bottom: 10px; }
-    .pres-pbar { width: 100%; border-radius: 8px 8px 0 0; background: #0f2040; border: 1px solid #1a3560; border-bottom: none; display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; }
+    .pres-pname { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; color: #f2f2f7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pres-ptotal { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; color: #32ade6; margin-bottom: 10px; }
+    .pres-pbar { width: 100%; border-radius: 8px 8px 0 0; background: #3a3a3c; border: 1px solid #48484a; border-bottom: none; display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; }
     .pres-ps.first .pres-pbar { height: 120px; border-color: #ffd700; color: #ffd700; }
     .pres-ps.second .pres-pbar { height: 85px; border-color: #c0c0c0; color: #c0c0c0; }
     .pres-ps.third .pres-pbar { height: 60px; border-color: #cd7f32; color: #cd7f32; }
-    .pres-chart-card { background: #071426; border: 1px solid #1a3560; border-radius: 14px; padding: 20px; }
-    .pres-chart-ttl { font-family: var(--font-head); font-size: 1rem; font-weight: 800; color: #1e9cd7; letter-spacing: .05em; margin-bottom: 14px; text-align: center; }
+    .pres-chart-card { background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; }
+    .pres-chart-ttl { font-family: var(--font-head); font-size: 1rem; font-weight: 800; color: #32ade6; letter-spacing: .05em; margin-bottom: 14px; text-align: center; }
     .pres-canvas-wrap { display: flex; justify-content: center; }
     .pres-donut-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
     .pres-legend-row { display: flex; align-items: center; gap: 10px; font-size: .82rem; }
     .pres-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .pres-legend-label { color: #e8eaf0; flex: 1; }
-    .pres-legend-val { font-weight: 700; color: #7a93b3; font-size: .78rem; }
+    .pres-legend-label { color: #f2f2f7; flex: 1; }
+    .pres-legend-val { font-weight: 700; color: #98989f; font-size: .78rem; }
     /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
     .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
     .btn-action-sm:hover { border-color: var(--accent); color: var(--accent); }
@@ -2901,8 +2902,8 @@ function renderChartComparativo(tecData) {
         {
           label: 'Comisiones ventas',
           data: ordenados.map(e => e.comisiones),
-          backgroundColor: 'rgba(30, 156, 215, 0.75)',
-          borderColor: 'rgba(30, 156, 215, 1)',
+          backgroundColor: 'rgba(30, 123, 196, 0.75)',
+          borderColor: 'rgba(30, 123, 196, 1)',
           borderWidth: 1,
           borderRadius: 4,
           stack: 'total'
@@ -2923,7 +2924,7 @@ function renderChartComparativo(tecData) {
       plugins: {
         legend: {
           display: true,
-          labels: { color: '#7a93b3', font: { size: 11 }, boxWidth: 12, boxHeight: 12, padding: 12 }
+          labels: { color: '#98989f', font: { size: 11 }, boxWidth: 12, boxHeight: 12, padding: 12 }
         },
         tooltip: {
           callbacks: {
@@ -2935,12 +2936,12 @@ function renderChartComparativo(tecData) {
       scales: {
         x: {
           stacked: true,
-          ticks: { color: '#7a93b3', font: { size: 11 }, callback: v => formatoPesosCompacto(v) },
-          grid: { color: 'rgba(26, 53, 96, 0.3)' }, beginAtZero: true
+          ticks: { color: '#98989f', font: { size: 11 }, callback: v => formatoPesosCompacto(v) },
+          grid: { color: 'rgba(72, 72, 74, 0.3)' }, beginAtZero: true
         },
         y: {
           stacked: true,
-          ticks: { color: '#e8eaf0', font: { size: 11 } },
+          ticks: { color: '#f2f2f7', font: { size: 11 } },
           grid: { display: false }
         }
       }
@@ -2968,21 +2969,21 @@ function renderChartEquipos(equiposCount) {
   if (!labels.length) { ctx.parentElement.innerHTML = '<div class="loading-msg">Sin datos</div>'; return; }
 
   const colores = [
-    'rgba(30, 156, 215, 0.85)',
-    'rgba(92, 184, 227, 0.85)',
-    'rgba(0, 168, 232, 0.85)',
-    'rgba(100, 181, 246, 0.85)',
-    'rgba(38, 198, 218, 0.85)',
-    'rgba(122, 147, 179, 0.85)'
+    'rgba(30, 123, 196, 0.85)',
+    'rgba(50, 173, 230, 0.85)',
+    'rgba(100, 200, 255, 0.85)',
+    'rgba(130, 170, 220, 0.85)',
+    'rgba(64, 156, 200, 0.85)',
+    'rgba(152, 152, 159, 0.85)'
   ];
 
   chartEquipos = new Chart(ctx, {
     type: 'doughnut',
-    data: { labels: labels, datasets: [{ data: valores, backgroundColor: colores, borderColor: '#0a1830', borderWidth: 2 }] },
+    data: { labels: labels, datasets: [{ data: valores, backgroundColor: colores, borderColor: '#1c1c1e', borderWidth: 2 }] },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { color: '#e8eaf0', padding: 10, font: { size: 11 }, boxWidth: 14, boxHeight: 14 } },
+        legend: { position: 'bottom', labels: { color: '#f2f2f7', padding: 10, font: { size: 11 }, boxWidth: 14, boxHeight: 14 } },
         tooltip: {
           callbacks: {
             label: (ctx) => {
@@ -3851,13 +3852,13 @@ function renderPresentacionPodio() {
         <div class="pres-medal">${medallas[i]}</div>
         <div class="pres-pname">${d.nombre}</div>
         <div class="pres-ptotal">${formatoPesosCompacto(d.total)}</div>
-        ${desglose ? `<div style="font-size:.72rem;color:#7a93b3;margin-bottom:8px;">${desglose}</div>` : '<div style="margin-bottom:8px;"></div>'}
+        ${desglose ? `<div style="font-size:.72rem;color:#98989f;margin-bottom:8px;">${desglose}</div>` : '<div style="margin-bottom:8px;"></div>'}
         <div class="pres-pbar">${labels[i]}</div>`;
     } else {
       html += `
         <div class="pres-medal" style="opacity:.3">${medallas[i]}</div>
-        <div class="pres-pname" style="color:#1a3560;">—</div>
-        <div class="pres-ptotal" style="color:#1a3560;">—</div>
+        <div class="pres-pname" style="color:#3a3a3c;">—</div>
+        <div class="pres-ptotal" style="color:#3a3a3c;">—</div>
         <div style="margin-bottom:8px;"></div>
         <div class="pres-pbar" style="opacity:.3;">${labels[i]}</div>`;
     }
@@ -3904,7 +3905,7 @@ function renderPresentacionKPIs() {
     </div>` : ''}`;
 }
 
-const PRES_COLORES = ['#1e9cd7','#5cb8e3','#00a8e8','#64b5f6','#26c6da','#7a93b3'];
+const PRES_COLORES = ['#1e7bc4','#32ade6','#64c8ff','#82aaf0','#409cc8','#98989f'];
 
 function dibujarDonutCanvas(canvas, datos) {
   const ctx = canvas.getContext('2d');
@@ -3912,7 +3913,7 @@ function dibujarDonutCanvas(canvas, datos) {
   ctx.clearRect(0, 0, w, h);
   const total = datos.reduce((a, b) => a + b.valor, 0);
   if (!total) {
-    ctx.fillStyle = '#7a93b3';
+    ctx.fillStyle = '#98989f';
     ctx.font = '14px Barlow, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -3931,7 +3932,7 @@ function dibujarDonutCanvas(canvas, datos) {
     ctx.closePath();
     ctx.fillStyle = d.color;
     ctx.fill();
-    ctx.strokeStyle = '#02080f';
+    ctx.strokeStyle = '#1c1c1e';
     ctx.lineWidth = 2;
     ctx.stroke();
     startAngle += angle;
@@ -3939,15 +3940,15 @@ function dibujarDonutCanvas(canvas, datos) {
   // Agujero central
   ctx.beginPath();
   ctx.arc(cx, cy, radioInt, 0, Math.PI * 2);
-  ctx.fillStyle = '#071426';
+  ctx.fillStyle = '#2c2c2e';
   ctx.fill();
   // Total al centro
-  ctx.fillStyle = '#7a93b3';
+  ctx.fillStyle = '#98989f';
   ctx.font = '700 11px Barlow Condensed, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('TOTAL', cx, cy - 13);
-  ctx.fillStyle = '#1e9cd7';
+  ctx.fillStyle = '#32ade6';
   ctx.font = '800 22px Barlow Condensed, sans-serif';
   ctx.fillText(total, cx, cy + 10);
 }
@@ -3984,10 +3985,10 @@ function renderPresentacionDonutPago() {
     const pago = String(f[7] || 'Contado').trim();
     pagosCount[pago] = (pagosCount[pago] !== undefined ? pagosCount[pago] : 0) + 1;
   });
-  const pagoColores = { 'Contado': '#1e9cd7', '2 cuotas': '#5cb8e3', '3 cuotas': '#26c6da' };
+  const pagoColores = { 'Contado': '#1e7bc4', '2 cuotas': '#32ade6', '3 cuotas': '#64c8ff' };
   const datos = Object.entries(pagosCount)
     .filter(([, v]) => v > 0)
-    .map(([nombre, valor]) => ({ nombre, valor, color: pagoColores[nombre] || '#7a93b3' }));
+    .map(([nombre, valor]) => ({ nombre, valor, color: pagoColores[nombre] || '#98989f' }));
   dibujarDonutCanvas(canvas, datos);
   legendCont.innerHTML = datos.map(d => `
     <div class="pres-legend-row">
