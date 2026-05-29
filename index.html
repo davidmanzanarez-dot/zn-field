@@ -1338,9 +1338,6 @@
             </select>
           </div>
         </div>
-        <div class="form-group" style="margin-bottom:8px;">
-          <input type="text" id="filtro-cliente-ventas" placeholder="Buscar N° cliente…" style="font-size:.85rem;" />
-        </div>
         <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="ventas-admin-content"></div>
       </div>
@@ -1364,9 +1361,6 @@
               <option value="Rechazada">Rechazada</option>
             </select>
           </div>
-        </div>
-        <div class="form-group" style="margin-bottom:8px;">
-          <input type="text" id="filtro-cliente-jornadas" placeholder="Buscar N° cliente…" style="font-size:.85rem;" />
         </div>
         <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="jornadas-admin-content"></div>
@@ -1535,11 +1529,12 @@ let registroActual = null;
 let editandoVenta = null;
 let editandoJornada = null;
 
-// Caché de ventas admin para filtros cliente
 let ventasAdminCache = [];
 let jornadasAdminCache = [];
 let ventasAdminFiltradas = [];
 let editandoVentaAdmin = null;
+let preciosJornada = {};
+const tabsAdmin = new Set();
 
 const CATEGORIAS = [
   { nombre: 'Instalacion FO',       pago: true  },
@@ -1886,6 +1881,7 @@ function llenarSelectMoviles(selectId, defaultPatente) {
 }
 
 async function cargarEquipos() {
+  if (equiposCatalogo.length) { renderEquiposSelector(); return; }
   const cont = document.getElementById('equipo-selector');
   try {
     const data = await api({ accion: 'obtenerEquipos' });
@@ -1906,14 +1902,14 @@ function renderEquiposSelector() {
     cont.innerHTML = '<div class="loading-msg">No hay equipos en el catálogo</div>';
     return;
   }
-  cont.innerHTML = '';
+  let html = '';
   equiposCatalogo.forEach(eq => {
-    const card = document.createElement('div');
-    card.className = 'equipo-card';
-    card.dataset.id = eq.id;
-    card.innerHTML = `<div class="eq-nombre">${eq.nombre}</div><div class="eq-precio">${formatoPesos(eq.precioVenta)}</div>`;
-    card.addEventListener('click', () => seleccionarEquipo(eq, card));
-    cont.appendChild(card);
+    html += `<div class="equipo-card" data-id="${eq.id}"><div class="eq-nombre">${eq.nombre}</div><div class="eq-precio">${formatoPesos(eq.precioVenta)}</div></div>`;
+  });
+  cont.innerHTML = html;
+  cont.querySelectorAll('.equipo-card').forEach(card => {
+    const eq = equiposCatalogo.find(e => String(e.id) === card.dataset.id);
+    if (eq) card.addEventListener('click', () => seleccionarEquipo(eq, card));
   });
 }
 
@@ -2156,7 +2152,7 @@ function recalcularTotalJornada() {
   CATEGORIAS.forEach(cat => {
     const tickets = ticketsPorCategoria[cat.nombre] || [];
     totalTickets += tickets.length;
-    if (cat.pago) totalMonto += tickets.length * 24000;
+    if (cat.pago) totalMonto += tickets.length * (preciosJornada[cat.nombre] || 24000);
   });
   document.getElementById('total-tickets').textContent =
     totalTickets + ' ticket' + (totalTickets !== 1 ? 's' : '') + ' · total jornada';
@@ -2513,7 +2509,9 @@ document.getElementById('btn-confirmar-eliminar').addEventListener('click', asyn
 // ============================================================
 function cargarPantallaAdmin() {
   mostrarPantalla('admin');
+  tabsAdmin.clear();
   cargarDashboard();
+  tabsAdmin.add('dashboard');
   actualizarBadgePendientes();
 }
 
@@ -2533,8 +2531,11 @@ function activarTabAdmin(tab) {
   if (panel) panel.classList.add('active');
   const sidebarBtn = document.querySelector(`.admin-sidebar-btn[data-sidebar-tab="${tab}"]`);
   if (sidebarBtn) sidebarBtn.classList.add('active');
-  if (tab === 'dashboard') cargarDashboard();
-  if (tab === 'aprobaciones') cargarAprobaciones();
+  // Dashboard y aprobaciones siempre se recargan; el resto solo la primera vez
+  if (tab === 'dashboard') { cargarDashboard(); return; }
+  if (tab === 'aprobaciones') { cargarAprobaciones(); return; }
+  if (tabsAdmin.has(tab)) return;
+  tabsAdmin.add(tab);
   if (tab === 'certificacion') cargarCertificacion();
   if (tab === 'equipos') cargarEquiposAdmin();
   if (tab === 'ventas-tab') cargarVentasAdmin();
@@ -2729,13 +2730,11 @@ function renderAprobaciones(ventas, jornadas) {
   if (!ventas.length) {
     contV.innerHTML = '<div class="loading-msg">No hay ventas pendientes</div>';
   } else {
-    contV.innerHTML = '';
+    let html = '';
     ventas.forEach(v => {
       const f = v.datos;
-      const card = document.createElement('div');
-      card.className = 'approval-card';
       const dupla = String(f[9]).toLowerCase().startsWith('s');
-      card.innerHTML = `
+      html += `<div class="approval-card">
         <div class="approval-card-row principal">
           <span>${f[4]}${dupla ? ' + ' + f[10] : ''}</span>
           <span style="color:var(--accent);">${formatoPesos(f[11])}</span>
@@ -2749,21 +2748,19 @@ function renderAprobaciones(ventas, jornadas) {
           <button class="btn btn-success" onclick="aprobar('venta', ${v.fila})">✓ APROBAR</button>
           <button class="btn btn-danger" onclick="aprobar('venta', ${v.fila}, true)">✕ RECHAZAR</button>
         </div>
-      `;
-      contV.appendChild(card);
+      </div>`;
     });
+    contV.innerHTML = html;
   }
 
   const contJ = document.getElementById('aprob-jornadas-lista');
   if (!jornadas.length) {
     contJ.innerHTML = '<div class="loading-msg">No hay jornadas pendientes</div>';
   } else {
-    contJ.innerHTML = '';
+    let html = '';
     jornadas.forEach(j => {
       const f = j.datos;
-      const card = document.createElement('div');
-      card.className = 'approval-card';
-      card.innerHTML = `
+      html += `<div class="approval-card">
         <div class="approval-card-row principal">
           <span>${f[5]}</span>
           <span style="color:var(--accent);">${formatoPesos(f[8])}</span>
@@ -2776,9 +2773,9 @@ function renderAprobaciones(ventas, jornadas) {
           <button class="btn btn-success" onclick="aprobar('jornada', ${j.fila})">✓ APROBAR</button>
           <button class="btn btn-danger" onclick="aprobar('jornada', ${j.fila}, true)">✕ RECHAZAR</button>
         </div>
-      `;
-      contJ.appendChild(card);
+      </div>`;
     });
+    contJ.innerHTML = html;
   }
 }
 
@@ -2981,6 +2978,7 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
 //  CATÁLOGO Y TABLAS ADMIN
 // ============================================================
 async function cargarEquiposAdmin() {
+  if (equiposCatalogo.length) { renderEquiposAdmin(); return; }
   const cont = document.getElementById('equipos-lista-admin');
   cont.innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando…</div>';
   try {
@@ -2998,24 +2996,22 @@ async function cargarEquiposAdmin() {
 
 function renderEquiposAdmin() {
   const cont = document.getElementById('equipos-lista-admin');
-  cont.innerHTML = '';
   if (!equiposCatalogo.length) {
     cont.innerHTML = '<div class="loading-msg">No hay equipos en el catálogo</div>';
     return;
   }
+  let html = '';
   equiposCatalogo.forEach(eq => {
-    const item = document.createElement('div');
-    item.className = 'equipo-item';
-    item.innerHTML = `
+    html += `<div class="equipo-item">
       <div class="eq-info">
         <h4>${eq.nombre}</h4>
         <p>${formatoPesos(eq.precioVenta)} ${eq.admiteCanje ? '· Canje: ' + formatoPesos(eq.precioCanje) : '· Sin canje'}</p>
       </div>
       <div class="eq-actions">
         <button class="eq-edit-btn" title="Editar" onclick='abrirModalEquipo(${JSON.stringify(eq)})'>✏️</button>
-      </div>`;
-    cont.appendChild(item);
+      </div></div>`;
   });
+  cont.innerHTML = html;
 }
 
 async function cargarVentasAdmin() {
@@ -3059,11 +3055,9 @@ function poblarFiltroTecnicoVentas(ventas) {
 function aplicarFiltrosVentas() {
   const tecnico = document.getElementById('filtro-tecnico-ventas')?.value || '';
   const estado = document.getElementById('filtro-estado-ventas')?.value || '';
-  const cliente = (document.getElementById('filtro-cliente-ventas')?.value || '').trim().toLowerCase();
   let filtradas = ventasAdminCache;
   if (tecnico) filtradas = filtradas.filter(v => v.datos[4] === tecnico);
   if (estado) filtradas = filtradas.filter(v => String(v.datos[12] || 'Pendiente').trim() === estado);
-  if (cliente) filtradas = filtradas.filter(v => String(v.datos[5] || '').toLowerCase().includes(cliente));
   renderTablaVentas(filtradas);
 }
 
@@ -3114,7 +3108,6 @@ function renderTablaVentas(ventas) {
 document.getElementById('filtro-mes-ventas').addEventListener('change', cargarVentasAdmin);
 document.getElementById('filtro-tecnico-ventas').addEventListener('change', aplicarFiltrosVentas);
 document.getElementById('filtro-estado-ventas').addEventListener('change', aplicarFiltrosVentas);
-document.getElementById('filtro-cliente-ventas').addEventListener('input', aplicarFiltrosVentas);
 
 async function cargarJornadasAdmin() {
   await llenarSelectorMesesAdmin('filtro-mes-jornadas');
@@ -3157,11 +3150,9 @@ function poblarFiltroTecnicoJornadas(jornadas) {
 function aplicarFiltrosJornadas() {
   const tecnico = document.getElementById('filtro-tecnico-jornadas')?.value || '';
   const estado = document.getElementById('filtro-estado-jornadas')?.value || '';
-  const cliente = (document.getElementById('filtro-cliente-jornadas')?.value || '').trim().toLowerCase();
   let filtradas = jornadasAdminCache;
   if (tecnico) filtradas = filtradas.filter(j => j.datos[5] === tecnico);
   if (estado) filtradas = filtradas.filter(j => String(j.datos[9] || 'Pendiente').trim() === estado);
-  if (cliente) filtradas = filtradas.filter(j => String(j.datos[6] || '').toLowerCase().includes(cliente));
   renderTablaJornadas(filtradas);
 }
 
@@ -3191,7 +3182,6 @@ function renderTablaJornadas(jornadas) {
 document.getElementById('filtro-mes-jornadas').addEventListener('change', cargarJornadasAdmin);
 document.getElementById('filtro-tecnico-jornadas').addEventListener('change', aplicarFiltrosJornadas);
 document.getElementById('filtro-estado-jornadas').addEventListener('change', aplicarFiltrosJornadas);
-document.getElementById('filtro-cliente-jornadas').addEventListener('input', aplicarFiltrosJornadas);
 
 // ============================================================
 //  EDITAR / ELIMINAR VENTAS (ADMIN)
@@ -3402,6 +3392,8 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
     if (data.ok) {
       document.getElementById('modal-equipo').classList.remove('open');
       toast(id ? 'Equipo actualizado' : 'Equipo agregado', 'success');
+      equiposCatalogo = [];
+      tabsAdmin.delete('equipos');
       await cargarEquiposAdmin();
     } else {
       errEl.textContent = data.error || 'Error al guardar';
@@ -3461,9 +3453,16 @@ document.getElementById('btn-logout-detalle').addEventListener('click', cerrarSe
 document.getElementById('btn-logout-editar-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
 
+async function cargarPrecios() {
+  try {
+    const data = await api({ accion: 'obtenerPrecios' });
+    if (data.ok && data.precios) preciosJornada = data.precios;
+  } catch(e) {}
+}
+
 // INIT
 (async function init() {
-  await Promise.all([cargarTecnicos(), cargarMoviles(), cargarLocalidades()]);
+  await Promise.all([cargarTecnicos(), cargarMoviles(), cargarLocalidades(), cargarPrecios()]);
 })();
 </script>
 </body>
