@@ -1157,6 +1157,9 @@
         </div>
       </div>
 
+      <div class="form-group" style="margin-bottom:10px;">
+        <select id="mr-mes"><option value="">Cargando…</option></select>
+      </div>
       <div class="loading-msg" id="mr-loading"><span class="spinner"></span>Cargando…</div>
       <div id="mr-lista"></div>
     </div>
@@ -1279,6 +1282,10 @@
       </div>
 
       <div class="tab-panel" id="tab-aprobaciones">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Mes</label>
+          <select id="aprob-mes"><option value="">Cargando…</option></select>
+        </div>
         <div class="loading-msg" id="aprob-loading"><span class="spinner"></span>Cargando pendientes…</div>
         <div id="aprob-content" style="display:none;">
           <div class="menu-section-title">Ventas pendientes (<span id="aprob-ventas-count">0</span>)</div>
@@ -2224,11 +2231,32 @@ async function cargarMisRegistros(estadoInicial) {
     });
   }
 
+  // Cargar lista de meses disponibles si el selector está vacío o solo tiene el placeholder
+  const selMes = document.getElementById('mr-mes');
+  if (selMes && (selMes.options.length === 0 || selMes.options[0].value === '')) {
+    try {
+      const mData = await api({ accion: 'obtenerMesesDisponibles' });
+      if (mData.ok && mData.meses && mData.meses.length) {
+        selMes.innerHTML = '';
+        mData.meses.forEach(m => {
+          const op = document.createElement('option');
+          op.value = m;
+          op.textContent = m;
+          selMes.appendChild(op);
+        });
+        // Al cambiar el mes, recargar registros manteniendo el filtro de estado actual
+        selMes.onchange = () => cargarMisRegistros();
+      }
+    } catch(e) {}
+  }
+
+  const mes = selMes ? selMes.value : '';
+
   document.getElementById('mr-loading').style.display = 'block';
   document.getElementById('mr-lista').innerHTML = '';
 
   try {
-    const data = await api({ accion: 'obtenerMisRegistros', tecnico: session.usuario });
+    const data = await api({ accion: 'obtenerMisRegistros', tecnico: session.usuario, mes });
     if (data.ok) {
       mrDatosCache.ventas = data.ventas || [];
       mrDatosCache.jornadas = data.jornadas || [];
@@ -2451,7 +2479,8 @@ document.getElementById('btn-guardar-edicion-jornada').addEventListener('click',
       fila: editandoJornada.fila,
       fechaJornada: fechaToBackend(fecha),
       categoria: categoria,
-      nroCliente: nroCliente
+      nroCliente: nroCliente,
+      mes: document.getElementById('mr-mes') ? document.getElementById('mr-mes').value : ''
     });
 
     if (data.ok) {
@@ -2486,7 +2515,7 @@ document.getElementById('btn-confirmar-eliminar').addEventListener('click', asyn
   btn.disabled = true;
 
   try {
-    const data = await apiPost({ accion, fila: eliminarEnCurso.fila });
+    const data = await apiPost({ accion, fila: eliminarEnCurso.fila, mes: document.getElementById('mr-mes') ? document.getElementById('mr-mes').value : '' });
     if (data.ok) {
       toast('Registro eliminado ✓', 'success');
       document.getElementById('modal-eliminar').classList.remove('open');
@@ -2710,11 +2739,33 @@ function renderDashPago(pagosCount) {
 async function cargarAprobaciones() {
   const loading = document.getElementById('aprob-loading');
   const content = document.getElementById('aprob-content');
+  const selMes = document.getElementById('aprob-mes');
+
+  // Cargar lista de meses disponibles si el selector está vacío o solo tiene el placeholder
+  if (selMes && (selMes.options.length === 0 || selMes.options[0].value === '')) {
+    try {
+      const mData = await api({ accion: 'obtenerMesesDisponibles' });
+      if (mData.ok && mData.meses && mData.meses.length) {
+        selMes.innerHTML = '';
+        mData.meses.forEach(m => {
+          const op = document.createElement('option');
+          op.value = m;
+          op.textContent = m;
+          selMes.appendChild(op);
+        });
+        // Al cambiar el mes, recargar aprobaciones
+        selMes.onchange = () => cargarAprobaciones();
+      }
+    } catch(e) {}
+  }
+
+  const mes = selMes ? selMes.value : '';
+
   loading.style.display = 'block';
   content.style.display = 'none';
 
   try {
-    const data = await api({ accion: 'obtenerPendientes' });
+    const data = await api({ accion: 'obtenerPendientes', mes });
     if (data.ok) renderAprobaciones(data.ventas || [], data.jornadas || []);
   } catch(e) {} finally {
     loading.style.display = 'none';
