@@ -5,28 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>SSServicios · Técnicos Zona Norte</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Paleta "Charcoal Sky" */
-      --bg:        #1c1c1e;
-      --surface:   #2c2c2e;
-      --card:      #3a3a3c;
-      --border:    #1e7bc4;
-      --border-soft: #48484a;
-      --accent:    #1e7bc4;
-      --accent2:   #32ade6;
-      --text:      #f2f2f7;
-      --muted:     #98989f;
-      --success:   #30d158;
-      --danger:    #ff453a;
-      --warning:   #ffd60a;
-      --gold:      #ffd700;
-      --silver:    #c0c0c0;
-      --bronze:    #cd7f32;
-      --radius:    10px;
-      --font-head: 'Barlow Condensed', sans-serif;
-      --font-body: 'Barlow', sans-serif;
+      /* Paleta "ZN Field" */
+      --bg:          #0f1419;
+      --surface:     #161b22;
+      --card:        #0f1419;
+      --border:      #21262d;
+      --border-soft: #21262d;
+      --accent:      #3b9eff;
+      --accent2:     #a371f7;
+      --text:        #e6edf3;
+      --muted:       #8b96a3;
+      --success:     #3fb950;
+      --danger:      #f85149;
+      --warning:     #d9a514;
+      --gold:        #d9a514;
+      --silver:      #6e7681;
+      --bronze:      #b06a35;
+      --violet:      #a371f7;
+      --radius:      10px;
+      --font-head:   'Inter', sans-serif;
+      --font-body:   'Inter', sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,7 +51,7 @@
     .logo-icon { width: 32px; height: 32px; flex-shrink: 0; }
     .logo-text {
       font-family: var(--font-head);
-      font-weight: 800;
+      font-weight: 700;
       font-size: 1.35rem;
       letter-spacing: .01em;
       color: #fff;
@@ -101,27 +102,46 @@
     #screen-login {
       justify-content: center; align-items: center;
       padding: 24px 20px;
-      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(30,123,196,.12) 0%, transparent 60%), var(--bg);
+      background: var(--bg);
     }
-    .login-box {
-      width: 100%; max-width: 360px;
+    /* Card horizontal: izquierda marca / derecha formulario */
+    .login-card {
+      display: flex; flex-direction: row;
+      width: 100%; max-width: 760px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-top: 3px solid var(--accent);
       border-radius: var(--radius);
-      padding: 32px 24px;
-      box-shadow: 0 0 24px rgba(30,123,196,.10);
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(0,0,0,.5);
+    }
+    .login-left {
+      flex: 1;
+      background: #0d1117;
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px 32px;
+      border-right: 1px solid var(--border);
     }
     .login-brand {
-      text-align: center; margin-bottom: 28px;
       display: flex; flex-direction: column;
-      align-items: center; gap: 8px;
+      align-items: center; gap: 10px;
+      text-align: center;
     }
     .login-brand p {
       color: var(--muted);
       font-size: .82rem;
       letter-spacing: .04em;
       text-transform: uppercase;
+    }
+    .login-right {
+      flex: 1;
+      padding: 40px 32px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    /* En celular: apilar verticalmente */
+    @media (max-width: 540px) {
+      .login-card { flex-direction: column; }
+      .login-left { border-right: none; border-bottom: 1px solid var(--border); padding: 28px 24px; }
+      .login-right { padding: 28px 24px; }
     }
     .form-group { margin-bottom: 16px; }
     .form-group label {
@@ -150,32 +170,6 @@
     select:focus, input:focus, textarea:focus { border-color: var(--accent); }
     select option { background: var(--card); }
     textarea { resize: vertical; min-height: 80px; font-family: var(--font-body); }
-
-    .pin-display { display: flex; gap: 10px; justify-content: center; margin: 8px 0 16px; }
-    .pin-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border: 2px solid var(--border-soft);
-      transition: background .15s, border-color .15s;
-    }
-    .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
-
-    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
-    .numpad-btn {
-      background: var(--card);
-      border: 1px solid var(--border-soft);
-      color: var(--text);
-      font-family: var(--font-head);
-      font-size: 1.5rem; font-weight: 700;
-      padding: 16px 0;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: background .15s, border-color .15s, transform .1s;
-      user-select: none;
-    }
-    .numpad-btn:active { transform: scale(.94); background: var(--border-soft); border-color: var(--accent); }
-    .numpad-btn.delete { font-size: 1rem; color: var(--muted); }
-    .numpad-btn.zero { grid-column: 2; }
 
     /* ===== BOTONES ===== */
     .btn {
@@ -222,7 +216,7 @@
     }
     .resumen-card .rc-value {
       font-family: var(--font-head);
-      font-size: 1.6rem; font-weight: 800;
+      font-size: 1.6rem; font-weight: 300;
       color: var(--accent); line-height: 1;
     }
     .resumen-card .rc-value.secondary { color: var(--accent2); }
@@ -297,7 +291,7 @@
     }
     .section-header h2 {
       font-family: var(--font-head);
-      font-size: 1.45rem; font-weight: 800;
+      font-size: 1.45rem; font-weight: 700;
       letter-spacing: .03em;
     }
 
@@ -327,7 +321,7 @@
     .comision-preview .cp-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
     .comision-preview .cp-value {
       font-family: var(--font-head);
-      font-size: 2rem; font-weight: 800;
+      font-size: 2rem; font-weight: 300;
       color: var(--success);
     }
 
@@ -469,7 +463,7 @@
     }
     .total-label { font-size: 12px; color: var(--accent2); }
     .total-amount {
-      font-size: 24px; font-weight: 700;
+      font-size: 24px; font-weight: 300;
       color: var(--accent); letter-spacing: -0.5px;
       font-family: var(--font-head);
     }
@@ -748,7 +742,7 @@
     }
     .cert-preview-row .v-num {
       font-family: var(--font-head);
-      font-size: 1.4rem; font-weight: 800;
+      font-size: 1.4rem; font-weight: 300;
     }
     .cert-preview-row .v-num.warning { color: var(--warning); }
     .cert-preview-row .v-num.accent { color: var(--accent); }
@@ -778,6 +772,34 @@
       line-height: 1.4;
     }
 
+    /* ===== SELECTOR DE MES CUSTOM ===== */
+    .mes-picker-wrap { position: relative; display: inline-flex; }
+    .mes-picker-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius);
+      padding: 5px 12px; cursor: pointer;
+      font-family: var(--font-body); font-size: .62rem;
+      font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+      transition: border-color .15s;
+    }
+    .mes-picker-btn:hover { border-color: var(--accent); }
+    .mes-picker-chevron { color: var(--muted); font-size: .65rem; }
+    .mes-picker-menu {
+      display: none; position: absolute; top: calc(100% + 4px); left: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); z-index: 100; min-width: 160px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.45);
+      max-height: 220px; overflow-y: auto;
+    }
+    .mes-picker-menu.open { display: block; }
+    .mes-picker-item {
+      padding: 10px 14px; cursor: pointer; font-size: .85rem;
+      color: var(--text); transition: background .12s;
+    }
+    .mes-picker-item:hover { background: var(--card); }
+    .mes-picker-item.selected { color: var(--accent); font-weight: 600; }
+
     /* ===== ADMIN DESKTOP (> 1024px) ===== */
     .admin-body { flex: 1; display: flex; min-height: 0; overflow: hidden; }
     .admin-sidebar {
@@ -805,8 +827,7 @@
       transition: background .15s, color .15s;
       border-left: 3px solid transparent;
     }
-    .admin-sidebar-btn:hover { background: var(--card); color: var(--text); }
-    .admin-sidebar-btn.active { background: rgba(30,123,196,.12); color: var(--accent); border-left-color: var(--accent); }
+    .admin-sidebar-btn.active { background: #1c2330; color: var(--accent); border-left-color: var(--accent); }
     .admin-sidebar-btn .tab-badge { position: static; margin-left: auto; }
     @media (min-width: 1025px) {
       body.admin-desktop .admin-sidebar { display: flex; }
@@ -831,7 +852,7 @@
     }
     .dash-kpi-card.alt { border-left-color: var(--accent2); }
     .dash-kpi-card .dkc-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
-    .dash-kpi-card .dkc-value { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
+    .dash-kpi-card .dkc-value { font-family: var(--font-head); font-size: 1.5rem; font-weight: 300; line-height: 1.1; }
     .dash-kpi-card.alt .dkc-value { color: var(--accent2); }
     .dash-kpi-card .dkc-sub { font-size: .7rem; color: var(--muted); margin-top: 2px; }
     .dash-main-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -843,7 +864,7 @@
     .dash-rank-row.leader .drr-name { color: var(--accent2); font-weight: 700; }
     .drr-pos { font-family: var(--font-head); font-size: .75rem; font-weight: 800; color: var(--muted); width: 18px; flex-shrink: 0; text-align: center; }
     .drr-name { flex: 1; font-size: .85rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .drr-total { font-family: var(--font-head); font-size: .85rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .drr-total { font-family: var(--font-head); font-size: .85rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
     .dash-eq-bar-row { margin-bottom: 8px; }
     .dash-eq-bar-name { font-size: .8rem; font-weight: 600; margin-bottom: 3px; display: flex; justify-content: space-between; }
     .dash-eq-bar-name span { color: var(--muted); font-size: .72rem; }
@@ -851,7 +872,7 @@
     .dash-eq-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); }
     .dash-pago-blocks { display: flex; gap: 6px; }
     .dash-pago-block { flex: 1; background: var(--card); border-radius: 6px; padding: 10px 6px; text-align: center; }
-    .dash-pago-block .dpb-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+    .dash-pago-block .dpb-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: 300; color: var(--accent); }
     .dash-pago-block.alt .dpb-val { color: var(--accent2); }
     .dash-pago-block .dpb-label { font-size: .62rem; color: var(--muted); margin-top: 2px; }
     @media (min-width: 700px) {
@@ -870,46 +891,29 @@
 
   <!-- ============ LOGIN ============ -->
   <div id="screen-login" class="screen active">
-    <div class="login-box">
-      <div class="login-brand">
-        <div class="logo-wrap">
-        <span class="logo-text logo-text-big"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
-        </div>
-        <p>Técnicos Zona Norte</p>
-      </div>
-
-      <div class="form-group">
-        <label>Técnico</label>
-        <select id="login-tecnico">
-          <option value="">— seleccioná un técnico —</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>PIN</label>
-        <div class="pin-display" id="pin-display">
-          <div class="pin-dot" id="dot-0"></div>
-          <div class="pin-dot" id="dot-1"></div>
-          <div class="pin-dot" id="dot-2"></div>
-          <div class="pin-dot" id="dot-3"></div>
-        </div>
-        <div class="numpad" id="numpad">
-          <button class="numpad-btn" data-n="1">1</button>
-          <button class="numpad-btn" data-n="2">2</button>
-          <button class="numpad-btn" data-n="3">3</button>
-          <button class="numpad-btn" data-n="4">4</button>
-          <button class="numpad-btn" data-n="5">5</button>
-          <button class="numpad-btn" data-n="6">6</button>
-          <button class="numpad-btn" data-n="7">7</button>
-          <button class="numpad-btn" data-n="8">8</button>
-          <button class="numpad-btn" data-n="9">9</button>
-          <button class="numpad-btn delete" data-n="del">⌫</button>
-          <button class="numpad-btn zero" data-n="0">0</button>
+    <div class="login-card">
+      <!-- Panel izquierdo: marca -->
+      <div class="login-left">
+        <div class="login-brand">
+          <span class="logo-text logo-text-big"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
+          <p>Técnicos Zona Norte</p>
         </div>
       </div>
-
-      <button class="btn btn-primary" id="btn-login">INGRESAR</button>
-      <div class="error-msg" id="login-error"></div>
+      <!-- Panel derecho: formulario -->
+      <div class="login-right">
+        <div class="form-group">
+          <label>Técnico</label>
+          <select id="login-tecnico">
+            <option value="">— seleccioná un técnico —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>PIN</label>
+          <input type="password" id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="off" />
+        </div>
+        <button class="btn btn-primary" id="btn-login">INGRESAR</button>
+        <div class="error-msg" id="login-error"></div>
+      </div>
     </div>
   </div>
 
@@ -1141,6 +1145,9 @@
         <h2>MIS REGISTROS</h2>
       </div>
 
+      <!-- Selector de mes (componente propio, evita select nativo en Android) -->
+      <div id="mr-mes-picker-wrap" class="mes-picker-wrap" style="margin-bottom:14px;"></div>
+
       <div class="mr-tabs-grupo">
         <div class="tab-bar">
           <button class="tab-btn active" data-mr-tab="ventas">🤝 VENTAS</button>
@@ -1157,9 +1164,6 @@
         </div>
       </div>
 
-      <div class="form-group" style="margin-bottom:10px;">
-        <select id="mr-mes"><option value="">Cargando…</option></select>
-      </div>
       <div class="loading-msg" id="mr-loading"><span class="spinner"></span>Cargando…</div>
       <div id="mr-lista"></div>
     </div>
@@ -1282,10 +1286,8 @@
       </div>
 
       <div class="tab-panel" id="tab-aprobaciones">
-        <div class="form-group" style="margin-bottom:14px;">
-          <label>Mes</label>
-          <select id="aprob-mes"><option value="">Cargando…</option></select>
-        </div>
+        <!-- Selector de mes (componente propio, evita select nativo en Android) -->
+        <div id="aprob-mes-picker-wrap" class="mes-picker-wrap" style="margin-bottom:14px;"></div>
         <div class="loading-msg" id="aprob-loading"><span class="spinner"></span>Cargando pendientes…</div>
         <div id="aprob-content" style="display:none;">
           <div class="menu-section-title">Ventas pendientes (<span id="aprob-ventas-count">0</span>)</div>
@@ -1629,8 +1631,6 @@ function hoy() {
 // ============================================================
 //  LOGIN
 // ============================================================
-let pinIngresado = '';
-
 async function cargarTecnicos() {
   try {
     const data = await api({ accion: 'obtenerTecnicos' });
@@ -1670,46 +1670,32 @@ function llenarSelectTecnicos() {
   sel.appendChild(opAdmin);
 }
 
-function actualizarDotsPIN() {
-  for (let i = 0; i < 4; i++) {
-    document.getElementById('dot-' + i).classList.toggle('filled', i < pinIngresado.length);
-  }
-}
-
-document.getElementById('numpad').addEventListener('click', e => {
-  const btn = e.target.closest('.numpad-btn');
-  if (!btn) return;
-  const n = btn.dataset.n;
-  if (n === 'del') {
-    pinIngresado = pinIngresado.slice(0, -1);
-  } else if (pinIngresado.length < 4) {
-    pinIngresado += n;
-    if (pinIngresado.length === 4) setTimeout(intentarLogin, 100);
-  }
-  actualizarDotsPIN();
-});
-
 document.getElementById('btn-login').addEventListener('click', intentarLogin);
+
+// Enter en el campo PIN activa el login
+document.getElementById('pin-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') intentarLogin();
+});
 
 async function intentarLogin() {
   const tecnico = document.getElementById('login-tecnico').value;
+  const pinInput = document.getElementById('pin-input');
   const errEl = document.getElementById('login-error');
   errEl.textContent = '';
 
   if (!tecnico) { errEl.textContent = 'Seleccioná un técnico o Administrador'; return; }
-  if (pinIngresado.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
+  if (pinInput.value.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
   const nombreLogin = (tecnico === '__ADMIN__') ? '' : tecnico;
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
-    const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinIngresado });
+    const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinInput.value });
     if (data.ok) {
       session.esAdmin = (data.tipo === 'admin');
       session.usuario = session.esAdmin ? 'ADMIN' : data.nombre;
       session.movil = data.movil || '';
-      pinIngresado = '';
-      actualizarDotsPIN();
+      pinInput.value = '';
       document.getElementById('btn-login').textContent = 'INGRESAR';
       if (session.esAdmin) {
         cargarPantallaAdmin();
@@ -1718,8 +1704,7 @@ async function intentarLogin() {
       }
     } else {
       errEl.textContent = data.error || 'PIN incorrecto';
-      pinIngresado = '';
-      actualizarDotsPIN();
+      pinInput.value = '';
       document.getElementById('btn-login').textContent = 'INGRESAR';
     }
   } catch(e) {
@@ -2231,32 +2216,27 @@ async function cargarMisRegistros(estadoInicial) {
     });
   }
 
-  // Cargar lista de meses disponibles si el selector está vacío o solo tiene el placeholder
-  const selMes = document.getElementById('mr-mes');
-  if (selMes && (selMes.options.length === 0 || selMes.options[0].value === '')) {
-    try {
-      const mData = await api({ accion: 'obtenerMesesDisponibles' });
-      if (mData.ok && mData.meses && mData.meses.length) {
-        selMes.innerHTML = '';
-        mData.meses.forEach(m => {
-          const op = document.createElement('option');
-          op.value = m;
-          op.textContent = m;
-          selMes.appendChild(op);
-        });
-        // Al cambiar el mes, recargar registros manteniendo el filtro de estado actual
-        selMes.onchange = () => cargarMisRegistros();
-      }
-    } catch(e) {}
+  // Inicializar el picker la primera vez que se abre la pantalla
+  const wrap = document.getElementById('mr-mes-picker-wrap');
+  if (!wrap.hasChildNodes()) {
+    crearMesPicker(wrap, (mes) => {
+      mrMesActual = mes;
+      _recargarMrData();
+    });
+    return; // el picker llama a _recargarMrData al seleccionar el mes inicial
   }
 
-  const mes = selMes ? selMes.value : '';
+  _recargarMrData();
+}
 
+async function _recargarMrData() {
   document.getElementById('mr-loading').style.display = 'block';
   document.getElementById('mr-lista').innerHTML = '';
 
   try {
-    const data = await api({ accion: 'obtenerMisRegistros', tecnico: session.usuario, mes });
+    const params = { accion: 'obtenerMisRegistros', tecnico: session.usuario };
+    if (mrMesActual) params.mes = mrMesActual;
+    const data = await api(params);
     if (data.ok) {
       mrDatosCache.ventas = data.ventas || [];
       mrDatosCache.jornadas = data.jornadas || [];
@@ -2479,8 +2459,7 @@ document.getElementById('btn-guardar-edicion-jornada').addEventListener('click',
       fila: editandoJornada.fila,
       fechaJornada: fechaToBackend(fecha),
       categoria: categoria,
-      nroCliente: nroCliente,
-      mes: document.getElementById('mr-mes') ? document.getElementById('mr-mes').value : ''
+      nroCliente: nroCliente
     });
 
     if (data.ok) {
@@ -2515,7 +2494,7 @@ document.getElementById('btn-confirmar-eliminar').addEventListener('click', asyn
   btn.disabled = true;
 
   try {
-    const data = await apiPost({ accion, fila: eliminarEnCurso.fila, mes: document.getElementById('mr-mes') ? document.getElementById('mr-mes').value : '' });
+    const data = await apiPost({ accion, fila: eliminarEnCurso.fila });
     if (data.ok) {
       toast('Registro eliminado ✓', 'success');
       document.getElementById('modal-eliminar').classList.remove('open');
@@ -2532,6 +2511,75 @@ document.getElementById('btn-confirmar-eliminar').addEventListener('click', asyn
     btn.disabled = false;
   }
 });
+
+// ============================================================
+//  SELECTOR DE MES CUSTOM
+// ============================================================
+let aprobMesActual = ''; // mes activo en el panel de aprobaciones
+let mrMesActual = '';    // mes activo en Mis Registros
+
+// Crea un selector de mes personalizado dentro de `wrap`.
+// Llama a onSelect(mes) inmediatamente al cargar el mes por defecto y cada vez que el usuario cambia.
+function crearMesPicker(wrap, onSelect) {
+  let abierto = false;
+  let meses = [];
+  let mesSeleccionado = '';
+
+  wrap.innerHTML = `
+    <button class="mes-picker-btn" type="button">
+      <span class="mes-picker-texto">Cargando…</span>
+      <span class="mes-picker-chevron">▾</span>
+    </button>
+    <div class="mes-picker-menu"></div>
+  `;
+
+  const btn  = wrap.querySelector('.mes-picker-btn');
+  const menu = wrap.querySelector('.mes-picker-menu');
+  const texto = wrap.querySelector('.mes-picker-texto');
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    abierto = !abierto;
+    menu.classList.toggle('open', abierto);
+  });
+
+  // Cierra el menú al hacer click fuera
+  document.addEventListener('click', () => {
+    if (abierto) { abierto = false; menu.classList.remove('open'); }
+  });
+
+  function renderItems() {
+    menu.innerHTML = '';
+    meses.forEach(m => {
+      const item = document.createElement('div');
+      item.className = 'mes-picker-item' + (m === mesSeleccionado ? ' selected' : '');
+      item.textContent = m;
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        mesSeleccionado = m;
+        texto.textContent = m;
+        abierto = false;
+        menu.classList.remove('open');
+        renderItems();
+        onSelect(m);
+      });
+      menu.appendChild(item);
+    });
+  }
+
+  // Carga meses disponibles y selecciona el más reciente por defecto
+  api({ accion: 'obtenerMesesDisponibles' }).then(data => {
+    if (data.ok && data.meses && data.meses.length) {
+      meses = data.meses; // ya vienen ordenados descendente desde el backend
+      mesSeleccionado = meses[0];
+      texto.textContent = mesSeleccionado;
+      renderItems();
+      onSelect(mesSeleccionado);
+    } else {
+      texto.textContent = 'Sin meses';
+    }
+  }).catch(() => { texto.textContent = 'Error'; });
+}
 
 // ============================================================
 //  ADMIN
@@ -2737,35 +2785,28 @@ function renderDashPago(pagosCount) {
 //  APROBACIONES ADMIN
 // ============================================================
 async function cargarAprobaciones() {
+  // Inicializar el picker la primera vez que se abre la tab
+  const wrap = document.getElementById('aprob-mes-picker-wrap');
+  if (!wrap.hasChildNodes()) {
+    crearMesPicker(wrap, (mes) => {
+      aprobMesActual = mes;
+      _recargarAprobData();
+    });
+    return; // el picker llama a _recargarAprobData al seleccionar el mes inicial
+  }
+  _recargarAprobData();
+}
+
+async function _recargarAprobData() {
   const loading = document.getElementById('aprob-loading');
   const content = document.getElementById('aprob-content');
-  const selMes = document.getElementById('aprob-mes');
-
-  // Cargar lista de meses disponibles si el selector está vacío o solo tiene el placeholder
-  if (selMes && (selMes.options.length === 0 || selMes.options[0].value === '')) {
-    try {
-      const mData = await api({ accion: 'obtenerMesesDisponibles' });
-      if (mData.ok && mData.meses && mData.meses.length) {
-        selMes.innerHTML = '';
-        mData.meses.forEach(m => {
-          const op = document.createElement('option');
-          op.value = m;
-          op.textContent = m;
-          selMes.appendChild(op);
-        });
-        // Al cambiar el mes, recargar aprobaciones
-        selMes.onchange = () => cargarAprobaciones();
-      }
-    } catch(e) {}
-  }
-
-  const mes = selMes ? selMes.value : '';
-
   loading.style.display = 'block';
   content.style.display = 'none';
 
   try {
-    const data = await api({ accion: 'obtenerPendientes', mes });
+    const params = { accion: 'obtenerPendientes' };
+    if (aprobMesActual) params.mes = aprobMesActual;
+    const data = await api(params);
     if (data.ok) renderAprobaciones(data.ventas || [], data.jornadas || []);
   } catch(e) {} finally {
     loading.style.display = 'none';
@@ -3489,8 +3530,7 @@ function cerrarSesion() {
   session.usuario = null;
   session.esAdmin = false;
   session.movil = '';
-  pinIngresado = '';
-  actualizarDotsPIN();
+  document.getElementById('pin-input').value = '';
   document.getElementById('login-tecnico').value = '';
   document.getElementById('login-error').textContent = '';
   mostrarPantalla('login');
