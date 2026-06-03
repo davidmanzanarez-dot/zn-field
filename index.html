@@ -842,43 +842,127 @@
     .filtros-row { display: flex; gap: 10px; margin-bottom: 4px; }
     .filtros-row .form-group { flex: 1; margin-bottom: 0; }
 
-    /* ===== GRID GERENCIAL (DASHBOARD) ===== */
-    .dash-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .dash-kpi-card {
-      background: var(--surface); border: 1px solid var(--border-soft);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      padding: 12px 14px 14px;
+    /* ===== DASHBOARD GERENCIAL ===== */
+    .dash-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 16px 14px; margin-bottom: 12px;
     }
-    .dash-kpi-card.alt { border-left-color: var(--accent2); }
-    .dash-kpi-card .dkc-label { font-size: .65rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
-    .dash-kpi-card .dkc-value { font-family: var(--font-head); font-size: 1.5rem; font-weight: 300; line-height: 1.1; }
-    .dash-kpi-card.alt .dkc-value { color: var(--accent2); }
-    .dash-kpi-card .dkc-sub { font-size: .7rem; color: var(--muted); margin-top: 2px; }
-    .dash-main-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .dash-rank-card, .dash-eq-card, .dash-pago-card { background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 14px; }
-    .dash-eq-card { margin-bottom: 12px; }
-    .dash-card-title { font-family: var(--font-head); font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
-    .dash-rank-row { display: flex; align-items: center; padding: 7px 10px; border-radius: 6px; margin-bottom: 2px; gap: 10px; }
-    .dash-rank-row.leader { background: var(--card); }
-    .dash-rank-row.leader .drr-name { color: var(--accent2); font-weight: 700; }
-    .drr-pos { font-family: var(--font-head); font-size: .75rem; font-weight: 800; color: var(--muted); width: 18px; flex-shrink: 0; text-align: center; }
-    .drr-name { flex: 1; font-size: .85rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .drr-total { font-family: var(--font-head); font-size: .85rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
+    .dash-section-title {
+      font-size: .68rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px;
+    }
+    /* Grid 2 columnas para equipos + pago en desktop */
+    .dash-2col-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 700px) { .dash-2col-row { grid-template-columns: 1.4fr 1fr; } }
+
+    /* --- KPI CARDS --- */
+    .dash-kpi-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px;
+    }
+    @media (min-width: 700px) { .dash-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    .kpi-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 14px 12px; overflow: hidden;
+    }
+    .kpi-bar-top { height: 3px; border-radius: 2px; margin-bottom: 12px; }
+    .kpi-label {
+      font-size: .62rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-family: var(--font-head); font-size: 1.55rem; font-weight: 300;
+      line-height: 1.1; margin-bottom: 6px;
+    }
+    .kpi-badge {
+      display: inline-block; font-size: .68rem; font-weight: 600;
+      padding: 1px 6px; border-radius: 4px; margin-bottom: 8px;
+    }
+    .kpi-badge.up      { background: rgba(63,185,80,.15);  color: var(--success); }
+    .kpi-badge.down    { background: rgba(248,81,73,.15);   color: var(--danger);  }
+    .kpi-badge.neutral { background: rgba(139,150,163,.12); color: var(--muted);   }
+    .kpi-sparkline { display: block; width: 100%; height: 32px; overflow: visible; }
+    .kpi-aprob-bar { height: 4px; border-radius: 4px; background: var(--card); overflow: hidden; margin-top: 4px; }
+    .kpi-aprob-bar-fill { height: 100%; border-radius: 4px; background: var(--warning); }
+    .kpi-aprob-label {
+      display: flex; justify-content: space-between;
+      font-size: .65rem; color: var(--muted); margin-top: 4px;
+    }
+
+    /* --- PODIO RANKING --- */
+    .podio-row {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 8px; margin-bottom: 16px; padding: 0 4px;
+    }
+    .podio-item { flex: 1; max-width: 130px; display: flex; flex-direction: column; align-items: center; }
+    .podio-name {
+      font-size: .75rem; font-weight: 600; text-align: center;
+      margin-bottom: 6px; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
+    }
+    .podio-platform {
+      width: 100%; border-radius: 6px 6px 0 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; padding: 8px 4px 10px;
+    }
+    .podio-pos { font-size: 1.2rem; margin-bottom: 4px; }
+    .podio-total {
+      font-family: var(--font-head); font-size: .75rem;
+      font-weight: 600; color: #fff; text-align: center;
+    }
+    /* Tabla del 4to en adelante */
+    .rank-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .rank-table th {
+      color: var(--muted); font-size: .65rem; text-transform: uppercase;
+      letter-spacing: .07em; padding: 6px 8px; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .rank-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); }
+    .rank-table tr:last-child td { border-bottom: none; }
+    .rank-table .rt-pos  { color: var(--muted); font-size: .75rem; width: 24px; }
+    .rank-table .rt-name { font-weight: 600; }
+    .rank-table .rt-val  { font-family: var(--font-head); font-weight: 600; text-align: right; white-space: nowrap; }
+
+    /* --- EQUIPOS --- */
     .dash-eq-bar-row { margin-bottom: 8px; }
     .dash-eq-bar-name { font-size: .8rem; font-weight: 600; margin-bottom: 3px; display: flex; justify-content: space-between; }
     .dash-eq-bar-name span { color: var(--muted); font-size: .72rem; }
     .dash-eq-bar-bg { height: 4px; background: var(--card); border-radius: 4px; overflow: hidden; }
     .dash-eq-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); }
+
+    /* --- MODALIDAD DE PAGO --- */
     .dash-pago-blocks { display: flex; gap: 6px; }
     .dash-pago-block { flex: 1; background: var(--card); border-radius: 6px; padding: 10px 6px; text-align: center; }
-    .dash-pago-block .dpb-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: 300; color: var(--accent); }
-    .dash-pago-block.alt .dpb-val { color: var(--accent2); }
+    .dash-pago-block .dpb-val   { font-family: var(--font-head); font-size: 1.3rem; font-weight: 300; color: var(--accent); }
+    .dash-pago-block .dpb-pct   { font-size: .65rem; color: var(--muted); margin-top: 1px; }
     .dash-pago-block .dpb-label { font-size: .62rem; color: var(--muted); margin-top: 2px; }
-    @media (min-width: 700px) {
-      .dash-kpi-row { grid-template-columns: repeat(4, 1fr); }
-      .dash-main-row { grid-template-columns: 1.2fr 1fr; }
+
+    /* --- PRODUCCIÓN POR LOCALIDAD --- */
+    .localidad-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    @media (min-width: 500px) { .localidad-grid { grid-template-columns: repeat(3, 1fr); } }
+    .localidad-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 14px;
     }
+    .localidad-nombre {
+      font-size: .72rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px;
+    }
+    .localidad-monto { font-family: var(--font-head); font-size: 1.2rem; font-weight: 300; color: var(--text); margin-bottom: 3px; }
+    .localidad-sub { font-size: .68rem; color: var(--muted); }
+
+    /* --- ESTADO DE REGISTROS --- */
+    .estado-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .estado-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 12px 10px; text-align: center;
+      border-top: 3px solid var(--border);
+    }
+    .estado-card.aprobado { border-top-color: var(--success); }
+    .estado-card.pendiente { border-top-color: var(--warning); }
+    .estado-card.rechazado { border-top-color: var(--danger); }
+    .estado-count { font-family: var(--font-head); font-size: 1.4rem; font-weight: 300; }
+    .estado-pct   { font-size: .7rem;  color: var(--muted); margin-top: 2px; }
+    .estado-label { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
     /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
     .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
     .btn-action-sm:hover { border-color: var(--accent); color: var(--accent); }
@@ -1263,25 +1347,45 @@
       </div>
 
       <div class="tab-panel active" id="tab-dashboard">
+        <!-- Selector de mes del dashboard -->
+        <div id="dash-mes-picker-wrap" class="mes-picker-wrap" style="margin-bottom:16px;"></div>
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
-          <div class="dash-kpi-row" id="dash-kpis"></div>
-          <div class="dash-main-row">
-            <div class="dash-rank-card">
-              <div class="dash-card-title">Ranking del mes</div>
-              <div id="dash-ranking"></div>
+
+          <!-- 6 KPI cards en grilla 3 columnas -->
+          <div class="dash-kpi-grid" id="dash-kpis"></div>
+
+          <!-- Ranking: podio top 3 + tabla del 4to en adelante -->
+          <div class="dash-section">
+            <div class="dash-section-title">Ranking del mes</div>
+            <div id="dash-podio"></div>
+            <div id="dash-ranking"></div>
+          </div>
+
+          <!-- Top equipos y modalidad de pago en 2 columnas -->
+          <div class="dash-2col-row">
+            <div class="dash-section">
+              <div class="dash-section-title">Top equipos</div>
+              <div id="dash-equipos"></div>
             </div>
-            <div>
-              <div class="dash-eq-card">
-                <div class="dash-card-title">Top equipos</div>
-                <div id="dash-equipos"></div>
-              </div>
-              <div class="dash-pago-card">
-                <div class="dash-card-title">Modalidad de pago</div>
-                <div class="dash-pago-blocks" id="dash-pago"></div>
-              </div>
+            <div class="dash-section">
+              <div class="dash-section-title">Modalidad de pago</div>
+              <div class="dash-pago-blocks" id="dash-pago"></div>
             </div>
           </div>
+
+          <!-- Producción agrupada por localidad -->
+          <div class="dash-section">
+            <div class="dash-section-title">Producción por localidad</div>
+            <div id="dash-localidades"></div>
+          </div>
+
+          <!-- Estado de todos los registros del mes -->
+          <div class="dash-section">
+            <div class="dash-section-title">Estado de registros</div>
+            <div id="dash-estado"></div>
+          </div>
+
         </div>
       </div>
 
@@ -2647,50 +2751,175 @@ async function actualizarBadgePendientes() {
   } catch(e) {}
 }
 
+// ============================================================
+//  DASHBOARD ADMIN — variables de estado e historial
+// ============================================================
+let dashMesActual        = '';
+let dashHistorialCache   = {}; // { 'Mayo2026': { ventas[], jornadas[] } }
+let dashMesesDisponibles = [];
+
+// Trae los datos de un mes y los guarda en caché para no repetir la petición
+async function _fetchMesCache(mes) {
+  if (dashHistorialCache[mes]) return dashHistorialCache[mes];
+  const [vd, jd] = await Promise.all([
+    api({ accion: 'obtenerVentas',   mes }),
+    api({ accion: 'obtenerJornadas', mes })
+  ]);
+  dashHistorialCache[mes] = {
+    ventas:   (vd.ok && vd.ventas)   ? vd.ventas   : [],
+    jornadas: (jd.ok && jd.jornadas) ? jd.jornadas : []
+  };
+  return dashHistorialCache[mes];
+}
+
+// Extrae las 6 métricas KPI del array de ventas y jornadas de un mes
+function _calcMetricas(ventas, jornadas) {
+  let ventasAprob = 0, comisionAprob = 0, comisionPend = 0;
+  let jornadasAprob = 0, jornadasMonto = 0;
+
+  ventas.forEach(v => {
+    const f      = v.datos;
+    const estado = String(f[12] || '').trim();
+    const com    = Number(f[11]) || 0;
+    if (estado === 'Aprobada')        { ventasAprob++; comisionAprob += com; }
+    else if (estado === 'Pendiente')  { comisionPend += com; }
+  });
+
+  jornadas.forEach(j => {
+    const f = j.datos;
+    if (String(f[9] || '').trim() === 'Aprobada') {
+      jornadasAprob++;
+      jornadasMonto += Number(f[8]) || 0;
+    }
+  });
+
+  return {
+    ventasAprob, comisionAprob, comisionPend,
+    ticketProm: ventasAprob > 0 ? Math.round(comisionAprob / ventasAprob) : 0,
+    jornadasAprob,
+    ingresoTotal: comisionAprob + jornadasMonto
+  };
+}
+
+// Badge comparativo ▲/▼/▬ respecto al mes anterior
+function _badge(curr, prev) {
+  if (curr === 0 && prev === 0) return '<span class="kpi-badge neutral">▬</span>';
+  if (prev === 0 && curr > 0)   return '<span class="kpi-badge up">▲ nuevo</span>';
+  if (prev === 0)               return '<span class="kpi-badge neutral">▬</span>';
+  const diff = curr - prev;
+  const pct  = Math.round(Math.abs(diff) / prev * 100);
+  if (diff > 0) return `<span class="kpi-badge up">▲ ${pct}%</span>`;
+  if (diff < 0) return `<span class="kpi-badge down">▼ ${pct}%</span>`;
+  return '<span class="kpi-badge neutral">▬</span>';
+}
+
+// SVG sparkline de línea fina (array de números, de más antiguo a más nuevo)
+function _sparklineSVG(puntos, color) {
+  const pts = (puntos || []).filter(n => n !== null && n !== undefined);
+  if (pts.length < 2) return '';
+  const W = 100, H = 32, pad = 2;
+  const max  = Math.max(...pts);
+  const min  = Math.min(...pts);
+  const rang = max - min || 1;
+  const xSt  = (W - pad * 2) / (pts.length - 1);
+  const coords = pts.map((v, i) => {
+    const x = (pad + i * xSt).toFixed(1);
+    const y = (H - pad - ((v - min) / rang) * (H - pad * 2)).toFixed(1);
+    return `${x},${y}`;
+  }).join(' ');
+  return `<svg class="kpi-sparkline" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+  </svg>`;
+}
+
+// Barra aprobado / pendiente (KPI comisión pendiente en vez de sparkline)
+function _buildPendBar(aprob, pend) {
+  const total = aprob + pend;
+  if (total === 0) return '';
+  const pctPend = Math.round(pend / total * 100);
+  return `
+    <div class="kpi-aprob-bar">
+      <div class="kpi-aprob-bar-fill" style="width:${pctPend}%"></div>
+    </div>
+    <div class="kpi-aprob-label">
+      <span>Aprob. ${formatoPesosCompacto(aprob)}</span>
+      <span>${pctPend}% pend.</span>
+    </div>`;
+}
+
 async function cargarDashboard() {
+  const wrap = document.getElementById('dash-mes-picker-wrap');
+  if (!wrap.hasChildNodes()) {
+    crearMesPicker(wrap, (mes) => {
+      dashMesActual = mes;
+      _recargarDashData();
+    });
+    return;
+  }
+  _recargarDashData();
+}
+
+async function _recargarDashData() {
   const loading = document.getElementById('dashboard-loading');
   const content = document.getElementById('dashboard-content');
   loading.style.display = 'block';
   content.style.display = 'none';
 
   try {
-    const [ventasData, jornadasData] = await Promise.all([
-      api({ accion: 'obtenerVentas' }),
-      api({ accion: 'obtenerJornadas' })
+    // Obtener lista de meses si no la tenemos aún
+    if (!dashMesesDisponibles.length) {
+      const md = await api({ accion: 'obtenerMesesDisponibles' });
+      dashMesesDisponibles = (md.ok && md.meses) ? md.meses : [];
+    }
+
+    const idxActual = dashMesesDisponibles.indexOf(dashMesActual);
+    const mesPrev   = idxActual >= 0 && idxActual + 1 < dashMesesDisponibles.length
+      ? dashMesesDisponibles[idxActual + 1] : null;
+
+    // Fetch mes actual + anterior en paralelo (con caché)
+    const fetchPrev = mesPrev
+      ? _fetchMesCache(mesPrev)
+      : Promise.resolve({ ventas: [], jornadas: [] });
+    const [curr, prev] = await Promise.all([
+      _fetchMesCache(dashMesActual), fetchPrev
     ]);
 
     loading.style.display = 'none';
     content.style.display = 'block';
+    renderDashboard2(curr, prev);
 
-    const ventas = (ventasData.ok && ventasData.ventas) ? ventasData.ventas : [];
-    const jornadas = (jornadasData.ok && jornadasData.jornadas) ? jornadasData.jornadas : [];
-    renderDashboard(ventas, jornadas);
-
+    // Background: cargar los meses faltantes para sparklines (hasta 6 en total)
+    const mesesHist = dashMesesDisponibles.slice(0, 6);
+    const faltantes = mesesHist.filter(m => !dashHistorialCache[m]);
+    if (faltantes.length) {
+      Promise.all(faltantes.map(m => _fetchMesCache(m))).then(() => {
+        const currD = dashHistorialCache[dashMesActual];
+        const prevD = mesPrev ? dashHistorialCache[mesPrev] : { ventas: [], jornadas: [] };
+        if (currD) renderDashKPIs2(currD, prevD);
+      });
+    }
   } catch(e) {
     loading.innerHTML = '<div class="error-msg">Error al cargar el dashboard</div>';
   }
 }
 
-function renderDashboard(ventas, jornadas) {
-  const tecData = {};
-  const equiposCount = {};
-  const pagosCount = {};
-  let totalComisiones = 0, totalVentasCount = 0;
-  let totalJornadasMonto = 0, totalJornadasCount = 0;
+function renderDashboard2(curr, prev) {
+  renderDashKPIs2(curr, prev);
 
-  ventas.forEach(v => {
+  // Calcular datos de técnicos, equipos y pagos (solo ventas aprobadas para el ranking)
+  const tecData      = {};
+  const equiposCount = {};
+  const pagosCount   = { 'Contado': 0, '2 cuotas': 0, '3 cuotas': 0 };
+
+  curr.ventas.forEach(v => {
     const f = v.datos;
     if (String(f[12] || '').trim() !== 'Aprobada') return;
-    const tec = f[4], tec2 = f[10];
-    const com = Number(f[11]) || 0;
+    const tec  = f[4], tec2 = f[10];
+    const com  = Number(f[11]) || 0;
     const dupla = String(f[9]).toLowerCase().startsWith('s');
-    const equipo = f[6] || 'Sin nombre';
+    const eq   = f[6] || 'Sin nombre';
     const pago = String(f[7] || 'Contado').trim();
-
-    totalComisiones += com;
-    totalVentasCount++;
-    pagosCount[pago] = (pagosCount[pago] || 0) + 1;
-    equiposCount[equipo] = (equiposCount[equipo] || 0) + 1;
 
     if (!tecData[tec]) tecData[tec] = { comisiones: 0, jornadas: 0 };
     tecData[tec].comisiones += com;
@@ -2698,65 +2927,124 @@ function renderDashboard(ventas, jornadas) {
       if (!tecData[tec2]) tecData[tec2] = { comisiones: 0, jornadas: 0 };
       tecData[tec2].comisiones += com;
     }
+    equiposCount[eq] = (equiposCount[eq] || 0) + 1;
+    if (pagosCount.hasOwnProperty(pago)) pagosCount[pago]++;
   });
 
-  jornadas.forEach(j => {
+  curr.jornadas.forEach(j => {
     const f = j.datos;
     if (String(f[9] || '').trim() !== 'Aprobada') return;
     const tec = f[5];
-    const precio = Number(f[8]) || 0;
-    totalJornadasMonto += precio;
-    totalJornadasCount++;
     if (!tecData[tec]) tecData[tec] = { comisiones: 0, jornadas: 0 };
-    tecData[tec].jornadas += precio;
+    tecData[tec].jornadas += Number(f[8]) || 0;
   });
 
-  renderDashKPIs(totalVentasCount, totalComisiones, totalJornadasCount, totalJornadasMonto);
-  renderDashRanking(tecData);
+  renderDashRanking2(tecData);
   renderDashEquipos(equiposCount);
-  renderDashPago(pagosCount);
+  renderDashPago2(pagosCount);
+  renderDashLocalidades(curr.ventas, curr.jornadas);
+  renderDashEstado(curr.ventas, curr.jornadas);
 }
 
-function renderDashKPIs(ventasCount, comisiones, jornadasCount, jornadasMonto) {
-  document.getElementById('dash-kpis').innerHTML = `
-    <div class="dash-kpi-card">
-      <div class="dkc-label">Ventas aprobadas</div>
-      <div class="dkc-value">${ventasCount}</div>
-      <div class="dkc-sub">equipos</div>
-    </div>
-    <div class="dash-kpi-card alt">
-      <div class="dkc-label">Comisiones</div>
-      <div class="dkc-value">${formatoPesosCompacto(comisiones)}</div>
-      <div class="dkc-sub">aprobadas</div>
-    </div>
-    <div class="dash-kpi-card">
-      <div class="dkc-label">Tickets jornada</div>
-      <div class="dkc-value">${jornadasCount}</div>
-      <div class="dkc-sub">aprobados</div>
-    </div>
-    <div class="dash-kpi-card alt">
-      <div class="dkc-label">Producción</div>
-      <div class="dkc-value">${formatoPesosCompacto(jornadasMonto)}</div>
-      <div class="dkc-sub">jornadas</div>
-    </div>`;
+function renderDashKPIs2(curr, prev) {
+  const m = _calcMetricas(curr.ventas, curr.jornadas);
+  const p = _calcMetricas(prev.ventas, prev.jornadas);
+
+  // Serie histórica para sparklines: meses de más antiguo a más nuevo (hasta 6)
+  const mesesOrdenados = [...dashMesesDisponibles].reverse().slice(-6);
+  const hist = extractor => mesesOrdenados
+    .filter(mes => dashHistorialCache[mes])
+    .map(mes => extractor(_calcMetricas(
+      dashHistorialCache[mes].ventas,
+      dashHistorialCache[mes].jornadas
+    )));
+
+  const kpis = [
+    { label: 'Ventas aprobadas',  value: m.ventasAprob,   prev: p.ventasAprob,
+      formato: v => v,                          color: 'var(--accent)',
+      extra: _sparklineSVG(hist(x => x.ventasAprob),   'var(--accent)') },
+    { label: 'Comisión aprobada', value: m.comisionAprob, prev: p.comisionAprob,
+      formato: v => formatoPesosCompacto(v),    color: 'var(--accent)',
+      extra: _sparklineSVG(hist(x => x.comisionAprob), 'var(--accent)') },
+    { label: 'Comisión pendiente',value: m.comisionPend,  prev: p.comisionPend,
+      formato: v => formatoPesosCompacto(v),    color: 'var(--warning)',
+      extra: _buildPendBar(m.comisionAprob, m.comisionPend) },
+    { label: 'Ticket promedio',   value: m.ticketProm,    prev: p.ticketProm,
+      formato: v => v > 0 ? formatoPesosCompacto(v) : '—', color: 'var(--muted)',
+      extra: _sparklineSVG(hist(x => x.ticketProm),    'var(--muted)') },
+    { label: 'Tickets jornada',   value: m.jornadasAprob, prev: p.jornadasAprob,
+      formato: v => v,                          color: 'var(--success)',
+      extra: _sparklineSVG(hist(x => x.jornadasAprob), 'var(--success)') },
+    { label: 'Ingreso total zona',value: m.ingresoTotal,  prev: p.ingresoTotal,
+      formato: v => formatoPesosCompacto(v),    color: 'var(--violet)',
+      extra: _sparklineSVG(hist(x => x.ingresoTotal),  'var(--violet)') }
+  ];
+
+  document.getElementById('dash-kpis').innerHTML = kpis.map(k => `
+    <div class="kpi-card">
+      <div class="kpi-bar-top" style="background:${k.color};"></div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value" style="color:${k.color};">${k.formato(k.value)}</div>
+      ${_badge(k.value, k.prev)}
+      ${k.extra}
+    </div>`).join('');
 }
 
-function renderDashRanking(tecData) {
+function renderDashRanking2(tecData) {
   const ranking = Object.entries(tecData)
-    .map(([nombre, d]) => ({ nombre, total: d.comisiones + d.jornadas }))
+    .map(([nombre, d]) => ({
+      nombre, comisiones: d.comisiones,
+      jornadas: d.jornadas, total: d.comisiones + d.jornadas
+    }))
     .sort((a, b) => b.total - a.total);
 
-  const cont = document.getElementById('dash-ranking');
   if (!ranking.length) {
-    cont.innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
+    document.getElementById('dash-podio').innerHTML   = '';
+    document.getElementById('dash-ranking').innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
     return;
   }
-  cont.innerHTML = ranking.map((d, i) => `
-    <div class="dash-rank-row${i === 0 ? ' leader' : ''}">
-      <div class="drr-pos">${i + 1}</div>
-      <div class="drr-name">${d.nombre}</div>
-      <div class="drr-total">${formatoPesosCompacto(d.total)}</div>
-    </div>`).join('');
+
+  // Podio: orden visual [2° plata] [1° oro] [3° bronce]
+  const top3       = ranking.slice(0, 3);
+  const podioOrden = top3.length >= 2
+    ? [top3[1], top3[0], top3[2]].filter(Boolean)
+    : top3;
+  const alturas = [70, 100, 56];   // px de plataforma: plata, oro, bronce
+  const colores  = ['var(--silver)', 'var(--gold)', 'var(--bronze)'];
+  const emojis   = ['🥈', '🥇', '🥉'];
+
+  document.getElementById('dash-podio').innerHTML = `
+    <div class="podio-row">
+      ${podioOrden.map((d, vi) => `
+        <div class="podio-item">
+          <div class="podio-name" title="${d.nombre}">${d.nombre}</div>
+          <div class="podio-platform" style="height:${alturas[vi]}px; background:${colores[vi]};">
+            <div class="podio-pos">${emojis[vi]}</div>
+            <div class="podio-total">${formatoPesosCompacto(d.total)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+
+  // Tabla del 4to en adelante
+  const resto = ranking.slice(3);
+  document.getElementById('dash-ranking').innerHTML = resto.length ? `
+    <table class="rank-table">
+      <thead><tr>
+        <th></th><th>Técnico</th>
+        <th style="text-align:right">Ventas</th>
+        <th style="text-align:right">Jornadas</th>
+        <th style="text-align:right">Total</th>
+      </tr></thead>
+      <tbody>${resto.map((d, i) => `
+        <tr>
+          <td class="rt-pos">${i + 4}</td>
+          <td class="rt-name">${d.nombre}</td>
+          <td class="rt-val" style="color:var(--accent);">${formatoPesosCompacto(d.comisiones)}</td>
+          <td class="rt-val" style="color:var(--success);">${formatoPesosCompacto(d.jornadas)}</td>
+          <td class="rt-val">${formatoPesosCompacto(d.total)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>` : '';
 }
 
 function renderDashEquipos(equiposCount) {
@@ -2771,14 +3059,94 @@ function renderDashEquipos(equiposCount) {
     </div>`).join('');
 }
 
-function renderDashPago(pagosCount) {
-  const cont = document.getElementById('dash-pago');
+function renderDashPago2(pagosCount) {
   const tipos = ['Contado', '2 cuotas', '3 cuotas'];
-  cont.innerHTML = tipos.map((t, i) => `
-    <div class="dash-pago-block${i % 2 === 1 ? ' alt' : ''}">
-      <div class="dpb-val">${pagosCount[t] || 0}</div>
+  const total = tipos.reduce((s, t) => s + (pagosCount[t] || 0), 0);
+  document.getElementById('dash-pago').innerHTML = tipos.map(t => {
+    const n   = pagosCount[t] || 0;
+    const pct = total > 0 ? Math.round(n / total * 100) : 0;
+    return `<div class="dash-pago-block">
+      <div class="dpb-val">${n}</div>
+      <div class="dpb-pct">${pct}%</div>
       <div class="dpb-label">${t}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+
+function renderDashLocalidades(ventas, jornadas) {
+  const loc = {};
+
+  // Ventas aprobadas: localidad en f[2], comision en f[11]
+  ventas.forEach(v => {
+    const f  = v.datos;
+    const lc = String(f[2] || '').trim();
+    if (!lc) return;
+    if (!loc[lc]) loc[lc] = { monto: 0, tickets: 0, ventasN: 0 };
+    if (String(f[12] || '').trim() === 'Aprobada') {
+      loc[lc].monto  += Number(f[11]) || 0;
+      loc[lc].ventasN++;
+    }
+  });
+
+  // Jornadas aprobadas: localidad en f[3], precio en f[8]
+  jornadas.forEach(j => {
+    const f  = j.datos;
+    const lc = String(f[3] || '').trim();
+    if (!lc) return;
+    if (!loc[lc]) loc[lc] = { monto: 0, tickets: 0, ventasN: 0 };
+    if (String(f[9] || '').trim() === 'Aprobada') {
+      loc[lc].monto  += Number(f[8]) || 0;
+      loc[lc].tickets++;
+    }
+  });
+
+  const cont     = document.getElementById('dash-localidades');
+  const entradas = Object.entries(loc).sort((a, b) => b[1].monto - a[1].monto);
+  if (!entradas.length) {
+    cont.innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
+    return;
+  }
+  cont.innerHTML = `<div class="localidad-grid">${
+    entradas.map(([nombre, d]) => `
+      <div class="localidad-card">
+        <div class="localidad-nombre">${nombre}</div>
+        <div class="localidad-monto">${formatoPesos(d.monto)}</div>
+        <div class="localidad-sub">${d.tickets} ticket${d.tickets !== 1 ? 's' : ''} · ${d.ventasN} venta${d.ventasN !== 1 ? 's' : ''}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function renderDashEstado(ventas, jornadas) {
+  const cuentas = { Aprobada: 0, Pendiente: 0, Rechazada: 0 };
+  ventas.forEach(v => {
+    const e = String(v.datos[12] || 'Pendiente').trim();
+    if (cuentas.hasOwnProperty(e)) cuentas[e]++;
+  });
+  jornadas.forEach(j => {
+    const e = String(j.datos[9] || 'Pendiente').trim();
+    if (cuentas.hasOwnProperty(e)) cuentas[e]++;
+  });
+  const total = cuentas.Aprobada + cuentas.Pendiente + cuentas.Rechazada;
+  const pct   = n => total > 0 ? Math.round(n / total * 100) : 0;
+
+  document.getElementById('dash-estado').innerHTML = `
+    <div class="estado-grid">
+      <div class="estado-card aprobado">
+        <div class="estado-count" style="color:var(--success);">${cuentas.Aprobada}</div>
+        <div class="estado-pct">${pct(cuentas.Aprobada)}%</div>
+        <div class="estado-label">Aprobados</div>
+      </div>
+      <div class="estado-card pendiente">
+        <div class="estado-count" style="color:var(--warning);">${cuentas.Pendiente}</div>
+        <div class="estado-pct">${pct(cuentas.Pendiente)}%</div>
+        <div class="estado-label">Pendientes</div>
+      </div>
+      <div class="estado-card rechazado">
+        <div class="estado-count" style="color:var(--danger);">${cuentas.Rechazada}</div>
+        <div class="estado-pct">${pct(cuentas.Rechazada)}%</div>
+        <div class="estado-label">Rechazados</div>
+      </div>
+    </div>`;
 }
 
 // ============================================================
