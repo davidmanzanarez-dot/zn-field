@@ -692,23 +692,25 @@
 
     /* ===== MODAL USUARIO (centrado, diferente al bottom-sheet) ===== */
     /* !important para ganarle a cualquier regla heredada de .modal-overlay */
+    /* Oculto por defecto; se muestra agregando la clase .open */
     .modal-usuario-overlay {
       position: fixed !important;
       top: 0 !important; left: 0 !important;
       right: 0 !important; bottom: 0 !important;
       width: 100vw; height: 100vh;
       background: rgba(0,0,0,.65);
-      display: flex !important;
+      display: none;
       align-items: center !important;
       justify-content: center !important;
       z-index: 99999 !important;
       padding: 20px;
       overflow-y: auto;
     }
+    .modal-usuario-overlay.open { display: flex; }
     .modal-usuario-overlay .modal-box {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
       padding: 28px;
       width: 100%;
       max-width: 640px;   /* más ancho para el layout de 2 columnas */
@@ -718,6 +720,8 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      /* Resetea el translateY del bottom-sheet genérico para que quede centrado */
+      transform: none !important;
     }
     .modal-usuario-overlay .modal-box h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
 
@@ -1588,7 +1592,7 @@
           <div class="loading-msg"><span class="spinner"></span>Cargando…</div>
         </div>
         <!-- Modal usuario: centrado, usa clase distinta al bottom-sheet existente -->
-        <div id="modal-usuario" class="modal-usuario-overlay" style="display:none;">
+        <div id="modal-usuario" class="modal-usuario-overlay">
           <div class="modal-box">
             <h3 id="modal-usuario-titulo">Nuevo usuario</h3>
             <div class="modal-usuario-grid">
@@ -4120,7 +4124,7 @@ function abrirNuevoUsuario() {
   document.getElementById('usr-movil').value  = '';
   document.getElementById('usr-zona').value   = 'ZN';
   document.getElementById('usr-rol').value    = 'tecnico';
-  document.getElementById('modal-usuario').style.display = 'flex';
+  document.getElementById('modal-usuario').classList.add('open');
 }
 
 function abrirEditarUsuario(u) {
@@ -4131,7 +4135,7 @@ function abrirEditarUsuario(u) {
   document.getElementById('usr-movil').value  = u.movil  || '';
   document.getElementById('usr-zona').value   = u.zona   || 'ZN';
   document.getElementById('usr-rol').value    = u.rol    || 'tecnico';
-  document.getElementById('modal-usuario').style.display = 'flex';
+  document.getElementById('modal-usuario').classList.add('open');
 }
 
 async function guardarUsuario() {
@@ -4154,7 +4158,7 @@ async function guardarUsuario() {
     const data = await apiPost(payload);
     if (data.ok) {
       toast(operacion === 'agregar' ? 'Usuario agregado ✓' : 'Usuario actualizado ✓', 'success');
-      document.getElementById('modal-usuario').style.display = 'none';
+      document.getElementById('modal-usuario').classList.remove('open');
       cargarUsuarios();
     } else {
       toast(data.error || 'Error al guardar', 'error');
@@ -4177,7 +4181,7 @@ async function desactivarUsuario(id) {
 document.getElementById('btn-nuevo-usuario').addEventListener('click', abrirNuevoUsuario);
 document.getElementById('btn-guardar-usuario').addEventListener('click', guardarUsuario);
 document.getElementById('btn-cancelar-usuario').addEventListener('click',
-  () => document.getElementById('modal-usuario').style.display = 'none');
+  () => document.getElementById('modal-usuario').classList.remove('open'));
 document.getElementById('filtro-zona-usuarios').addEventListener('change', cargarUsuarios);
 
 // ============================================================
