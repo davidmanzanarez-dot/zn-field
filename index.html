@@ -30,6 +30,34 @@
       --font-body:   'Inter', sans-serif;
     }
 
+    /* ===== MODO CLARO ===== */
+    body.light-mode {
+      --bg:          #f0f4f8;
+      --surface:     #ffffff;
+      --card:        #ffffff;
+      --border:      #d0d7de;
+      --border-soft: #d0d7de;
+      --text:        #1c2128;
+      --muted:       #57606a;
+    }
+    /* accent, success, danger, warning, gold, silver, bronze, violet sin cambios en modo claro */
+
+    /* ===== BOTÓN TEMA ===== */
+    .btn-theme-toggle {
+      background: none;
+      border: 1px solid var(--border-soft);
+      color: var(--muted);
+      border-radius: 50%;
+      width: 34px; height: 34px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, color .2s;
+      flex-shrink: 0;
+      margin-right: 6px;
+    }
+    .btn-theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
@@ -662,6 +690,20 @@
       display: flex; align-items: center; justify-content: center;
     }
 
+    /* ===== MODAL USUARIO (centrado, diferente al bottom-sheet) ===== */
+    .modal-usuario-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; padding: 16px;
+    }
+    .modal-usuario-overlay .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; width: 100%;
+      max-width: 400px; display: flex; flex-direction: column; gap: 12px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-usuario-overlay .modal-box h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+
     /* ===== MODALS ===== */
     .modal-overlay {
       position: fixed; inset: 0;
@@ -995,7 +1037,10 @@
           <label>PIN</label>
           <input type="password" id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" autocomplete="off" />
         </div>
-        <button class="btn btn-primary" id="btn-login">INGRESAR</button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn btn-primary" id="btn-login" style="flex:1;">INGRESAR</button>
+          <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
+        </div>
         <div class="error-msg" id="login-error"></div>
       </div>
     </div>
@@ -1009,12 +1054,15 @@
       </div>
       <div style="display:flex;align-items:center;">
         <span class="header-user" id="header-user-name"></span>
+        <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
         <button class="btn-logout" id="btn-logout-menu">SALIR</button>
       </div>
     </div>
     <div class="content">
       <div class="greeting">Hola, <span id="menu-nombre"></span></div>
       <div class="greeting-sub" id="menu-mes"></div>
+      <div class="greeting-zona" id="menu-zona"
+           style="font-size:.78rem; color:var(--accent); margin-top:2px; margin-bottom:16px;"></div>
 
       <div class="rechazos-banner hidden" id="rechazos-banner">
         ⚠️ <span id="rechazos-text"></span>
@@ -1085,6 +1133,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
     </div>
     <div class="content">
@@ -1164,6 +1213,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -1221,6 +1271,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-mis-registros">SALIR</button>
     </div>
     <div class="content">
@@ -1259,6 +1310,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-detalle">SALIR</button>
     </div>
     <div class="content">
@@ -1276,6 +1328,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-editar-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -1313,6 +1366,7 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
+      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-admin">SALIR</button>
     </div>
     <div class="admin-body">
@@ -1327,6 +1381,7 @@
         <button class="admin-sidebar-btn" data-sidebar-tab="equipos">📋 Catálogo</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="ventas-tab">🤝 Ventas</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="jornadas-tab">📅 Jornadas</button>
+        <button class="admin-sidebar-btn" data-sidebar-tab="usuarios">👤 Usuarios</button>
       </div>
     <div class="content">
       <div class="section-header">
@@ -1344,6 +1399,7 @@
         <button class="tab-btn" data-tab="equipos">Catálogo</button>
         <button class="tab-btn" data-tab="ventas-tab">Ventas</button>
         <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
+        <button class="tab-btn" data-tab="usuarios">👤 Usuarios</button>
       </div>
 
       <div class="tab-panel active" id="tab-dashboard">
@@ -1404,21 +1460,24 @@
 
       <div class="tab-panel" id="tab-certificacion">
         <div class="form-group">
-          <label>Mes a certificar</label>
-          <select id="cert-mes"><option value="">Cargando…</option></select>
+          <label>Fecha desde</label>
+          <input type="date" id="cert-desde" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Fecha hasta</label>
+          <input type="date" id="cert-hasta" class="form-control">
         </div>
         <div class="cert-preview">
           <div class="cert-preview-row">
             <div class="item"><div class="v-num accent" id="cert-aprobadas-v">—</div><div class="v-label">Ventas OK</div></div>
             <div class="item"><div class="v-num accent" id="cert-aprobadas-j">—</div><div class="v-label">Jornadas OK</div></div>
-            <div class="item"><div class="v-num warning" id="cert-pendientes">—</div><div class="v-label">Pendientes</div></div>
           </div>
         </div>
         <button class="btn btn-primary btn-icon" id="btn-descargar-cert">
           📥 DESCARGAR CERTIFICACIÓN
         </button>
         <p class="loading-msg" style="font-size:.78rem;margin-top:8px;">
-          Solo se incluyen las ventas y jornadas <strong>aprobadas</strong>.
+          Solo se incluyen registros <strong>aprobados</strong> dentro del rango seleccionado.
         </p>
       </div>
 
@@ -1478,6 +1537,63 @@
         <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
         <div class="data-table-wrap" id="jornadas-admin-content"></div>
       </div>
+
+      <div class="tab-panel" id="tab-usuarios">
+        <div style="display:flex; gap:10px; margin-bottom:14px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm btn-icon" id="btn-nuevo-usuario">+ NUEVO USUARIO</button>
+          <select id="filtro-zona-usuarios" class="form-control"
+                  style="max-width:160px; font-size:.82rem; padding:6px 10px;">
+            <option value="">Todas las zonas</option>
+            <option value="ZN">Zona Norte</option>
+            <option value="ZC">Zona Centro</option>
+            <option value="RG">Río Gallegos</option>
+          </select>
+        </div>
+        <div id="usuarios-lista">
+          <div class="loading-msg"><span class="spinner"></span>Cargando…</div>
+        </div>
+        <!-- Modal usuario: centrado, usa clase distinta al bottom-sheet existente -->
+        <div id="modal-usuario" class="modal-usuario-overlay" style="display:none;">
+          <div class="modal-box">
+            <h3 id="modal-usuario-titulo">Nuevo usuario</h3>
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="usr-nombre" class="form-control" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label>PIN (4 dígitos)</label>
+              <input type="password" id="usr-pin" class="form-control"
+                     inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••">
+            </div>
+            <div class="form-group">
+              <label>Móvil / Patente</label>
+              <input type="text" id="usr-movil" class="form-control" placeholder="Opcional">
+            </div>
+            <div class="form-group">
+              <label>Zona</label>
+              <select id="usr-zona" class="form-control">
+                <option value="ZN">Zona Norte</option>
+                <option value="ZC">Zona Centro</option>
+                <option value="RG">Río Gallegos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Rol</label>
+              <select id="usr-rol" class="form-control">
+                <option value="tecnico">Técnico</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="gerente">Gerente</option>
+                <option value="dmz">DMZ</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:4px;">
+              <button class="btn btn-primary" id="btn-guardar-usuario">GUARDAR</button>
+              <button class="btn btn-secondary" id="btn-cancelar-usuario">CANCELAR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
     </div>
   </div>
@@ -1631,7 +1747,34 @@
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHfCx8ZWo6vLgp-29AP_yFVuPRTR3YPLB4lRPlE8AUhyL5a8m7wCH9kix_gQdYe-_O/exec';
 
-const session = { usuario: null, esAdmin: false, movil: '' };
+// Modo claro/oscuro con persistencia en localStorage
+(function() {
+  const saved = localStorage.getItem('zn-theme');
+  if (saved === 'light') document.body.classList.add('light-mode');
+})();
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem('zn-theme', isLight ? 'light' : 'dark');
+  actualizarIconoTema();
+}
+
+function actualizarIconoTema() {
+  const isLight = document.body.classList.contains('light-mode');
+  document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
+    btn.textContent = isLight ? '☀️' : '🌙';
+  });
+}
+
+// Nombres de zona para mostrar en la UI
+const ZONA_NOMBRES = {
+  ZN: 'Zona Norte',
+  ZC: 'Zona Centro',
+  RG: 'Río Gallegos',
+  TODAS: 'Todas las zonas'
+};
+
+const session = { usuario: null, esAdmin: false, movil: '', zona: '', rol: '' };
 let equiposCatalogo = [];
 let tecnicosLista = [];
 let movilesLista = [];
@@ -1685,16 +1828,22 @@ function toast(msg, tipo = 'info', duracion = 3000) {
 }
 
 async function api(params) {
+  // Inyectar zona de sesión si no viene explícitamente en el llamado
+  const payload = Object.assign({}, params);
+  if (session.zona && !payload.zona) payload.zona = session.zona;
   const url = new URL(WEB_APP_URL);
-  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+  Object.keys(payload).forEach(k => url.searchParams.append(k, payload[k]));
   const resp = await fetch(url.toString());
   return resp.json();
 }
 
 async function apiPost(data) {
+  // Inyectar zona de sesión si no viene explícitamente en el llamado
+  const payload = Object.assign({}, data);
+  if (session.zona && !payload.zona) payload.zona = session.zona;
   const resp = await fetch(WEB_APP_URL, {
     method: 'POST',
-    body: JSON.stringify(data)
+    body: JSON.stringify(payload)
   });
   return resp.json();
 }
@@ -1796,9 +1945,12 @@ async function intentarLogin() {
   try {
     const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinInput.value });
     if (data.ok) {
-      session.esAdmin = (data.tipo === 'admin');
-      session.usuario = session.esAdmin ? 'ADMIN' : data.nombre;
+      // Tipos con acceso al panel admin: dmz, gerente, supervisor (y 'admin' por compatibilidad)
+      session.esAdmin = ['dmz', 'gerente', 'supervisor', 'admin'].includes(data.tipo);
+      session.usuario = session.esAdmin ? (data.nombre || 'ADMIN') : data.nombre;
       session.movil = data.movil || '';
+      session.zona  = data.zona  || 'ZN';
+      session.rol   = data.rol   || data.tipo || 'tecnico';
       pinInput.value = '';
       document.getElementById('btn-login').textContent = 'INGRESAR';
       if (session.esAdmin) {
@@ -1825,6 +1977,14 @@ async function cargarMenuPrincipal() {
   document.getElementById('menu-nombre').textContent = nombreMostrar;
   document.getElementById('header-user-name').textContent = nombreMostrar;
   document.getElementById('menu-mes').textContent = mesActualNombre().toUpperCase();
+  // Mostrar zona solo para técnicos y supervisores (no dmz ni gerente que ven todas)
+  const zonaEl = document.getElementById('menu-zona');
+  if (session.rol === 'dmz' || session.rol === 'gerente') {
+    zonaEl.style.display = 'none';
+  } else {
+    zonaEl.textContent = ZONA_NOMBRES[session.zona] || session.zona;
+    zonaEl.style.display = '';
+  }
   document.getElementById('admin-menu-section').style.display = session.esAdmin ? 'block' : 'none';
   document.getElementById('btn-ir-mis-registros').style.display = session.esAdmin ? 'none' : 'flex';
   document.getElementById('btn-ir-ventas').style.display = session.esAdmin ? 'none' : 'flex';
@@ -2694,6 +2854,10 @@ function cargarPantallaAdmin() {
   cargarDashboard();
   tabsAdmin.add('dashboard');
   actualizarBadgePendientes();
+  // Mostrar el tab Usuarios solo para supervisor, gerente y dmz
+  const puedeVerUsuarios = ['supervisor', 'gerente', 'dmz'].includes(session.rol);
+  document.querySelectorAll('[data-tab="usuarios"], [data-sidebar-tab="usuarios"]')
+    .forEach(el => el.style.display = puedeVerUsuarios ? '' : 'none');
 }
 
 window.addEventListener('resize', () => {
@@ -2721,6 +2885,7 @@ function activarTabAdmin(tab) {
   if (tab === 'equipos') cargarEquiposAdmin();
   if (tab === 'ventas-tab') cargarVentasAdmin();
   if (tab === 'jornadas-tab') cargarJornadasAdmin();
+  if (tab === 'usuarios') cargarUsuarios();
 }
 
 document.querySelectorAll('#screen-admin .tab-btn').forEach(btn => {
@@ -3346,64 +3511,38 @@ document.getElementById('btn-confirmar-rechazo').addEventListener('click', async
 // ============================================================
 //  CERTIFICACIÓN
 // ============================================================
-async function cargarCertificacion() {
-  const sel = document.getElementById('cert-mes');
-  sel.innerHTML = '<option value="">Cargando…</option>';
-
-  try {
-    const data = await api({ accion: 'obtenerMesesDisponibles' });
-    if (data.ok && data.meses) {
-      sel.innerHTML = '';
-      data.meses.forEach(m => {
-        const op = document.createElement('option');
-        op.value = m;
-        op.textContent = m;
-        sel.appendChild(op);
-      });
-      if (data.meses.length === 0) sel.innerHTML = '<option value="">Sin meses disponibles</option>';
-      else actualizarPreviewCert();
-    }
-  } catch(e) {}
-}
-
-document.getElementById('cert-mes').addEventListener('change', actualizarPreviewCert);
-
-async function actualizarPreviewCert() {
-  const mes = document.getElementById('cert-mes').value;
-  if (!mes) return;
-
-  document.getElementById('cert-aprobadas-v').textContent = '…';
-  document.getElementById('cert-aprobadas-j').textContent = '…';
-  document.getElementById('cert-pendientes').textContent = '…';
-
-  try {
-    const [vData, jData, pData] = await Promise.all([
-      api({ accion: 'obtenerVentas', mes }),
-      api({ accion: 'obtenerJornadas', mes }),
-      api({ accion: 'obtenerPendientes', mes })
-    ]);
-
-    let aprobV = 0, aprobJ = 0;
-    if (vData.ok && vData.ventas) aprobV = vData.ventas.filter(v => String(v.datos[12] || '').trim() === 'Aprobada').length;
-    if (jData.ok && jData.jornadas) aprobJ = jData.jornadas.filter(j => String(j.datos[9] || '').trim() === 'Aprobada').length;
-    const pend = (pData.ventas?.length || 0) + (pData.jornadas?.length || 0);
-
-    document.getElementById('cert-aprobadas-v').textContent = aprobV;
-    document.getElementById('cert-aprobadas-j').textContent = aprobJ;
-    document.getElementById('cert-pendientes').textContent = pend;
-  } catch(e) {}
+function cargarCertificacion() {
+  // Rango por defecto: día 19 del mes anterior al día 18 del mes actual
+  const hoy   = new Date();
+  const desde = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 19);
+  const hasta = new Date(hoy.getFullYear(), hoy.getMonth(), 18);
+  document.getElementById('cert-desde').value = desde.toISOString().split('T')[0];
+  document.getElementById('cert-hasta').value = hasta.toISOString().split('T')[0];
 }
 
 document.getElementById('btn-descargar-cert').addEventListener('click', async () => {
-  const mes = document.getElementById('cert-mes').value;
-  if (!mes) { toast('Seleccioná el mes', 'error'); return; }
+  const desdeISO = document.getElementById('cert-desde').value;
+  const hastaISO = document.getElementById('cert-hasta').value;
+  if (!desdeISO || !hastaISO) { toast('Seleccioná el rango de fechas', 'error'); return; }
+
+  // Convertir yyyy-MM-dd → dd/MM/yyyy para el backend
+  function isoADisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return d + '/' + m + '/' + y;
+  }
+  const fechaDesde = isoADisplay(desdeISO);
+  const fechaHasta = isoADisplay(hastaISO);
 
   const btn = document.getElementById('btn-descargar-cert');
   btn.textContent = '⏳ GENERANDO…';
   btn.disabled = true;
 
   try {
-    const data = await apiPost({ accion: 'descargarCertificacion', mes });
+    const data = await apiPost({
+      accion: 'descargarCertificacion',
+      fechaDesde, fechaHasta,
+      zona: session.zona
+    });
     if (data.ok && data.base64) {
       const byteChars = atob(data.base64);
       const byteArrays = [];
@@ -3413,11 +3552,12 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
         for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
         byteArrays.push(new Uint8Array(byteNumbers));
       }
-      const blob = new Blob(byteArrays, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const blob = new Blob(byteArrays,
+        { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = data.nombre || ('Certificacion_' + mes + '.xlsx');
+      a.download = data.nombre || 'Certificacion.xlsx';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -3869,6 +4009,122 @@ document.getElementById('btn-guardar-equipo').addEventListener('click', async ()
 document.getElementById('btn-nuevo-equipo').addEventListener('click', () => abrirModalEquipo(null));
 
 // ============================================================
+//  GESTIÓN DE USUARIOS
+// ============================================================
+let usuarioEditandoId = null;
+
+async function cargarUsuarios() {
+  const zona = document.getElementById('filtro-zona-usuarios').value;
+  const contenedor = document.getElementById('usuarios-lista');
+  contenedor.innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando…</div>';
+  try {
+    const data = await api({
+      accion: 'gestionarUsuario', operacion: 'listar',
+      rolSolicitante: session.rol, zonaSolicitante: session.zona
+    });
+    if (!data.ok) { contenedor.innerHTML = '<p class="muted-text">Error al cargar usuarios.</p>'; return; }
+    let usuarios = data.usuarios || [];
+    if (zona) usuarios = usuarios.filter(u => u.zona === zona);
+    if (usuarios.length === 0) { contenedor.innerHTML = '<p class="muted-text">Sin usuarios.</p>'; return; }
+    let html = '<table class="data-table"><thead><tr>' +
+      '<th>Nombre</th><th>Zona</th><th>Rol</th><th>Estado</th><th></th>' +
+      '</tr></thead><tbody>';
+    usuarios.forEach(u => {
+      const zonaNombre   = ZONA_NOMBRES[u.zona] || u.zona;
+      const estadoBadge  = u.estado === 'inactivo'
+        ? '<span style="color:var(--danger);font-size:.75rem;">inactivo</span>'
+        : '<span style="color:var(--success);font-size:.75rem;">activo</span>';
+      const uJson = JSON.stringify(u).replace(/"/g, '&quot;');
+      html += `<tr>
+        <td>${u.nombre}</td>
+        <td style="font-size:.78rem;">${zonaNombre}</td>
+        <td style="font-size:.78rem;">${u.rol}</td>
+        <td>${estadoBadge}</td>
+        <td>
+          <button class="btn btn-secondary btn-sm" onclick='abrirEditarUsuario(${uJson})'>Editar</button>
+          ${u.estado !== 'inactivo'
+            ? `<button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);margin-left:4px;"
+                onclick="desactivarUsuario('${u.id}')">Baja</button>`
+            : ''}
+        </td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    contenedor.innerHTML = html;
+  } catch(e) {
+    contenedor.innerHTML = '<p class="muted-text">Error de conexión.</p>';
+  }
+}
+
+function abrirNuevoUsuario() {
+  usuarioEditandoId = null;
+  document.getElementById('modal-usuario-titulo').textContent = 'Nuevo usuario';
+  document.getElementById('usr-nombre').value = '';
+  document.getElementById('usr-pin').value    = '';
+  document.getElementById('usr-movil').value  = '';
+  document.getElementById('usr-zona').value   = 'ZN';
+  document.getElementById('usr-rol').value    = 'tecnico';
+  document.getElementById('modal-usuario').style.display = 'flex';
+}
+
+function abrirEditarUsuario(u) {
+  usuarioEditandoId = u.id;
+  document.getElementById('modal-usuario-titulo').textContent = 'Editar usuario';
+  document.getElementById('usr-nombre').value = u.nombre || '';
+  document.getElementById('usr-pin').value    = u.pin    || '';
+  document.getElementById('usr-movil').value  = u.movil  || '';
+  document.getElementById('usr-zona').value   = u.zona   || 'ZN';
+  document.getElementById('usr-rol').value    = u.rol    || 'tecnico';
+  document.getElementById('modal-usuario').style.display = 'flex';
+}
+
+async function guardarUsuario() {
+  const nombre = document.getElementById('usr-nombre').value.trim();
+  const pin    = document.getElementById('usr-pin').value.trim();
+  const movil  = document.getElementById('usr-movil').value.trim();
+  const zona   = document.getElementById('usr-zona').value;
+  const rol    = document.getElementById('usr-rol').value;
+  if (!nombre || !pin || pin.length !== 4) {
+    toast('Nombre y PIN de 4 dígitos requeridos', 'error'); return;
+  }
+  const operacion = usuarioEditandoId ? 'editar' : 'agregar';
+  const payload = {
+    accion: 'gestionarUsuario', operacion,
+    rolSolicitante: session.rol, zonaSolicitante: session.zona,
+    nombre, pin, movil, zona, rol
+  };
+  if (usuarioEditandoId) payload.id = usuarioEditandoId;
+  try {
+    const data = await apiPost(payload);
+    if (data.ok) {
+      toast(operacion === 'agregar' ? 'Usuario agregado ✓' : 'Usuario actualizado ✓', 'success');
+      document.getElementById('modal-usuario').style.display = 'none';
+      cargarUsuarios();
+    } else {
+      toast(data.error || 'Error al guardar', 'error');
+    }
+  } catch(e) { toast('Error de conexión', 'error'); }
+}
+
+async function desactivarUsuario(id) {
+  if (!confirm('¿Dar de baja este usuario?')) return;
+  try {
+    const data = await apiPost({
+      accion: 'gestionarUsuario', operacion: 'desactivar',
+      rolSolicitante: session.rol, id
+    });
+    if (data.ok) { toast('Usuario dado de baja ✓', 'success'); cargarUsuarios(); }
+    else toast(data.error || 'Error', 'error');
+  } catch(e) { toast('Error de conexión', 'error'); }
+}
+
+document.getElementById('btn-nuevo-usuario').addEventListener('click', abrirNuevoUsuario);
+document.getElementById('btn-guardar-usuario').addEventListener('click', guardarUsuario);
+document.getElementById('btn-cancelar-usuario').addEventListener('click',
+  () => document.getElementById('modal-usuario').style.display = 'none');
+document.getElementById('filtro-zona-usuarios').addEventListener('change', cargarUsuarios);
+
+// ============================================================
 //  NAVEGACIÓN
 // ============================================================
 document.getElementById('btn-ir-ventas').addEventListener('click', () => cargarPantallaVentas());
@@ -3898,6 +4154,8 @@ function cerrarSesion() {
   session.usuario = null;
   session.esAdmin = false;
   session.movil = '';
+  session.zona  = '';
+  session.rol   = '';
   document.getElementById('pin-input').value = '';
   document.getElementById('login-tecnico').value = '';
   document.getElementById('login-error').textContent = '';
@@ -3923,6 +4181,12 @@ async function cargarPrecios() {
 (async function init() {
   await Promise.all([cargarTecnicos(), cargarMoviles(), cargarLocalidades(), cargarPrecios()]);
 })();
+
+// Conectar todos los botones de cambio de tema
+document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
+  btn.addEventListener('click', toggleTheme);
+});
+actualizarIconoTema(); // setear ícono correcto según tema al cargar
 </script>
 </body>
 </html>
