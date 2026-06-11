@@ -1467,10 +1467,14 @@
           <label>Fecha hasta</label>
           <input type="date" id="cert-hasta" class="form-control">
         </div>
-        <div class="cert-preview">
+        <button class="btn btn-secondary btn-icon" id="btn-preview-cert" style="margin-bottom:12px;">
+          🔍 VERIFICAR RANGO
+        </button>
+        <div class="cert-preview" id="cert-preview-box" style="display:none;">
           <div class="cert-preview-row">
             <div class="item"><div class="v-num accent" id="cert-aprobadas-v">—</div><div class="v-label">Ventas OK</div></div>
             <div class="item"><div class="v-num accent" id="cert-aprobadas-j">—</div><div class="v-label">Jornadas OK</div></div>
+            <div class="item"><div class="v-num warning" id="cert-pendientes">—</div><div class="v-label">Pendientes</div></div>
           </div>
         </div>
         <button class="btn btn-primary btn-icon" id="btn-descargar-cert">
@@ -2833,8 +2837,8 @@ function crearMesPicker(wrap, onSelect) {
 
   // Carga meses disponibles y selecciona el más reciente por defecto
   api({ accion: 'obtenerMesesDisponibles' }).then(data => {
-    if (data.ok && data.meses && data.meses.length) {
-      meses = data.meses; // ya vienen ordenados descendente desde el backend
+    if (data.ok && data.meses) {
+      meses = normalizarMeses(data.meses); // normaliza array o { ZN:[], ZC:[], RG:[] }
       mesSeleccionado = meses[0];
       texto.textContent = mesSeleccionado;
       renderItems();
@@ -2922,6 +2926,25 @@ async function actualizarBadgePendientes() {
 let dashMesActual        = '';
 let dashHistorialCache   = {}; // { 'Mayo2026': { ventas[], jornadas[] } }
 let dashMesesDisponibles = [];
+
+// Normaliza la respuesta de obtenerMesesDisponibles:
+// zona específica → array plano; zona TODAS → objeto { ZN:[...], ZC:[...], RG:[...] }
+// Devuelve siempre un array ordenado descendente (más reciente primero)
+function normalizarMeses(mesesData) {
+  if (!mesesData) return [];
+  if (Array.isArray(mesesData)) return mesesData;
+  const MESES_ORD = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                     'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const set = new Set();
+  Object.values(mesesData).forEach(arr => arr.forEach(m => set.add(m)));
+  return Array.from(set).sort((a, b) => {
+    const anioA = parseInt(a.replace(/\D/g, '')), anioB = parseInt(b.replace(/\D/g, ''));
+    if (anioA !== anioB) return anioB - anioA;
+    const mesA = MESES_ORD.findIndex(m => a.startsWith(m));
+    const mesB = MESES_ORD.findIndex(m => b.startsWith(m));
+    return mesB - mesA;
+  });
+}
 
 // Trae los datos de un mes y los guarda en caché para no repetir la petición
 async function _fetchMesCache(mes) {
@@ -3035,7 +3058,7 @@ async function _recargarDashData() {
     // Obtener lista de meses si no la tenemos aún
     if (!dashMesesDisponibles.length) {
       const md = await api({ accion: 'obtenerMesesDisponibles' });
-      dashMesesDisponibles = (md.ok && md.meses) ? md.meses : [];
+      dashMesesDisponibles = (md.ok && md.meses) ? normalizarMeses(md.meses) : [];
     }
 
     const idxActual = dashMesesDisponibles.indexOf(dashMesActual);
@@ -3667,7 +3690,7 @@ async function llenarSelectorMesesAdmin(selectId) {
   try {
     const data = await api({ accion: 'obtenerMesesDisponibles' });
     if (data.ok && data.meses) {
-      data.meses.forEach(m => {
+      normalizarMeses(data.meses).forEach(m => {
         const op = document.createElement('option');
         op.value = m;
         op.textContent = m;
@@ -4187,6 +4210,39 @@ document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
   btn.addEventListener('click', toggleTheme);
 });
 actualizarIconoTema(); // setear ícono correcto según tema al cargar
+
+// Verificar rango de certificación sin descargar
+document.getElementById('btn-preview-cert').addEventListener('click', async () => {
+  const desdeISO = document.getElementById('cert-desde').value;
+  const hastaISO = document.getElementById('cert-hasta').value;
+  if (!desdeISO || !hastaISO) { toast('Seleccioná el rango de fechas', 'error'); return; }
+  const btn = document.getElementById('btn-preview-cert');
+  btn.textContent = '⏳ VERIFICANDO…';
+  btn.disabled = true;
+  function isoADisplay(iso) { const [y, m, d] = iso.split('-'); return d + '/' + m + '/' + y; }
+  try {
+    const [vData, jData, pData] = await Promise.all([
+      api({ accion: 'obtenerVentas',    fechaDesde: isoADisplay(desdeISO), fechaHasta: isoADisplay(hastaISO) }),
+      api({ accion: 'obtenerJornadas',  fechaDesde: isoADisplay(desdeISO), fechaHasta: isoADisplay(hastaISO) }),
+      api({ accion: 'obtenerPendientes' })
+    ]);
+    let aprobV = 0, aprobJ = 0;
+    if (vData.ok && vData.ventas)
+      aprobV = vData.ventas.filter(v => String(v.datos?.[12] || v[12] || '').trim() === 'Aprobada').length;
+    if (jData.ok && jData.jornadas)
+      aprobJ = jData.jornadas.filter(j => String(j.datos?.[9]  || j[9]  || '').trim() === 'Aprobada').length;
+    const pend = (pData.ventas?.length || 0) + (pData.jornadas?.length || 0);
+    document.getElementById('cert-aprobadas-v').textContent = aprobV;
+    document.getElementById('cert-aprobadas-j').textContent = aprobJ;
+    document.getElementById('cert-pendientes').textContent  = pend;
+    document.getElementById('cert-preview-box').style.display = 'block';
+  } catch(e) {
+    toast('Error al verificar', 'error');
+  } finally {
+    btn.textContent = '🔍 VERIFICAR RANGO';
+    btn.disabled = false;
+  }
+});
 </script>
 </body>
 </html>
