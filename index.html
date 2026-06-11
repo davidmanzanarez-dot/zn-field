@@ -691,16 +691,31 @@
     }
 
     /* ===== MODAL USUARIO (centrado, diferente al bottom-sheet) ===== */
+    /* z-index 9999 para quedar por encima de cualquier bottom-sheet o sidebar */
     .modal-usuario-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.6);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 999; padding: 16px;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+      overflow-y: auto;   /* scroll del overlay si la pantalla es muy chica */
     }
     .modal-usuario-overlay .modal-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px; width: 100%;
-      max-width: 400px; display: flex; flex-direction: column; gap: 12px;
-      max-height: 90vh; overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;       /* garantiza centrado vertical dentro del flex */
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
     .modal-usuario-overlay .modal-box h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
 
