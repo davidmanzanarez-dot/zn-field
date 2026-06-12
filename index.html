@@ -739,6 +739,45 @@
       .modal-usuario-grid { grid-template-columns: 1fr; }
     }
 
+    /* ===== TABLA USUARIOS (rediseño) ===== */
+    .user-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .user-row {
+      display: grid; grid-template-columns: 1fr 130px 120px 110px 100px;
+      align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border);
+      transition: background .12s;
+    }
+    .user-row:last-child { border-bottom: none; }
+    .user-row:hover:not(.head) { background: rgba(59,158,255,.04); }
+    .user-row.head {
+      padding-top: 8px; padding-bottom: 11px; font-size: .68rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .07em;
+    }
+    .user-name { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(59,158,255,.12); color: var(--accent);
+      display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: .8rem;
+    }
+    .user-name-text { font-weight: 500; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-cell-muted { font-size: .82rem; color: var(--muted); }
+    .estado-dot { display: inline-flex; align-items: center; gap: 7px; font-size: .8rem; }
+    .estado-dot .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .estado-dot.activo   { color: var(--success); } .estado-dot.activo .dot   { background: var(--success); }
+    .estado-dot.inactivo { color: var(--muted);   } .estado-dot.inactivo .dot { background: var(--muted);   }
+    .user-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .btn-icon-action {
+      width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+      background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; transition: all .15s;
+    }
+    .btn-icon-action.edit:hover { color: var(--accent); border-color: var(--accent); background: rgba(59,158,255,.08); }
+    .btn-icon-action.del:hover  { color: var(--danger); border-color: var(--danger); background: rgba(248,81,73,.08); }
+    /* En mobile la tabla scrollea horizontal */
+    @media (max-width: 640px) {
+      #usuarios-lista { overflow-x: auto; }
+      .user-card { min-width: 560px; }
+    }
+
     /* ===== MODALS ===== */
     .modal-overlay {
       position: fixed; inset: 0;
@@ -852,16 +891,17 @@
     /* ===== SELECTOR DE MES CUSTOM ===== */
     .mes-picker-wrap { position: relative; display: inline-flex; }
     .mes-picker-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--card); border: 1px solid var(--border);
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--surface); border: 1px solid var(--border);
       color: var(--text); border-radius: var(--radius);
-      padding: 5px 12px; cursor: pointer;
-      font-family: var(--font-body); font-size: .62rem;
-      font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+      padding: 9px 16px; cursor: pointer;
+      font-family: var(--font-body); font-size: .9rem;
+      font-weight: 500; letter-spacing: .01em;
       transition: border-color .15s;
     }
     .mes-picker-btn:hover { border-color: var(--accent); }
-    .mes-picker-chevron { color: var(--muted); font-size: .65rem; }
+    .mes-picker-cal { color: var(--accent); font-size: .95rem; }
+    .mes-picker-chevron { color: var(--muted); font-size: .7rem; margin-left: 2px; }
     .mes-picker-menu {
       display: none; position: absolute; top: calc(100% + 4px); left: 0;
       background: var(--surface); border: 1px solid var(--border);
@@ -906,6 +946,18 @@
     }
     .admin-sidebar-btn.active { background: #1c2330; color: var(--accent); border-left-color: var(--accent); }
     .admin-sidebar-btn .tab-badge { position: static; margin-left: auto; }
+    /* Footer del sidebar: empuja tema + cerrar sesión al fondo */
+    .admin-sidebar-spacer { flex: 1; min-height: 12px; }
+    .admin-sidebar-footer { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px; }
+    .admin-sidebar-foot-btn {
+      display: flex; align-items: center; gap: 11px; width: 100%;
+      padding: 11px 14px; border: none; border-radius: var(--radius);
+      background: transparent; color: var(--muted); cursor: pointer;
+      font-family: var(--font-head); font-size: .9rem; font-weight: 500;
+      text-align: left; transition: background .15s, color .15s; margin-bottom: 2px;
+    }
+    .admin-sidebar-foot-btn.theme:hover  { background: rgba(59,158,255,.1); color: var(--accent); }
+    .admin-sidebar-foot-btn.logout:hover { background: rgba(248,81,73,.1);  color: var(--danger); }
     @media (min-width: 1025px) {
       body.admin-desktop .admin-sidebar { display: flex; }
       body.admin-desktop #screen-admin .content { max-width: none; margin: 0; padding: 24px 32px 40px; }
@@ -1401,7 +1453,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-admin">SALIR</button>
     </div>
     <div class="admin-body">
@@ -1417,6 +1468,12 @@
         <button class="admin-sidebar-btn" data-sidebar-tab="ventas-tab">🤝 Ventas</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="jornadas-tab">📅 Jornadas</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="usuarios">👤 Usuarios</button>
+        <!-- Footer del sidebar: tema + cerrar sesión abajo -->
+        <div class="admin-sidebar-spacer"></div>
+        <div class="admin-sidebar-footer">
+          <button class="admin-sidebar-foot-btn theme btn-theme-toggle" title="Cambiar tema">🌙 Modo oscuro</button>
+          <button class="admin-sidebar-foot-btn logout" id="btn-logout-sidebar">⏻ Cerrar sesión</button>
+        </div>
       </div>
     <div class="content">
       <div class="section-header">
@@ -1802,8 +1859,14 @@ function toggleTheme() {
 
 function actualizarIconoTema() {
   const isLight = document.body.classList.contains('light-mode');
+  const emoji = isLight ? '☀️' : '🌙';
   document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
-    btn.textContent = isLight ? '☀️' : '🌙';
+    // El botón del sidebar lleva texto; los demás (si quedaran) solo el emoji
+    if (btn.classList.contains('theme')) {
+      btn.textContent = emoji + (isLight ? ' Modo claro' : ' Modo oscuro');
+    } else {
+      btn.textContent = emoji;
+    }
   });
 }
 
@@ -2832,6 +2895,7 @@ function crearMesPicker(wrap, onSelect) {
 
   wrap.innerHTML = `
     <button class="mes-picker-btn" type="button">
+      <span class="mes-picker-cal">📅</span>
       <span class="mes-picker-texto">Cargando…</span>
       <span class="mes-picker-chevron">▾</span>
     </button>
@@ -4086,30 +4150,40 @@ async function cargarUsuarios() {
     let usuarios = data.usuarios || [];
     if (zona) usuarios = usuarios.filter(u => u.zona === zona);
     if (usuarios.length === 0) { contenedor.innerHTML = '<p class="muted-text">Sin usuarios.</p>'; return; }
-    let html = '<table class="data-table"><thead><tr>' +
-      '<th>Nombre</th><th>Zona</th><th>Rol</th><th>Estado</th><th></th>' +
-      '</tr></thead><tbody>';
+
+    // Devuelve iniciales del nombre para el avatar
+    const iniciales = (nombre) => {
+      const partes = String(nombre || '').trim().split(/\s+/);
+      return ((partes[0]?.[0] || '') + (partes[1]?.[0] || '')).toUpperCase() || '?';
+    };
+    const rolNombre = { tecnico:'Técnico', supervisor:'Supervisor', gerente:'Gerente', dmz:'DMZ' };
+
+    let html = '<div class="user-card"><div class="user-row head">' +
+      '<div>Nombre</div><div>Zona</div><div>Rol</div><div>Estado</div>' +
+      '<div style="text-align:right">Acciones</div></div>';
     usuarios.forEach(u => {
-      const zonaNombre   = ZONA_NOMBRES[u.zona] || u.zona;
-      const estadoBadge  = u.estado === 'inactivo'
-        ? '<span style="color:var(--danger);font-size:.75rem;">inactivo</span>'
-        : '<span style="color:var(--success);font-size:.75rem;">activo</span>';
+      const zonaNombre = ZONA_NOMBRES[u.zona] || u.zona;
+      const rolTxt     = rolNombre[u.rol] || u.rol;
+      const inactivo   = u.estado === 'inactivo';
+      const estadoHtml = inactivo
+        ? '<div class="estado-dot inactivo"><span class="dot"></span> Inactivo</div>'
+        : '<div class="estado-dot activo"><span class="dot"></span> Activo</div>';
       const uJson = JSON.stringify(u).replace(/"/g, '&quot;');
-      html += `<tr>
-        <td>${u.nombre}</td>
-        <td style="font-size:.78rem;">${zonaNombre}</td>
-        <td style="font-size:.78rem;">${u.rol}</td>
-        <td>${estadoBadge}</td>
-        <td>
-          <button class="btn btn-secondary btn-sm" onclick='abrirEditarUsuario(${uJson})'>Editar</button>
-          ${u.estado !== 'inactivo'
-            ? `<button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);margin-left:4px;"
-                onclick="desactivarUsuario('${u.id}')">Baja</button>`
-            : ''}
-        </td>
-      </tr>`;
+      html += `<div class="user-row">
+        <div class="user-name">
+          <div class="user-avatar">${iniciales(u.nombre)}</div>
+          <div class="user-name-text">${u.nombre}</div>
+        </div>
+        <div class="user-cell-muted">${zonaNombre}</div>
+        <div class="user-cell-muted">${rolTxt}</div>
+        <div>${estadoHtml}</div>
+        <div class="user-actions">
+          <button class="btn-icon-action edit" title="Editar" onclick='abrirEditarUsuario(${uJson})'>✏️</button>
+          <button class="btn-icon-action del" title="Eliminar" onclick="eliminarUsuario('${u.id}','${String(u.nombre).replace(/'/g,"\\'")}')">🗑️</button>
+        </div>
+      </div>`;
     });
-    html += '</tbody></table>';
+    html += '</div>';
     contenedor.innerHTML = html;
   } catch(e) {
     contenedor.innerHTML = '<p class="muted-text">Error de conexión.</p>';
@@ -4166,14 +4240,14 @@ async function guardarUsuario() {
   } catch(e) { toast('Error de conexión', 'error'); }
 }
 
-async function desactivarUsuario(id) {
-  if (!confirm('¿Dar de baja este usuario?')) return;
+async function eliminarUsuario(id, nombre) {
+  if (!confirm(`¿Eliminar definitivamente a ${nombre}?\n\nSe borra de la planilla y no se puede deshacer.`)) return;
   try {
     const data = await apiPost({
-      accion: 'gestionarUsuario', operacion: 'desactivar',
+      accion: 'gestionarUsuario', operacion: 'eliminar',
       rolSolicitante: session.rol, id
     });
-    if (data.ok) { toast('Usuario dado de baja ✓', 'success'); cargarUsuarios(); }
+    if (data.ok) { toast('Usuario eliminado ✓', 'success'); cargarUsuarios(); }
     else toast(data.error || 'Error', 'error');
   } catch(e) { toast('Error de conexión', 'error'); }
 }
@@ -4229,6 +4303,7 @@ document.getElementById('btn-logout-mis-registros').addEventListener('click', ce
 document.getElementById('btn-logout-detalle').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-editar-jornada').addEventListener('click', cerrarSesion);
 document.getElementById('btn-logout-admin').addEventListener('click', cerrarSesion);
+document.getElementById('btn-logout-sidebar').addEventListener('click', cerrarSesion);
 
 async function cargarPrecios() {
   try {
