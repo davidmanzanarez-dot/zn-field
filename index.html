@@ -2055,16 +2055,27 @@ async function cargarLocalidades() {
 function llenarSelectTecnicos() {
   const sel = document.getElementById('login-tecnico');
   sel.innerHTML = '<option value="">— seleccioná un técnico —</option>';
-  tecnicosLista.forEach(t => {
+  // Solo técnicos comunes: los supervisores entran por su opción "Admin [zona]"
+  tecnicosLista
+    .filter(t => String(t.rol || 'tecnico').toLowerCase() !== 'supervisor')
+    .forEach(t => {
+      const op = document.createElement('option');
+      op.value = t.nombre;
+      op.textContent = t.nombre;
+      sel.appendChild(op);
+    });
+  // Opciones de administrador por zona (cada una pide el PIN del supervisor de esa zona)
+  const admins = [
+    { val: '__ADMIN_ZN__', txt: '⚙️ Admin ZN' },
+    { val: '__ADMIN_RG__', txt: '⚙️ Admin RG' },
+    { val: '__ADMIN_ZC__', txt: '⚙️ Admin ZC' }
+  ];
+  admins.forEach(a => {
     const op = document.createElement('option');
-    op.value = t.nombre;
-    op.textContent = t.nombre;
+    op.value = a.val;
+    op.textContent = a.txt;
     sel.appendChild(op);
   });
-  const opAdmin = document.createElement('option');
-  opAdmin.value = '__ADMIN__';
-  opAdmin.textContent = '⚙️ Administrador';
-  sel.appendChild(opAdmin);
 }
 
 document.getElementById('btn-login').addEventListener('click', intentarLogin);
@@ -2083,11 +2094,14 @@ async function intentarLogin() {
   if (!tecnico) { errEl.textContent = 'Seleccioná un técnico o Administrador'; return; }
   if (pinInput.value.length < 4) { errEl.textContent = 'Ingresá el PIN completo'; return; }
 
-  const nombreLogin = (tecnico === '__ADMIN__') ? '' : tecnico;
+  // Detectar si entra por una opción de admin de zona (__ADMIN_ZN__, __ADMIN_RG__, __ADMIN_ZC__)
+  const matchAdmin = tecnico.match(/^__ADMIN_(\w+)__$/);
+  const zonaAdmin   = matchAdmin ? matchAdmin[1] : '';
+  const nombreLogin = matchAdmin ? '' : tecnico;
   document.getElementById('btn-login').textContent = 'Verificando…';
 
   try {
-    const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinInput.value });
+    const data = await apiPost({ accion: 'login', nombre: nombreLogin, pin: pinInput.value, zonaAdmin });
     if (data.ok) {
       // Tipos con acceso al panel admin: dmz, gerente, supervisor (y 'admin' por compatibilidad)
       session.esAdmin = ['dmz', 'gerente', 'supervisor', 'admin'].includes(data.tipo);
@@ -2373,13 +2387,14 @@ document.getElementById('metodo-pago-group').addEventListener('click', e => {
 function llenarSelectCompanero() {
   const sel = document.getElementById('companero-select');
   sel.innerHTML = '<option value="">— seleccioná compañero/a —</option>';
+  // Solo técnicos comunes: sin supervisores ni uno mismo
   tecnicosLista.forEach(t => {
-    if (t.nombre !== session.usuario) {
-      const op = document.createElement('option');
-      op.value = t.nombre;
-      op.textContent = t.nombre;
-      sel.appendChild(op);
-    }
+    if (t.nombre === session.usuario) return;
+    if (String(t.rol || 'tecnico').toLowerCase() === 'supervisor') return;
+    const op = document.createElement('option');
+    op.value = t.nombre;
+    op.textContent = t.nombre;
+    sel.appendChild(op);
   });
 }
 
@@ -4019,6 +4034,8 @@ async function abrirEditarVentaAdmin(v) {
   const selComp = document.getElementById('meva-companero');
   selComp.innerHTML = '<option value="">—</option>';
   tecnicosLista.forEach(t => {
+    // Solo técnicos comunes como compañero (salvo que el registro ya tuviera a este como compañero)
+    if (String(t.rol || 'tecnico').toLowerCase() === 'supervisor' && t.nombre !== v.datos[10]) return;
     const op = document.createElement('option');
     op.value = t.nombre; op.textContent = t.nombre;
     if (t.nombre === v.datos[10]) op.selected = true;
