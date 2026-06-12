@@ -530,6 +530,33 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ===== Estado "cargando" para botones (evita doble click) ===== */
+    /* Cualquier botón con .is-loading queda deshabilitado visualmente y muestra spinner */
+    button.is-loading, .is-loading {
+      pointer-events: none !important;
+      opacity: .6 !important;
+      cursor: progress !important;
+      position: relative;
+    }
+    button.is-loading::after, .btn.is-loading::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      width: 16px; height: 16px; margin: -8px 0 0 -8px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    /* el texto se atenúa para que se vea el spinner encima */
+    button.is-loading { color: transparent !important; }
+    /* Barra de progreso fina arriba de la pantalla mientras hay alguna petición activa */
+    #global-loading-bar {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0;
+      background: var(--accent); z-index: 9999;
+      transition: width .3s ease, opacity .3s ease; opacity: 0; pointer-events: none;
+    }
+    #global-loading-bar.active { opacity: 1; }
+
     /* ===== TABS ===== */
     .tab-bar {
       display: flex; gap: 6px; margin-bottom: 20px;
@@ -1140,6 +1167,9 @@
 <body>
 
 <div id="app">
+  <!-- Barra de progreso que aparece arriba mientras hay alguna petición activa -->
+  <div id="global-loading-bar"></div>
+
 
   <!-- ============ LOGIN ============ -->
   <div id="screen-login" class="screen active">
@@ -1978,25 +2008,64 @@ function toast(msg, tipo = 'info', duracion = 3000) {
   setTimeout(() => el.classList.remove('show'), duracion);
 }
 
+// ===== Control global de peticiones en curso =====
+let _peticionesActivas = 0;
+function _marcarInicioPeticion() {
+  _peticionesActivas++;
+  const bar = document.getElementById('global-loading-bar');
+  if (bar) { bar.classList.add('active'); bar.style.width = '70%'; }
+}
+function _marcarFinPeticion() {
+  _peticionesActivas = Math.max(0, _peticionesActivas - 1);
+  if (_peticionesActivas === 0) {
+    const bar = document.getElementById('global-loading-bar');
+    if (bar) {
+      bar.style.width = '100%';
+      setTimeout(() => { bar.classList.remove('active'); bar.style.width = '0'; }, 250);
+    }
+  }
+}
+
 async function api(params) {
   // Inyectar zona de sesión si no viene explícitamente en el llamado
   const payload = Object.assign({}, params);
   if (session.zona && !payload.zona) payload.zona = session.zona;
   const url = new URL(WEB_APP_URL);
   Object.keys(payload).forEach(k => url.searchParams.append(k, payload[k]));
-  const resp = await fetch(url.toString());
-  return resp.json();
+  _marcarInicioPeticion();
+  try {
+    const resp = await fetch(url.toString());
+    return await resp.json();
+  } finally {
+    _marcarFinPeticion();
+  }
 }
 
 async function apiPost(data) {
   // Inyectar zona de sesión si no viene explícitamente en el llamado
   const payload = Object.assign({}, data);
   if (session.zona && !payload.zona) payload.zona = session.zona;
-  const resp = await fetch(WEB_APP_URL, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  });
-  return resp.json();
+  _marcarInicioPeticion();
+  try {
+    const resp = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    return await resp.json();
+  } finally {
+    _marcarFinPeticion();
+  }
+}
+
+// Ejecuta una acción async bloqueando el botón (evita doble click). Uso: bloquearMientras(btn, async () => {...})
+async function bloquearMientras(btn, accion) {
+  if (btn && btn.classList.contains('is-loading')) return; // ya está en curso
+  if (btn) btn.classList.add('is-loading');
+  try {
+    return await accion();
+  } finally {
+    if (btn) btn.classList.remove('is-loading');
+  }
 }
 
 function formatoPesos(n) {
@@ -4408,6 +4477,37 @@ async function cargarPrecios() {
 }
 
 // INIT
+// ===== Bloqueo automático de botones durante peticiones =====
+// Cubre todos los botones por igual: al hacer click, si la acción dispara
+// peticiones al backend, el botón queda bloqueado hasta que terminen.
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  // Botones que no llaman al backend o que ya manejan su propio estado: ignorar
+  if (btn.disabled || btn.classList.contains('is-loading')) {
+    // ya bloqueado: cortar clicks repetidos
+    if (btn.classList.contains('is-loading')) { e.preventDefault(); e.stopPropagation(); }
+    return;
+  }
+  // Snapshot de peticiones antes de que corra el handler del botón
+  const antes = _peticionesActivas;
+  // Esperar un tick a que el handler dispare sus fetch
+  setTimeout(() => {
+    if (_peticionesActivas > antes) {
+      // El botón generó al menos una petición: bloquearlo hasta que todas terminen
+      btn.classList.add('is-loading');
+      const liberar = setInterval(() => {
+        if (_peticionesActivas <= antes) {
+          clearInterval(liberar);
+          btn.classList.remove('is-loading');
+        }
+      }, 120);
+      // Seguro anti-cuelgue: liberar a los 20s pase lo que pase
+      setTimeout(() => { clearInterval(liberar); btn.classList.remove('is-loading'); }, 20000);
+    }
+  }, 0);
+}, true);
+
 (async function init() {
   await Promise.all([cargarTecnicos(), cargarMoviles(), cargarLocalidades(), cargarPrecios()]);
 })();
