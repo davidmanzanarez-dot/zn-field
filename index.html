@@ -1057,8 +1057,6 @@
       text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px;
     }
     /* Grid 2 columnas para equipos + pago en desktop */
-    .dash-2col-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 700px) { .dash-2col-row { grid-template-columns: 1.4fr 1fr; } }
 
     /* --- KPI CARDS --- */
     .dash-kpi-grid {
@@ -1120,19 +1118,6 @@
       font-family: var(--font-head); font-size: .75rem;
       font-weight: 600; color: #fff; text-align: center;
     }
-    /* --- EQUIPOS --- */
-    .dash-eq-bar-row { margin-bottom: 8px; }
-    .dash-eq-bar-name { font-size: .8rem; font-weight: 600; margin-bottom: 3px; display: flex; justify-content: space-between; }
-    .dash-eq-bar-name span { color: var(--muted); font-size: .72rem; }
-    .dash-eq-bar-bg { height: 4px; background: var(--card); border-radius: 4px; overflow: hidden; }
-    .dash-eq-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); }
-
-    /* --- MODALIDAD DE PAGO --- */
-    .dash-pago-blocks { display: flex; gap: 6px; }
-    .dash-pago-block { flex: 1; background: var(--card); border-radius: 6px; padding: 10px 6px; text-align: center; }
-    .dash-pago-block .dpb-val   { font-family: var(--font-head); font-size: 1.3rem; font-weight: 300; color: var(--accent); }
-    .dash-pago-block .dpb-pct   { font-size: .65rem; color: var(--muted); margin-top: 1px; }
-    .dash-pago-block .dpb-label { font-size: .62rem; color: var(--muted); margin-top: 2px; }
 
     /* --- PRODUCCIÓN POR LOCALIDAD --- */
     .localidad-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
@@ -1554,18 +1539,6 @@
           <div class="dash-section">
             <div class="dash-section-title">Ranking del mes</div>
             <div id="dash-podio"></div>
-          </div>
-
-          <!-- Top equipos y modalidad de pago en 2 columnas -->
-          <div class="dash-2col-row">
-            <div class="dash-section">
-              <div class="dash-section-title">Top equipos</div>
-              <div id="dash-equipos"></div>
-            </div>
-            <div class="dash-section">
-              <div class="dash-section-title">Modalidad de pago</div>
-              <div class="dash-pago-blocks" id="dash-pago"></div>
-            </div>
           </div>
 
           <!-- Producción agrupada por localidad -->
@@ -3288,10 +3261,8 @@ async function _recargarDashData() {
 function renderDashboard2(curr, prev) {
   renderDashKPIs2(curr, prev);
 
-  // Calcular datos de técnicos, equipos y pagos (solo ventas aprobadas para el ranking)
-  const tecData      = {};
-  const equiposCount = {};
-  const pagosCount   = { 'Contado': 0, '2 cuotas': 0, '3 cuotas': 0 };
+  // Calcular datos de técnicos (solo ventas aprobadas para el ranking)
+  const tecData = {};
 
   curr.ventas.forEach(v => {
     const f = v.datos;
@@ -3299,8 +3270,6 @@ function renderDashboard2(curr, prev) {
     const tec  = f[4], tec2 = f[10];
     const com  = Number(f[11]) || 0;
     const dupla = String(f[9]).toLowerCase().startsWith('s');
-    const eq   = f[6] || 'Sin nombre';
-    const pago = String(f[7] || 'Contado').trim();
 
     if (!tecData[tec]) tecData[tec] = { comisiones: 0, jornadas: 0 };
     tecData[tec].comisiones += com;
@@ -3308,8 +3277,6 @@ function renderDashboard2(curr, prev) {
       if (!tecData[tec2]) tecData[tec2] = { comisiones: 0, jornadas: 0 };
       tecData[tec2].comisiones += com;
     }
-    equiposCount[eq] = (equiposCount[eq] || 0) + 1;
-    if (pagosCount.hasOwnProperty(pago)) pagosCount[pago]++;
   });
 
   curr.jornadas.forEach(j => {
@@ -3321,8 +3288,6 @@ function renderDashboard2(curr, prev) {
   });
 
   renderDashRanking2(tecData);
-  renderDashEquipos(equiposCount);
-  renderDashPago2(pagosCount);
   renderDashLocalidades(curr.ventas, curr.jornadas);
 }
 
@@ -3415,32 +3380,6 @@ function renderDashRanking2(tecData) {
     </div>`;
 
   // Ranking solo top 3 (sin tabla del 4to en adelante)
-}
-
-function renderDashEquipos(equiposCount) {
-  const cont = document.getElementById('dash-equipos');
-  const ordenados = Object.entries(equiposCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
-  if (!ordenados.length) { cont.innerHTML = '<div class="mr-empty">Sin datos</div>'; return; }
-  const max = ordenados[0][1];
-  cont.innerHTML = ordenados.map(([nombre, cant]) => `
-    <div class="dash-eq-bar-row">
-      <div class="dash-eq-bar-name">${nombre}<span>${cant} u.</span></div>
-      <div class="dash-eq-bar-bg"><div class="dash-eq-bar-fill" style="width:${(cant / max * 100).toFixed(0)}%"></div></div>
-    </div>`).join('');
-}
-
-function renderDashPago2(pagosCount) {
-  const tipos = ['Contado', '2 cuotas', '3 cuotas'];
-  const total = tipos.reduce((s, t) => s + (pagosCount[t] || 0), 0);
-  document.getElementById('dash-pago').innerHTML = tipos.map(t => {
-    const n   = pagosCount[t] || 0;
-    const pct = total > 0 ? Math.round(n / total * 100) : 0;
-    return `<div class="dash-pago-block">
-      <div class="dpb-val">${n}</div>
-      <div class="dpb-pct">${pct}%</div>
-      <div class="dpb-label">${t}</div>
-    </div>`;
-  }).join('');
 }
 
 function renderDashLocalidades(ventas, jornadas) {
