@@ -1754,6 +1754,7 @@
                 <label>Rol</label>
                 <select id="usr-rol" class="form-control">
                   <option value="tecnico">Técnico</option>
+                  <option value="tecnico_rei">Técnico ReI</option>
                   <option value="supervisor">Supervisor</option>
                   <option value="gerente">Gerente</option>
                   <option value="dmz">DMZ</option>
@@ -4320,7 +4321,7 @@ async function cargarUsuarios() {
       const partes = String(nombre || '').trim().split(/\s+/);
       return ((partes[0]?.[0] || '') + (partes[1]?.[0] || '')).toUpperCase() || '?';
     };
-    const rolNombre = { tecnico:'Técnico', supervisor:'Supervisor', gerente:'Gerente', dmz:'DMZ' };
+    const rolNombre = { tecnico:'Técnico', tecnico_rei:'Técnico ReI', supervisor:'Supervisor', gerente:'Gerente', dmz:'DMZ' };
 
     let html = '<div class="user-card"><div class="user-row head">' +
       '<div>Nombre</div><div>Zona</div><div>Rol</div><div>Estado</div>' +
@@ -4354,6 +4355,19 @@ async function cargarUsuarios() {
   }
 }
 
+// Ajusta qué roles puede asignar el usuario logueado.
+// dmz/gerente ven todos; supervisor no puede crear DMZ ni Gerente.
+function ajustarOpcionesRol() {
+  const sel = document.getElementById('usr-rol');
+  const puedeAdminTotal = ['dmz', 'gerente'].includes(session.rol);
+  Array.from(sel.options).forEach(op => {
+    if (op.value === 'dmz' || op.value === 'gerente') {
+      op.hidden = !puedeAdminTotal;
+      op.disabled = !puedeAdminTotal;
+    }
+  });
+}
+
 function abrirNuevoUsuario() {
   usuarioEditandoId = null;
   document.getElementById('modal-usuario-titulo').textContent = 'Nuevo usuario';
@@ -4361,6 +4375,7 @@ function abrirNuevoUsuario() {
   document.getElementById('usr-pin').value    = '';
   document.getElementById('usr-movil').value  = '';
   document.getElementById('usr-zona').value   = 'ZN';
+  ajustarOpcionesRol();
   document.getElementById('usr-rol').value    = 'tecnico';
   document.getElementById('modal-usuario').classList.add('open');
 }
@@ -4372,6 +4387,7 @@ function abrirEditarUsuario(u) {
   document.getElementById('usr-pin').value    = u.pin    || '';
   document.getElementById('usr-movil').value  = u.movil  || '';
   document.getElementById('usr-zona').value   = u.zona   || 'ZN';
+  ajustarOpcionesRol();
   document.getElementById('usr-rol').value    = u.rol    || 'tecnico';
   document.getElementById('modal-usuario').classList.add('open');
 }
