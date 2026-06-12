@@ -912,37 +912,6 @@
       background: rgba(30,123,196,.10);
     }
 
-    .divider { height: 1px; background: var(--border-soft); margin: 20px 0; }
-
-    /* ===== CERTIFICACIÓN ===== */
-    .cert-preview {
-      background: var(--surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    .cert-preview-row {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px; text-align: center;
-    }
-    .cert-preview-row .item {
-      padding: 8px;
-      background: var(--card);
-      border-radius: var(--radius);
-    }
-    .cert-preview-row .v-num {
-      font-family: var(--font-head);
-      font-size: 1.4rem; font-weight: 300;
-    }
-    .cert-preview-row .v-num.warning { color: var(--warning); }
-    .cert-preview-row .v-num.accent { color: var(--accent); }
-    .cert-preview-row .v-label {
-      font-size: .68rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
     .mr-tabs-grupo .tab-bar:first-child { margin-bottom: 8px; }
     .mr-empty {
       color: var(--muted);
@@ -1151,19 +1120,6 @@
       font-family: var(--font-head); font-size: .75rem;
       font-weight: 600; color: #fff; text-align: center;
     }
-    /* Tabla del 4to en adelante */
-    .rank-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
-    .rank-table th {
-      color: var(--muted); font-size: .65rem; text-transform: uppercase;
-      letter-spacing: .07em; padding: 6px 8px; text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    .rank-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); }
-    .rank-table tr:last-child td { border-bottom: none; }
-    .rank-table .rt-pos  { color: var(--muted); font-size: .75rem; width: 24px; }
-    .rank-table .rt-name { font-weight: 600; }
-    .rank-table .rt-val  { font-family: var(--font-head); font-weight: 600; text-align: right; white-space: nowrap; }
-
     /* --- EQUIPOS --- */
     .dash-eq-bar-row { margin-bottom: 8px; }
     .dash-eq-bar-name { font-size: .8rem; font-weight: 600; margin-bottom: 3px; display: flex; justify-content: space-between; }
@@ -1192,19 +1148,6 @@
     .localidad-monto { font-family: var(--font-head); font-size: 1.2rem; font-weight: 300; color: var(--text); margin-bottom: 3px; }
     .localidad-sub { font-size: .68rem; color: var(--muted); }
 
-    /* --- ESTADO DE REGISTROS --- */
-    .estado-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .estado-card {
-      background: var(--card); border-radius: var(--radius);
-      padding: 12px 10px; text-align: center;
-      border-top: 3px solid var(--border);
-    }
-    .estado-card.aprobado { border-top-color: var(--success); }
-    .estado-card.pendiente { border-top-color: var(--warning); }
-    .estado-card.rechazado { border-top-color: var(--danger); }
-    .estado-count { font-family: var(--font-head); font-size: 1.4rem; font-weight: 300; }
-    .estado-pct   { font-size: .7rem;  color: var(--muted); margin-top: 2px; }
-    .estado-label { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
     /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
     .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
     .btn-action-sm:hover { border-color: var(--accent); color: var(--accent); }
@@ -1239,7 +1182,6 @@
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
           <button class="btn btn-primary" id="btn-login" style="flex:1;">INGRESAR</button>
-          <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
         </div>
         <div class="error-msg" id="login-error"></div>
       </div>
@@ -1254,7 +1196,6 @@
       </div>
       <div style="display:flex;align-items:center;">
         <span class="header-user" id="header-user-name"></span>
-        <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
         <button class="btn-logout" id="btn-logout-menu">SALIR</button>
       </div>
     </div>
@@ -1333,7 +1274,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-ventas">SALIR</button>
     </div>
     <div class="content">
@@ -1413,7 +1353,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -1471,7 +1410,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-mis-registros">SALIR</button>
     </div>
     <div class="content">
@@ -1510,7 +1448,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-detalle">SALIR</button>
     </div>
     <div class="content">
@@ -1528,7 +1465,6 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-theme-toggle" title="Cambiar tema">🌙</button>
       <button class="btn-logout" id="btn-logout-editar-jornada">SALIR</button>
     </div>
     <div class="content">
@@ -1618,7 +1554,6 @@
           <div class="dash-section">
             <div class="dash-section-title">Ranking del mes</div>
             <div id="dash-podio"></div>
-            <div id="dash-ranking"></div>
           </div>
 
           <!-- Top equipos y modalidad de pago en 2 columnas -->
@@ -2089,13 +2024,6 @@ async function apiPost(data) {
 function formatoPesos(n) {
   if (n === undefined || n === null || n === '') return '—';
   return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
-
-function formatoPesosCompacto(n) {
-  if (!n) return '$0';
-  if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'K';
-  return '$' + Number(n).toLocaleString('es-AR', { maximumFractionDigits: 0 });
 }
 
 function mesActualNombre() {
@@ -3462,8 +3390,6 @@ function renderDashRanking2(tecData) {
 
   if (!ranking.length) {
     document.getElementById('dash-podio').innerHTML   = '<div class="mr-empty">Sin datos aprobados</div>';
-    const tablaEl = document.getElementById('dash-ranking');
-    if (tablaEl) tablaEl.innerHTML = '';
     return;
   }
 
@@ -3488,9 +3414,7 @@ function renderDashRanking2(tecData) {
         </div>`).join('')}
     </div>`;
 
-  // Tabla del 4to en adelante eliminada (ranking solo top 3)
-  const tablaEl = document.getElementById('dash-ranking');
-  if (tablaEl) tablaEl.innerHTML = '';
+  // Ranking solo top 3 (sin tabla del 4to en adelante)
 }
 
 function renderDashEquipos(equiposCount) {
@@ -3560,39 +3484,6 @@ function renderDashLocalidades(ventas, jornadas) {
         <div class="localidad-sub">${d.tickets} ticket${d.tickets !== 1 ? 's' : ''} · ${d.ventasN} venta${d.ventasN !== 1 ? 's' : ''}</div>
       </div>`).join('')}
   </div>`;
-}
-
-function renderDashEstado(ventas, jornadas) {
-  const cuentas = { Aprobada: 0, Pendiente: 0, Rechazada: 0 };
-  ventas.forEach(v => {
-    const e = String(v.datos[12] || 'Pendiente').trim();
-    if (cuentas.hasOwnProperty(e)) cuentas[e]++;
-  });
-  jornadas.forEach(j => {
-    const e = String(j.datos[9] || 'Pendiente').trim();
-    if (cuentas.hasOwnProperty(e)) cuentas[e]++;
-  });
-  const total = cuentas.Aprobada + cuentas.Pendiente + cuentas.Rechazada;
-  const pct   = n => total > 0 ? Math.round(n / total * 100) : 0;
-
-  document.getElementById('dash-estado').innerHTML = `
-    <div class="estado-grid">
-      <div class="estado-card aprobado">
-        <div class="estado-count" style="color:var(--success);">${cuentas.Aprobada}</div>
-        <div class="estado-pct">${pct(cuentas.Aprobada)}%</div>
-        <div class="estado-label">Aprobados</div>
-      </div>
-      <div class="estado-card pendiente">
-        <div class="estado-count" style="color:var(--warning);">${cuentas.Pendiente}</div>
-        <div class="estado-pct">${pct(cuentas.Pendiente)}%</div>
-        <div class="estado-label">Pendientes</div>
-      </div>
-      <div class="estado-card rechazado">
-        <div class="estado-count" style="color:var(--danger);">${cuentas.Rechazada}</div>
-        <div class="estado-pct">${pct(cuentas.Rechazada)}%</div>
-        <div class="estado-label">Rechazados</div>
-      </div>
-    </div>`;
 }
 
 // ============================================================
