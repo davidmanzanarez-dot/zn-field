@@ -1056,26 +1056,72 @@
       font-size: .68rem; font-weight: 600; color: var(--muted);
       text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px;
     }
-    /* Grid 2 columnas para equipos + pago en desktop */
 
-    /* --- KPI CARDS --- */
-    .dash-kpi-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px;
-    }
-    @media (min-width: 700px) { .dash-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-    .kpi-card {
+    /* ===== REDISEÑO DASHBOARD ===== */
+    .header-right-admin { display: flex; align-items: center; gap: 14px; }
+
+    /* Hero: ingreso total grande + 4 mini-stats */
+    .dash-hero { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 14px; }
+    @media (min-width: 800px) { .dash-hero { grid-template-columns: 1.1fr 2fr; } }
+    .hero-main {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px 14px 12px; overflow: hidden;
+      border-radius: 14px; padding: 22px; position: relative; overflow: hidden;
     }
-    .kpi-bar-top { height: 3px; border-radius: 2px; margin-bottom: 12px; }
-    .kpi-label {
-      font-size: .62rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px;
+    .hero-main::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--violet); }
+    .hero-label { font-size: .66rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+    .hero-value { font-size: 2.4rem; font-weight: 300; color: var(--violet); line-height: 1; margin-bottom: 10px; }
+    .hero-spark { display: block; width: 100%; height: 40px; margin-top: 14px; overflow: visible; }
+
+    .hero-mini { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .mini-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px; position: relative; overflow: hidden;
     }
-    .kpi-value {
-      font-family: var(--font-head); font-size: 1.55rem; font-weight: 300;
-      line-height: 1.1; margin-bottom: 6px;
+    .mini-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+    .mini-card.warning::before { background: var(--warning); }
+    .mini-card.neutral::before { background: var(--muted); }
+    .mini-card.success::before { background: var(--success); }
+    .mini-label { font-size: .62rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; margin-top: 3px; }
+    .mini-value { font-size: 1.4rem; font-weight: 300; line-height: 1; }
+
+    /* Franja equipo más vendido (ancho completo) */
+    .dash-equipo-franja { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; }
+    .dash-equipo-nombre { font-size: 1.1rem; font-weight: 500; }
+    .dash-equipo-cant { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+    .dash-equipo-cant .num { font-size: 1.5rem; font-weight: 300; color: var(--success); }
+
+    /* Ranking + Localidad lado a lado */
+    .dash-2col { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 800px) { .dash-2col { grid-template-columns: 1fr 1fr; } }
+    .dash-2col .dash-section { margin-bottom: 0; }
+
+    /* Ranking barras horizontales */
+    .rankA-row { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 12px; margin-bottom: 13px; }
+    .rankA-row:last-child { margin-bottom: 0; }
+    .rankA-pos { font-size: .88rem; font-weight: 600; color: var(--muted); text-align: center; }
+    .rankA-pos.top { color: var(--gold); }
+    .rankA-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; gap: 8px; }
+    .rankA-name { font-size: .86rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rankA-val { font-size: .83rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
+    .rankA-bar { height: 6px; background: var(--card); border-radius: 4px; overflow: hidden; }
+    .rankA-fill { height: 100%; border-radius: 4px; }
+    .rankA-fill.g1 { background: var(--gold); }
+    .rankA-fill.g2 { background: var(--silver); }
+    .rankA-fill.g3 { background: var(--bronze); }
+    .rankA-fill.g4 { background: var(--accent); }
+    .rankA-fill.g5 { background: var(--accent); opacity: .55; }
+
+    /* Localidad horizontal */
+    .localidad-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
+    .localidad-card:last-child { margin-bottom: 0; }
+    .localidad-nombre { font-size: .85rem; font-weight: 500; }
+    .localidad-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    .localidad-monto { font-size: 1.2rem; font-weight: 300; color: var(--accent); white-space: nowrap; }
+
+    /* --- Badge comparativo y sparkline (usados por hero y mini-cards) --- */
     .kpi-badge {
       display: inline-block; font-size: .68rem; font-weight: 600;
       padding: 1px 6px; border-radius: 4px; margin-bottom: 8px;
@@ -1084,54 +1130,6 @@
     .kpi-badge.down    { background: rgba(248,81,73,.15);   color: var(--danger);  }
     .kpi-badge.neutral { background: rgba(139,150,163,.12); color: var(--muted);   }
     .kpi-sparkline { display: block; width: 100%; height: 32px; overflow: visible; }
-    .kpi-aprob-bar { height: 4px; border-radius: 4px; background: var(--card); overflow: hidden; margin-top: 4px; }
-    .kpi-aprob-bar-fill { height: 100%; border-radius: 4px; background: var(--warning); }
-    /* Card "Equipo más vendido" (nombre + cantidad) */
-    .kpi-equipo-nombre { font-size: 1.05rem; font-weight: 500; line-height: 1.2; margin-bottom: 8px; color: var(--text); }
-    .kpi-equipo-cant { font-size: .82rem; color: var(--muted); margin-bottom: 12px; }
-    .kpi-equipo-cant .num { font-size: 1.3rem; font-weight: 300; color: var(--success); }
-    .kpi-equipo-bar { height: 5px; border-radius: 3px; background: var(--card); overflow: hidden; }
-    .kpi-equipo-bar-fill { height: 100%; border-radius: 3px; background: var(--success); }
-    .kpi-aprob-label {
-      display: flex; justify-content: space-between;
-      font-size: .65rem; color: var(--muted); margin-top: 4px;
-    }
-
-    /* --- PODIO RANKING --- */
-    .podio-row {
-      display: flex; align-items: flex-end; justify-content: center;
-      gap: 8px; margin-bottom: 16px; padding: 0 4px;
-    }
-    .podio-item { flex: 1; max-width: 130px; display: flex; flex-direction: column; align-items: center; }
-    .podio-name {
-      font-size: .75rem; font-weight: 600; text-align: center;
-      margin-bottom: 6px; color: var(--text);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
-    }
-    .podio-platform {
-      width: 100%; border-radius: 6px 6px 0 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end; padding: 8px 4px 10px;
-    }
-    .podio-pos { font-size: 1.2rem; margin-bottom: 4px; }
-    .podio-total {
-      font-family: var(--font-head); font-size: .75rem;
-      font-weight: 600; color: #fff; text-align: center;
-    }
-
-    /* --- PRODUCCIÓN POR LOCALIDAD --- */
-    .localidad-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-    @media (min-width: 500px) { .localidad-grid { grid-template-columns: repeat(3, 1fr); } }
-    .localidad-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 14px;
-    }
-    .localidad-nombre {
-      font-size: .72rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px;
-    }
-    .localidad-monto { font-family: var(--font-head); font-size: 1.2rem; font-weight: 300; color: var(--text); margin-bottom: 3px; }
-    .localidad-sub { font-size: .68rem; color: var(--muted); }
 
     /* BOTONES DE ACCIÓN EN TABLAS ADMIN */
     .btn-action-sm { background: transparent; border: 1px solid var(--border-soft); border-radius: 5px; padding: 3px 7px; font-size: .78rem; cursor: pointer; color: var(--muted); transition: all .15s; line-height: 1.4; }
@@ -1487,7 +1485,10 @@
       <div class="logo-wrap">
         <span class="logo-text"><span class="ss">SS</span><span class="servicios">Servicios</span></span>
       </div>
-      <button class="btn-logout" id="btn-logout-admin">SALIR</button>
+      <div class="header-right-admin">
+        <div id="dash-mes-picker-wrap" class="mes-picker-wrap" style="display:none;"></div>
+        <button class="btn-logout" id="btn-logout-admin">SALIR</button>
+      </div>
     </div>
     <div class="admin-body">
       <div class="admin-sidebar" id="admin-sidebar">
@@ -1527,24 +1528,28 @@
       </div>
 
       <div class="tab-panel active" id="tab-dashboard">
-        <!-- Selector de mes del dashboard -->
-        <div id="dash-mes-picker-wrap" class="mes-picker-wrap" style="margin-bottom:16px;"></div>
         <div class="loading-msg" id="dashboard-loading"><span class="spinner"></span>Cargando dashboard…</div>
         <div id="dashboard-content" style="display:none;">
 
-          <!-- 6 KPI cards en grilla 3 columnas -->
-          <div class="dash-kpi-grid" id="dash-kpis"></div>
-
-          <!-- Ranking: podio top 3 + tabla del 4to en adelante -->
-          <div class="dash-section">
-            <div class="dash-section-title">Ranking del mes</div>
-            <div id="dash-podio"></div>
+          <!-- HERO: ingreso total grande + 4 mini-stats -->
+          <div class="dash-hero">
+            <div class="hero-main" id="dash-hero-main"></div>
+            <div class="hero-mini" id="dash-hero-mini"></div>
           </div>
 
-          <!-- Producción agrupada por localidad -->
-          <div class="dash-section">
-            <div class="dash-section-title">Producción por localidad</div>
-            <div id="dash-localidades"></div>
+          <!-- Equipo más vendido (franja de ancho completo) -->
+          <div class="dash-section dash-equipo-franja" id="dash-equipo-franja"></div>
+
+          <!-- Ranking (barras) + Producción por localidad, lado a lado -->
+          <div class="dash-2col">
+            <div class="dash-section">
+              <div class="dash-section-title">Ranking del mes</div>
+              <div id="dash-podio"></div>
+            </div>
+            <div class="dash-section">
+              <div class="dash-section-title">Producción por localidad</div>
+              <div id="dash-localidades"></div>
+            </div>
           </div>
 
         </div>
@@ -2994,6 +2999,9 @@ function cargarPantallaAdmin() {
   cargarDashboard();
   tabsAdmin.add('dashboard');
   actualizarBadgePendientes();
+  // El admin arranca en Dashboard: mostrar el filtro de mes del topbar
+  const mesWrap = document.getElementById('dash-mes-picker-wrap');
+  if (mesWrap) mesWrap.style.display = 'inline-flex';
   // Mostrar el tab Usuarios solo para supervisor, gerente y dmz
   const puedeVerUsuarios = ['supervisor', 'gerente', 'dmz'].includes(session.rol);
   document.querySelectorAll('[data-tab="usuarios"], [data-sidebar-tab="usuarios"]')
@@ -3016,6 +3024,9 @@ function activarTabAdmin(tab) {
   if (panel) panel.classList.add('active');
   const sidebarBtn = document.querySelector(`.admin-sidebar-btn[data-sidebar-tab="${tab}"]`);
   if (sidebarBtn) sidebarBtn.classList.add('active');
+  // El filtro de mes del topbar solo se muestra en Dashboard
+  const mesWrap = document.getElementById('dash-mes-picker-wrap');
+  if (mesWrap) mesWrap.style.display = (tab === 'dashboard') ? 'inline-flex' : 'none';
   // Dashboard y aprobaciones siempre se recargan; el resto solo la primera vez
   if (tab === 'dashboard') { cargarDashboard(); return; }
   if (tab === 'aprobaciones') { cargarAprobaciones(); return; }
@@ -3168,7 +3179,7 @@ function _badge(curr, prev) {
 }
 
 // SVG sparkline de línea fina (array de números, de más antiguo a más nuevo)
-function _sparklineSVG(puntos, color) {
+function _sparklineSVG(puntos, color, clase) {
   const pts = (puntos || []).filter(n => n !== null && n !== undefined);
   if (pts.length < 2) return '';
   const W = 100, H = 32, pad = 2;
@@ -3181,25 +3192,10 @@ function _sparklineSVG(puntos, color) {
     const y = (H - pad - ((v - min) / rang) * (H - pad * 2)).toFixed(1);
     return `${x},${y}`;
   }).join(' ');
-  return `<svg class="kpi-sparkline" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+  return `<svg class="${clase || 'kpi-sparkline'}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="1.5"
       stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
   </svg>`;
-}
-
-// Barra aprobado / pendiente (KPI comisión pendiente en vez de sparkline)
-function _buildPendBar(aprob, pend) {
-  const total = aprob + pend;
-  if (total === 0) return '';
-  const pctPend = Math.round(pend / total * 100);
-  return `
-    <div class="kpi-aprob-bar">
-      <div class="kpi-aprob-bar-fill" style="width:${pctPend}%"></div>
-    </div>
-    <div class="kpi-aprob-label">
-      <span>Aprob. ${formatoPesos(aprob)}</span>
-      <span>${pctPend}% pend.</span>
-    </div>`;
 }
 
 async function cargarDashboard() {
@@ -3304,45 +3300,46 @@ function renderDashKPIs2(curr, prev) {
       dashHistorialCache[mes].jornadas
     )));
 
-  const kpis = [
+  // === HERO: Ingreso total de la zona (el número que resume todo) ===
+  document.getElementById('dash-hero-main').innerHTML = `
+    <div class="hero-label">Ingreso total de la zona</div>
+    <div class="hero-value">${formatoPesos(m.ingresoTotal)}</div>
+    ${_badge(m.ingresoTotal, p.ingresoTotal)}
+    ${_sparklineSVG(hist(x => x.ingresoTotal), 'var(--violet)', 'hero-spark')}
+  `;
+
+  // === MINI-STATS: 4 métricas al costado ===
+  const minis = [
     { label: 'Ventas aprobadas',  value: m.ventasAprob,   prev: p.ventasAprob,
-      formato: v => v,                          color: 'var(--accent)',
-      extra: _sparklineSVG(hist(x => x.ventasAprob),   'var(--accent)') },
+      fmt: v => v, cls: '' },
     { label: 'Comisión aprobada', value: m.comisionAprob, prev: p.comisionAprob,
-      formato: v => formatoPesos(v),            color: 'var(--accent)',
-      extra: _sparklineSVG(hist(x => x.comisionAprob), 'var(--accent)') },
+      fmt: v => formatoPesos(v), cls: 'success' },
     { label: 'Comisión pendiente',value: m.comisionPend,  prev: p.comisionPend,
-      formato: v => formatoPesos(v),            color: 'var(--warning)',
-      extra: _buildPendBar(m.comisionAprob, m.comisionPend) },
+      fmt: v => formatoPesos(v), cls: 'warning' },
     { label: 'Ticket promedio',   value: m.ticketProm,    prev: p.ticketProm,
-      formato: v => v > 0 ? formatoPesos(v) : '—', color: 'var(--muted)',
-      extra: _sparklineSVG(hist(x => x.ticketProm),    'var(--muted)') },
-    { label: 'Ingreso total zona',value: m.ingresoTotal,  prev: p.ingresoTotal,
-      formato: v => formatoPesos(v),            color: 'var(--violet)',
-      extra: _sparklineSVG(hist(x => x.ingresoTotal),  'var(--violet)') }
+      fmt: v => v > 0 ? formatoPesos(v) : '—', cls: 'neutral' }
   ];
-
-  // Card especial "Equipo más vendido" (nombre + cantidad, formato distinto)
-  const pctBarra = m.totalUnidades > 0 ? Math.round(m.equipoTopCant / m.totalUnidades * 100) : 0;
-  const cardEquipo = `
-    <div class="kpi-card">
-      <div class="kpi-bar-top" style="background:var(--success);"></div>
-      <div class="kpi-label">Equipo más vendido</div>
-      ${m.equipoTop ? `
-        <div class="kpi-equipo-nombre">${m.equipoTop}</div>
-        <div class="kpi-equipo-cant"><span class="num">${m.equipoTopCant}</span> ${m.equipoTopCant === 1 ? 'unidad' : 'unidades'}</div>
-        <div class="kpi-equipo-bar"><div class="kpi-equipo-bar-fill" style="width:${pctBarra}%;"></div></div>
-      ` : `<div class="kpi-equipo-nombre" style="color:var(--muted);">Sin ventas</div>`}
-    </div>`;
-
-  document.getElementById('dash-kpis').innerHTML = kpis.map(k => `
-    <div class="kpi-card">
-      <div class="kpi-bar-top" style="background:${k.color};"></div>
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value" style="color:${k.color};">${k.formato(k.value)}</div>
+  document.getElementById('dash-hero-mini').innerHTML = minis.map(k => `
+    <div class="mini-card ${k.cls}">
+      <div class="mini-label">${k.label}</div>
+      <div class="mini-value">${k.fmt(k.value)}</div>
       ${_badge(k.value, k.prev)}
-      ${k.extra}
-    </div>`).join('') + cardEquipo;
+    </div>`).join('');
+
+  // === FRANJA: Equipo más vendido (ancho completo) ===
+  document.getElementById('dash-equipo-franja').innerHTML = m.equipoTop ? `
+    <div>
+      <div class="dash-section-title" style="margin-bottom:6px;">Equipo más vendido</div>
+      <div class="dash-equipo-nombre">${m.equipoTop}</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="dash-equipo-cant"><span class="num">${m.equipoTopCant}</span> ${m.equipoTopCant === 1 ? 'unidad' : 'unidades'}</div>
+    </div>
+  ` : `
+    <div>
+      <div class="dash-section-title" style="margin-bottom:6px;">Equipo más vendido</div>
+      <div class="dash-equipo-nombre" style="color:var(--muted);">Sin ventas este mes</div>
+    </div>`;
 }
 
 function renderDashRanking2(tecData) {
@@ -3354,32 +3351,27 @@ function renderDashRanking2(tecData) {
     .sort((a, b) => b.total - a.total);
 
   if (!ranking.length) {
-    document.getElementById('dash-podio').innerHTML   = '<div class="mr-empty">Sin datos aprobados</div>';
+    document.getElementById('dash-podio').innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
     return;
   }
 
-  // Podio: orden visual [2° plata] [1° oro] [3° bronce]
-  const top3       = ranking.slice(0, 3);
-  const podioOrden = top3.length >= 2
-    ? [top3[1], top3[0], top3[2]].filter(Boolean)
-    : top3;
-  const alturas = [66, 90, 50];   // px de plataforma: plata, oro, bronce
-  const colores  = ['var(--silver)', 'var(--gold)', 'var(--bronze)'];
-  const emojis   = ['🥈', '🥇', '🥉'];
-
-  document.getElementById('dash-podio').innerHTML = `
-    <div class="podio-row">
-      ${podioOrden.map((d, vi) => `
-        <div class="podio-item">
-          <div class="podio-name" title="${d.nombre}">${d.nombre}</div>
-          <div class="podio-platform" style="height:${alturas[vi]}px; background:${colores[vi]};">
-            <div class="podio-pos">${emojis[vi]}</div>
-            <div class="podio-total">${formatoPesos(d.total)}</div>
+  // Barras horizontales proporcionales al máximo (Opción A)
+  const max = ranking[0].total || 1;
+  document.getElementById('dash-podio').innerHTML = ranking.map((d, i) => {
+    const pct = Math.round(d.total / max * 100);
+    const grupo = i === 0 ? 'g1' : i === 1 ? 'g2' : i === 2 ? 'g3' : i === 3 ? 'g4' : 'g5';
+    return `
+      <div class="rankA-row">
+        <div class="rankA-pos${i === 0 ? ' top' : ''}">${i + 1}</div>
+        <div>
+          <div class="rankA-head">
+            <span class="rankA-name">${d.nombre}</span>
+            <span class="rankA-val">${formatoPesos(d.total)}</span>
           </div>
-        </div>`).join('')}
-    </div>`;
-
-  // Ranking solo top 3 (sin tabla del 4to en adelante)
+          <div class="rankA-bar"><div class="rankA-fill ${grupo}" style="width:${pct}%"></div></div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function renderDashLocalidades(ventas, jornadas) {
@@ -3415,14 +3407,14 @@ function renderDashLocalidades(ventas, jornadas) {
     cont.innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
     return;
   }
-  cont.innerHTML = `<div class="localidad-grid">${
-    entradas.map(([nombre, d]) => `
-      <div class="localidad-card">
+  cont.innerHTML = entradas.map(([nombre, d]) => `
+    <div class="localidad-card">
+      <div>
         <div class="localidad-nombre">${nombre}</div>
-        <div class="localidad-monto">${formatoPesos(d.monto)}</div>
         <div class="localidad-sub">${d.tickets} ticket${d.tickets !== 1 ? 's' : ''} · ${d.ventasN} venta${d.ventasN !== 1 ? 's' : ''}</div>
-      </div>`).join('')}
-  </div>`;
+      </div>
+      <div class="localidad-monto">${formatoPesos(d.monto)}</div>
+    </div>`).join('');
 }
 
 // ============================================================
