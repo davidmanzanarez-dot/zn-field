@@ -583,6 +583,81 @@
     .data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
     /* ===== APPROVAL / DETAIL CARDS ===== */
+    /* ===== ETAPA 2A: filtros + cards aprobación + pestañas registros ===== */
+    .sec-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .74rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .08em; margin: 0 0 12px;
+    }
+    .sec-title .count { background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: .72rem; padding: 2px 9px; border-radius: 10px; }
+
+    .filtros-bar {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+      margin: 0 0 20px; padding: 14px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .filtro-group { display: flex; flex-direction: column; gap: 5px; }
+    .filtro-group label { font-size: .68rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding-left: 2px; }
+    .filtro-sel {
+      background: var(--card); border: 1px solid var(--border); color: var(--text);
+      border-radius: 8px; padding: 8px 12px; font-family: var(--font-body); font-size: .84rem; cursor: pointer; min-width: 150px;
+    }
+    .filtro-sel:focus { outline: none; border-color: var(--accent); }
+    .tipo-toggle { display: inline-flex; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .tipo-toggle button {
+      border: none; background: transparent; color: var(--muted); padding: 8px 16px;
+      font-family: var(--font-body); font-size: .84rem; font-weight: 500; cursor: pointer; transition: all .15s;
+    }
+    .tipo-toggle button.active { background: var(--accent); color: #fff; }
+
+    .ap-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 12px; padding: 16px 18px;
+      display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start;
+    }
+    .ap-left { min-width: 0; }
+    .ap-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .ap-avatar {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(59,158,255,.12); color: var(--accent);
+      display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+    }
+    .ap-avatar.jor { background: rgba(163,113,247,.12); color: var(--accent2); }
+    .ap-who-text .name { font-weight: 600; font-size: .95rem; }
+    .ap-who-text .meta { color: var(--muted); font-size: .78rem; margin-top: 1px; }
+    .ap-card-body { display: grid; grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); gap: 2px 14px; }
+    .ap-field { padding: 5px 0; }
+    .ap-field .k { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+    .ap-field .v { font-size: .88rem; font-weight: 500; }
+    .ap-right { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 120px; }
+    .ap-amount { text-align: center; }
+    .ap-amount .val { font-size: 1.35rem; font-weight: 300; color: var(--accent); line-height: 1.1; }
+    .ap-amount .lbl { font-size: .64rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+    .ap-btns { display: flex; gap: 8px; }
+    .ap-btn {
+      width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 10px;
+      background: transparent; cursor: pointer; font-size: 1.05rem;
+      display: flex; align-items: center; justify-content: center; transition: all .15s;
+    }
+    .ap-btn.aprobar { color: var(--success); }
+    .ap-btn.aprobar:hover { background: rgba(63,185,80,.12); border-color: var(--success); }
+    .ap-btn.rechazar { color: var(--danger); }
+    .ap-btn.rechazar:hover { background: rgba(248,81,73,.12); border-color: var(--danger); }
+    /* En mobile la card se apila */
+    @media (max-width: 560px) {
+      .ap-card { grid-template-columns: 1fr; }
+      .ap-right { flex-direction: row; width: auto; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px; }
+    }
+
+    /* Pestañas internas de Registros */
+    .reg-tabs { display: inline-flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 18px; }
+    .reg-tab {
+      border: none; background: transparent; color: var(--muted); padding: 9px 22px;
+      font-family: var(--font-body); font-size: .88rem; font-weight: 600; cursor: pointer; border-radius: 7px; transition: all .15s;
+    }
+    .reg-tab.active { background: var(--accent); color: #fff; }
+
+    /* ===== APPROVAL / DETAIL CARDS (legacy, aún usado en Mis Registros) ===== */
     .approval-card {
       background: var(--surface);
       border: 1px solid var(--border-soft);
@@ -956,6 +1031,9 @@
       font-family: var(--font-head); font-size: .9rem; font-weight: 500;
       text-align: left; transition: background .15s, color .15s; margin-bottom: 2px;
     }
+    .admin-sidebar-foot-btn .foot-ic {
+      width: 20px; flex-shrink: 0; text-align: center; font-size: 1rem;
+    }
     .admin-sidebar-foot-btn.theme:hover  { background: rgba(59,158,255,.1); color: var(--accent); }
     .admin-sidebar-foot-btn.logout:hover { background: rgba(248,81,73,.1);  color: var(--danger); }
     @media (min-width: 1025px) {
@@ -963,6 +1041,8 @@
       body.admin-desktop #screen-admin .content { max-width: none; margin: 0; padding: 24px 32px 40px; }
       body.admin-desktop #screen-admin .section-header { display: none; }
       body.admin-desktop #screen-admin .tab-bar { display: none; }
+      /* En desktop el "Cerrar sesión" vive en el sidebar; ocultar SALIR del topbar */
+      body.admin-desktop #screen-admin .header #btn-logout-admin { display: none; }
       body.admin-desktop .data-table { font-size: .88rem; }
       body.admin-desktop .data-table th, body.admin-desktop .data-table td { padding: 8px 14px; }
     }
@@ -970,6 +1050,33 @@
     /* ===== FILTROS DOBLES ADMIN ===== */
     .filtros-row { display: flex; gap: 10px; margin-bottom: 4px; }
     .filtros-row .form-group { flex: 1; margin-bottom: 0; }
+
+    /* ===== CERTIFICACIÓN (rediseño) ===== */
+    .cert-wrap { max-width: 680px; }
+    .cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 16px; }
+    .cert-card-title { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 16px; }
+    .cert-dates { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: end; }
+    .cert-date-field label { display: block; font-size: .7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 7px; }
+    .cert-date-input { width: 100%; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 9px; padding: 12px 14px; font-family: var(--font-body); font-size: .95rem; cursor: pointer; }
+    .cert-date-input:focus { outline: none; border-color: var(--accent); }
+    .cert-arrow { color: var(--muted); font-size: 1.1rem; padding-bottom: 12px; }
+    .cert-verify-btn { width: 100%; margin-top: 16px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 13px; font-family: var(--font-body); font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .cert-verify-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cert-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 18px; }
+    .cert-stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 14px; text-align: center; }
+    .cert-stat .num { font-size: 1.9rem; font-weight: 300; line-height: 1; margin-bottom: 6px; }
+    .cert-stat.ok .num { color: var(--success); }
+    .cert-stat.pend .num { color: var(--warning); }
+    .cert-stat .lbl { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .cert-download-btn { width: 100%; margin-top: 16px; background: var(--accent); border: none; color: #fff; border-radius: 12px; padding: 16px; font-family: var(--font-body); font-size: .95rem; font-weight: 600; cursor: pointer; transition: opacity .15s; display: flex; align-items: center; justify-content: center; gap: 9px; }
+    .cert-download-btn:hover { opacity: .9; }
+    .cert-download-btn:disabled { opacity: .6; cursor: default; }
+    .cert-note { color: var(--muted); font-size: .8rem; text-align: center; margin-top: 12px; }
+    .cert-note strong { color: var(--text); }
+    @media (max-width: 520px) {
+      .cert-dates { grid-template-columns: 1fr; }
+      .cert-arrow { display: none; }
+    }
 
     /* ===== DASHBOARD GERENCIAL ===== */
     .dash-section {
@@ -1012,6 +1119,12 @@
     .kpi-sparkline { display: block; width: 100%; height: 32px; overflow: visible; }
     .kpi-aprob-bar { height: 4px; border-radius: 4px; background: var(--card); overflow: hidden; margin-top: 4px; }
     .kpi-aprob-bar-fill { height: 100%; border-radius: 4px; background: var(--warning); }
+    /* Card "Equipo más vendido" (nombre + cantidad) */
+    .kpi-equipo-nombre { font-size: 1.05rem; font-weight: 500; line-height: 1.2; margin-bottom: 8px; color: var(--text); }
+    .kpi-equipo-cant { font-size: .82rem; color: var(--muted); margin-bottom: 12px; }
+    .kpi-equipo-cant .num { font-size: 1.3rem; font-weight: 300; color: var(--success); }
+    .kpi-equipo-bar { height: 5px; border-radius: 3px; background: var(--card); overflow: hidden; }
+    .kpi-equipo-bar-fill { height: 100%; border-radius: 3px; background: var(--success); }
     .kpi-aprob-label {
       display: flex; justify-content: space-between;
       font-size: .65rem; color: var(--muted); margin-top: 4px;
@@ -1465,14 +1578,13 @@
         </button>
         <button class="admin-sidebar-btn" data-sidebar-tab="certificacion">📥 Certificación</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="equipos">📋 Catálogo</button>
-        <button class="admin-sidebar-btn" data-sidebar-tab="ventas-tab">🤝 Ventas</button>
-        <button class="admin-sidebar-btn" data-sidebar-tab="jornadas-tab">📅 Jornadas</button>
+        <button class="admin-sidebar-btn" data-sidebar-tab="registros">📂 Registros</button>
         <button class="admin-sidebar-btn" data-sidebar-tab="usuarios">👤 Usuarios</button>
         <!-- Footer del sidebar: tema + cerrar sesión abajo -->
         <div class="admin-sidebar-spacer"></div>
         <div class="admin-sidebar-footer">
-          <button class="admin-sidebar-foot-btn theme btn-theme-toggle" title="Cambiar tema">🌙 Modo oscuro</button>
-          <button class="admin-sidebar-foot-btn logout" id="btn-logout-sidebar">⏻ Cerrar sesión</button>
+          <button class="admin-sidebar-foot-btn theme btn-theme-toggle" title="Cambiar tema"><span class="foot-ic">🌙</span> Modo oscuro</button>
+          <button class="admin-sidebar-foot-btn logout" id="btn-logout-sidebar"><span class="foot-ic">⏻</span> Cerrar sesión</button>
         </div>
       </div>
     <div class="content">
@@ -1489,8 +1601,7 @@
         </button>
         <button class="tab-btn" data-tab="certificacion">📥 Certificación</button>
         <button class="tab-btn" data-tab="equipos">Catálogo</button>
-        <button class="tab-btn" data-tab="ventas-tab">Ventas</button>
-        <button class="tab-btn" data-tab="jornadas-tab">Jornadas</button>
+        <button class="tab-btn" data-tab="registros">📂 Registros</button>
         <button class="tab-btn" data-tab="usuarios">👤 Usuarios</button>
       </div>
 
@@ -1528,53 +1639,65 @@
             <div id="dash-localidades"></div>
           </div>
 
-          <!-- Estado de todos los registros del mes -->
-          <div class="dash-section">
-            <div class="dash-section-title">Estado de registros</div>
-            <div id="dash-estado"></div>
-          </div>
-
         </div>
       </div>
 
       <div class="tab-panel" id="tab-aprobaciones">
         <!-- Selector de mes (componente propio, evita select nativo en Android) -->
         <div id="aprob-mes-picker-wrap" class="mes-picker-wrap" style="margin-bottom:14px;"></div>
+        <!-- Barra de filtros: tipo / técnico / localidad -->
+        <div class="filtros-bar" id="aprob-filtros" style="display:none;">
+          <div class="filtro-group">
+            <label>Tipo</label>
+            <div class="tipo-toggle" id="aprob-tipo-toggle">
+              <button data-tipo="todo" class="active">Todo</button>
+              <button data-tipo="ventas">Ventas</button>
+              <button data-tipo="jornadas">Jornadas</button>
+            </div>
+          </div>
+          <div class="filtro-group">
+            <label>Técnico</label>
+            <select class="filtro-sel" id="aprob-filtro-tecnico"><option value="">Todos los técnicos</option></select>
+          </div>
+          <div class="filtro-group">
+            <label>Localidad</label>
+            <select class="filtro-sel" id="aprob-filtro-localidad"><option value="">Todas las localidades</option></select>
+          </div>
+        </div>
         <div class="loading-msg" id="aprob-loading"><span class="spinner"></span>Cargando pendientes…</div>
         <div id="aprob-content" style="display:none;">
-          <div class="menu-section-title">Ventas pendientes (<span id="aprob-ventas-count">0</span>)</div>
+          <div class="sec-title">Ventas pendientes <span class="count" id="aprob-ventas-count">0</span></div>
           <div id="aprob-ventas-lista"></div>
-          <div class="divider"></div>
-          <div class="menu-section-title">Jornadas pendientes (<span id="aprob-jornadas-count">0</span>)</div>
+          <div class="sec-title" style="margin-top:22px;">Jornadas pendientes <span class="count" id="aprob-jornadas-count">0</span></div>
           <div id="aprob-jornadas-lista"></div>
         </div>
       </div>
 
       <div class="tab-panel" id="tab-certificacion">
-        <div class="form-group">
-          <label>Fecha desde</label>
-          <input type="date" id="cert-desde" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Fecha hasta</label>
-          <input type="date" id="cert-hasta" class="form-control">
-        </div>
-        <button class="btn btn-secondary btn-icon" id="btn-preview-cert" style="margin-bottom:12px;">
-          🔍 VERIFICAR RANGO
-        </button>
-        <div class="cert-preview" id="cert-preview-box" style="display:none;">
-          <div class="cert-preview-row">
-            <div class="item"><div class="v-num accent" id="cert-aprobadas-v">—</div><div class="v-label">Ventas OK</div></div>
-            <div class="item"><div class="v-num accent" id="cert-aprobadas-j">—</div><div class="v-label">Jornadas OK</div></div>
-            <div class="item"><div class="v-num warning" id="cert-pendientes">—</div><div class="v-label">Pendientes</div></div>
+        <div class="cert-wrap">
+          <div class="cert-card">
+            <div class="cert-card-title">Período a certificar</div>
+            <div class="cert-dates">
+              <div class="cert-date-field">
+                <label>Desde</label>
+                <input type="date" id="cert-desde" class="cert-date-input">
+              </div>
+              <div class="cert-arrow">→</div>
+              <div class="cert-date-field">
+                <label>Hasta</label>
+                <input type="date" id="cert-hasta" class="cert-date-input">
+              </div>
+            </div>
+            <button class="cert-verify-btn" id="btn-preview-cert">🔍 Verificar rango</button>
+            <div class="cert-stats" id="cert-preview-box" style="display:none;">
+              <div class="cert-stat ok"><div class="num" id="cert-aprobadas-v">—</div><div class="lbl">Ventas OK</div></div>
+              <div class="cert-stat ok"><div class="num" id="cert-aprobadas-j">—</div><div class="lbl">Jornadas OK</div></div>
+              <div class="cert-stat pend"><div class="num" id="cert-pendientes">—</div><div class="lbl">Pendientes</div></div>
+            </div>
           </div>
+          <button class="cert-download-btn" id="btn-descargar-cert">📥 Descargar certificación</button>
+          <p class="cert-note">Solo se incluyen registros <strong>aprobados</strong> dentro del rango seleccionado.</p>
         </div>
-        <button class="btn btn-primary btn-icon" id="btn-descargar-cert">
-          📥 DESCARGAR CERTIFICACIÓN
-        </button>
-        <p class="loading-msg" style="font-size:.78rem;margin-top:8px;">
-          Solo se incluyen registros <strong>aprobados</strong> dentro del rango seleccionado.
-        </p>
       </div>
 
       <div class="tab-panel" id="tab-equipos">
@@ -1586,52 +1709,62 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="tab-ventas-tab">
-        <div class="filtros-row">
-          <div class="form-group">
-            <label>Mes</label>
-            <select id="filtro-mes-ventas"><option value="">Mes actual</option></select>
-          </div>
-          <div class="form-group">
-            <label>Técnico</label>
-            <select id="filtro-tecnico-ventas"><option value="">Todos</option></select>
-          </div>
-          <div class="form-group">
-            <label>Estado</label>
-            <select id="filtro-estado-ventas">
-              <option value="">Todos</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Aprobada">Aprobada</option>
-              <option value="Rechazada">Rechazada</option>
-            </select>
-          </div>
+      <div class="tab-panel" id="tab-registros">
+        <!-- Pestañas internas Ventas | Jornadas -->
+        <div class="reg-tabs">
+          <button class="reg-tab active" data-reg-tab="ventas">Ventas</button>
+          <button class="reg-tab" data-reg-tab="jornadas">Jornadas</button>
         </div>
-        <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
-        <div class="data-table-wrap" id="ventas-admin-content"></div>
-      </div>
 
-      <div class="tab-panel" id="tab-jornadas-tab">
-        <div class="filtros-row">
-          <div class="form-group">
-            <label>Mes</label>
-            <select id="filtro-mes-jornadas"><option value="">Mes actual</option></select>
+        <!-- Sub-panel Ventas -->
+        <div class="reg-panel active" id="reg-panel-ventas">
+          <div class="filtros-row">
+            <div class="form-group">
+              <label>Mes</label>
+              <select id="filtro-mes-ventas"><option value="">Mes actual</option></select>
+            </div>
+            <div class="form-group">
+              <label>Técnico</label>
+              <select id="filtro-tecnico-ventas"><option value="">Todos</option></select>
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="filtro-estado-ventas">
+                <option value="">Todos</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aprobada">Aprobada</option>
+                <option value="Rechazada">Rechazada</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Técnico</label>
-            <select id="filtro-tecnico-jornadas"><option value="">Todos</option></select>
-          </div>
-          <div class="form-group">
-            <label>Estado</label>
-            <select id="filtro-estado-jornadas">
-              <option value="">Todos</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Aprobada">Aprobada</option>
-              <option value="Rechazada">Rechazada</option>
-            </select>
-          </div>
+          <div class="loading-msg" id="ventas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
+          <div class="data-table-wrap" id="ventas-admin-content"></div>
         </div>
-        <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
-        <div class="data-table-wrap" id="jornadas-admin-content"></div>
+
+        <!-- Sub-panel Jornadas -->
+        <div class="reg-panel" id="reg-panel-jornadas" style="display:none;">
+          <div class="filtros-row">
+            <div class="form-group">
+              <label>Mes</label>
+              <select id="filtro-mes-jornadas"><option value="">Mes actual</option></select>
+            </div>
+            <div class="form-group">
+              <label>Técnico</label>
+              <select id="filtro-tecnico-jornadas"><option value="">Todos</option></select>
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="filtro-estado-jornadas">
+                <option value="">Todos</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aprobada">Aprobada</option>
+                <option value="Rechazada">Rechazada</option>
+              </select>
+            </div>
+          </div>
+          <div class="loading-msg" id="jornadas-admin-loading" style="display:none;"><span class="spinner"></span>Cargando…</div>
+          <div class="data-table-wrap" id="jornadas-admin-content"></div>
+        </div>
       </div>
 
       <div class="tab-panel" id="tab-usuarios">
@@ -1861,9 +1994,10 @@ function actualizarIconoTema() {
   const isLight = document.body.classList.contains('light-mode');
   const emoji = isLight ? '☀️' : '🌙';
   document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
-    // El botón del sidebar lleva texto; los demás (si quedaran) solo el emoji
     if (btn.classList.contains('theme')) {
-      btn.textContent = emoji + (isLight ? ' Modo claro' : ' Modo oscuro');
+      // Botón del sidebar: mantener el span de ícono + texto
+      const txt = isLight ? ' Modo claro' : ' Modo oscuro';
+      btn.innerHTML = `<span class="foot-ic">${emoji}</span>${txt}`;
     } else {
       btn.textContent = emoji;
     }
@@ -2988,8 +3122,7 @@ function activarTabAdmin(tab) {
   tabsAdmin.add(tab);
   if (tab === 'certificacion') cargarCertificacion();
   if (tab === 'equipos') cargarEquiposAdmin();
-  if (tab === 'ventas-tab') cargarVentasAdmin();
-  if (tab === 'jornadas-tab') cargarJornadasAdmin();
+  if (tab === 'registros') cargarVentasAdmin();  // arranca en la pestaña Ventas
   if (tab === 'usuarios') cargarUsuarios();
 }
 
@@ -3006,6 +3139,23 @@ document.getElementById('admin-sidebar').addEventListener('click', e => {
   if (!btn) return;
   const tab = btn.dataset.sidebarTab;
   if (tab) activarTabAdmin(tab);
+});
+
+// Pestañas internas del menú Registros (Ventas | Jornadas)
+let registrosJornadasCargadas = false;
+document.querySelectorAll('.reg-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const cual = tab.dataset.regTab;
+    document.querySelectorAll('.reg-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('reg-panel-ventas').style.display   = cual === 'ventas'   ? 'block' : 'none';
+    document.getElementById('reg-panel-jornadas').style.display = cual === 'jornadas' ? 'block' : 'none';
+    // Cargar jornadas la primera vez que se abre esa pestaña
+    if (cual === 'jornadas' && !registrosJornadasCargadas) {
+      registrosJornadasCargadas = true;
+      cargarJornadasAdmin();
+    }
+  });
 });
 
 async function actualizarBadgePendientes() {
@@ -3065,12 +3215,18 @@ async function _fetchMesCache(mes) {
 function _calcMetricas(ventas, jornadas) {
   let ventasAprob = 0, comisionAprob = 0, comisionPend = 0;
   let jornadasAprob = 0, jornadasMonto = 0;
+  const equiposCount = {};  // conteo de unidades por equipo (solo aprobadas)
 
   ventas.forEach(v => {
     const f      = v.datos;
     const estado = String(f[12] || '').trim();
     const com    = Number(f[11]) || 0;
-    if (estado === 'Aprobada')        { ventasAprob++; comisionAprob += com; }
+    if (estado === 'Aprobada')        {
+      ventasAprob++; comisionAprob += com;
+      const equipo = String(f[6] || '').trim();
+      const cant   = Number(f[8]) || 1;
+      if (equipo) equiposCount[equipo] = (equiposCount[equipo] || 0) + cant;
+    }
     else if (estado === 'Pendiente')  { comisionPend += com; }
   });
 
@@ -3082,11 +3238,19 @@ function _calcMetricas(ventas, jornadas) {
     }
   });
 
+  // Equipo más vendido (nombre + cantidad) y total de unidades para la barra
+  let equipoTop = null, equipoTopCant = 0, totalUnidades = 0;
+  Object.entries(equiposCount).forEach(([nombre, cant]) => {
+    totalUnidades += cant;
+    if (cant > equipoTopCant) { equipoTop = nombre; equipoTopCant = cant; }
+  });
+
   return {
     ventasAprob, comisionAprob, comisionPend,
     ticketProm: ventasAprob > 0 ? Math.round(comisionAprob / ventasAprob) : 0,
     jornadasAprob,
-    ingresoTotal: comisionAprob + jornadasMonto
+    ingresoTotal: comisionAprob + jornadasMonto,
+    equipoTop, equipoTopCant, totalUnidades
   };
 }
 
@@ -3132,7 +3296,7 @@ function _buildPendBar(aprob, pend) {
       <div class="kpi-aprob-bar-fill" style="width:${pctPend}%"></div>
     </div>
     <div class="kpi-aprob-label">
-      <span>Aprob. ${formatoPesosCompacto(aprob)}</span>
+      <span>Aprob. ${formatoPesos(aprob)}</span>
       <span>${pctPend}% pend.</span>
     </div>`;
 }
@@ -3232,7 +3396,6 @@ function renderDashboard2(curr, prev) {
   renderDashEquipos(equiposCount);
   renderDashPago2(pagosCount);
   renderDashLocalidades(curr.ventas, curr.jornadas);
-  renderDashEstado(curr.ventas, curr.jornadas);
 }
 
 function renderDashKPIs2(curr, prev) {
@@ -3253,21 +3416,31 @@ function renderDashKPIs2(curr, prev) {
       formato: v => v,                          color: 'var(--accent)',
       extra: _sparklineSVG(hist(x => x.ventasAprob),   'var(--accent)') },
     { label: 'Comisión aprobada', value: m.comisionAprob, prev: p.comisionAprob,
-      formato: v => formatoPesosCompacto(v),    color: 'var(--accent)',
+      formato: v => formatoPesos(v),            color: 'var(--accent)',
       extra: _sparklineSVG(hist(x => x.comisionAprob), 'var(--accent)') },
     { label: 'Comisión pendiente',value: m.comisionPend,  prev: p.comisionPend,
-      formato: v => formatoPesosCompacto(v),    color: 'var(--warning)',
+      formato: v => formatoPesos(v),            color: 'var(--warning)',
       extra: _buildPendBar(m.comisionAprob, m.comisionPend) },
     { label: 'Ticket promedio',   value: m.ticketProm,    prev: p.ticketProm,
-      formato: v => v > 0 ? formatoPesosCompacto(v) : '—', color: 'var(--muted)',
+      formato: v => v > 0 ? formatoPesos(v) : '—', color: 'var(--muted)',
       extra: _sparklineSVG(hist(x => x.ticketProm),    'var(--muted)') },
-    { label: 'Tickets jornada',   value: m.jornadasAprob, prev: p.jornadasAprob,
-      formato: v => v,                          color: 'var(--success)',
-      extra: _sparklineSVG(hist(x => x.jornadasAprob), 'var(--success)') },
     { label: 'Ingreso total zona',value: m.ingresoTotal,  prev: p.ingresoTotal,
-      formato: v => formatoPesosCompacto(v),    color: 'var(--violet)',
+      formato: v => formatoPesos(v),            color: 'var(--violet)',
       extra: _sparklineSVG(hist(x => x.ingresoTotal),  'var(--violet)') }
   ];
+
+  // Card especial "Equipo más vendido" (nombre + cantidad, formato distinto)
+  const pctBarra = m.totalUnidades > 0 ? Math.round(m.equipoTopCant / m.totalUnidades * 100) : 0;
+  const cardEquipo = `
+    <div class="kpi-card">
+      <div class="kpi-bar-top" style="background:var(--success);"></div>
+      <div class="kpi-label">Equipo más vendido</div>
+      ${m.equipoTop ? `
+        <div class="kpi-equipo-nombre">${m.equipoTop}</div>
+        <div class="kpi-equipo-cant"><span class="num">${m.equipoTopCant}</span> ${m.equipoTopCant === 1 ? 'unidad' : 'unidades'}</div>
+        <div class="kpi-equipo-bar"><div class="kpi-equipo-bar-fill" style="width:${pctBarra}%;"></div></div>
+      ` : `<div class="kpi-equipo-nombre" style="color:var(--muted);">Sin ventas</div>`}
+    </div>`;
 
   document.getElementById('dash-kpis').innerHTML = kpis.map(k => `
     <div class="kpi-card">
@@ -3276,7 +3449,7 @@ function renderDashKPIs2(curr, prev) {
       <div class="kpi-value" style="color:${k.color};">${k.formato(k.value)}</div>
       ${_badge(k.value, k.prev)}
       ${k.extra}
-    </div>`).join('');
+    </div>`).join('') + cardEquipo;
 }
 
 function renderDashRanking2(tecData) {
@@ -3288,8 +3461,9 @@ function renderDashRanking2(tecData) {
     .sort((a, b) => b.total - a.total);
 
   if (!ranking.length) {
-    document.getElementById('dash-podio').innerHTML   = '';
-    document.getElementById('dash-ranking').innerHTML = '<div class="mr-empty">Sin datos aprobados</div>';
+    document.getElementById('dash-podio').innerHTML   = '<div class="mr-empty">Sin datos aprobados</div>';
+    const tablaEl = document.getElementById('dash-ranking');
+    if (tablaEl) tablaEl.innerHTML = '';
     return;
   }
 
@@ -3298,7 +3472,7 @@ function renderDashRanking2(tecData) {
   const podioOrden = top3.length >= 2
     ? [top3[1], top3[0], top3[2]].filter(Boolean)
     : top3;
-  const alturas = [70, 100, 56];   // px de plataforma: plata, oro, bronce
+  const alturas = [66, 90, 50];   // px de plataforma: plata, oro, bronce
   const colores  = ['var(--silver)', 'var(--gold)', 'var(--bronze)'];
   const emojis   = ['🥈', '🥇', '🥉'];
 
@@ -3309,31 +3483,14 @@ function renderDashRanking2(tecData) {
           <div class="podio-name" title="${d.nombre}">${d.nombre}</div>
           <div class="podio-platform" style="height:${alturas[vi]}px; background:${colores[vi]};">
             <div class="podio-pos">${emojis[vi]}</div>
-            <div class="podio-total">${formatoPesosCompacto(d.total)}</div>
+            <div class="podio-total">${formatoPesos(d.total)}</div>
           </div>
         </div>`).join('')}
     </div>`;
 
-  // Tabla del 4to en adelante
-  const resto = ranking.slice(3);
-  document.getElementById('dash-ranking').innerHTML = resto.length ? `
-    <table class="rank-table">
-      <thead><tr>
-        <th></th><th>Técnico</th>
-        <th style="text-align:right">Ventas</th>
-        <th style="text-align:right">Jornadas</th>
-        <th style="text-align:right">Total</th>
-      </tr></thead>
-      <tbody>${resto.map((d, i) => `
-        <tr>
-          <td class="rt-pos">${i + 4}</td>
-          <td class="rt-name">${d.nombre}</td>
-          <td class="rt-val" style="color:var(--accent);">${formatoPesosCompacto(d.comisiones)}</td>
-          <td class="rt-val" style="color:var(--success);">${formatoPesosCompacto(d.jornadas)}</td>
-          <td class="rt-val">${formatoPesosCompacto(d.total)}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table>` : '';
+  // Tabla del 4to en adelante eliminada (ranking solo top 3)
+  const tablaEl = document.getElementById('dash-ranking');
+  if (tablaEl) tablaEl.innerHTML = '';
 }
 
 function renderDashEquipos(equiposCount) {
@@ -3454,9 +3611,14 @@ async function cargarAprobaciones() {
   _recargarAprobData();
 }
 
+// Guarda los pendientes crudos para refiltrar sin volver a pedir al backend
+let _aprobVentasRaw = [], _aprobJornadasRaw = [];
+let aprobFiltroTipo = 'todo';
+
 async function _recargarAprobData() {
   const loading = document.getElementById('aprob-loading');
   const content = document.getElementById('aprob-content');
+  const filtros = document.getElementById('aprob-filtros');
   loading.style.display = 'block';
   content.style.display = 'none';
 
@@ -3464,69 +3626,163 @@ async function _recargarAprobData() {
     const params = { accion: 'obtenerPendientes' };
     if (aprobMesActual) params.mes = aprobMesActual;
     const data = await api(params);
-    if (data.ok) renderAprobaciones(data.ventas || [], data.jornadas || []);
+    if (data.ok) {
+      _aprobVentasRaw   = data.ventas   || [];
+      _aprobJornadasRaw = data.jornadas || [];
+      _poblarFiltrosAprob();
+      filtros.style.display = 'flex';
+      renderAprobaciones();
+    }
   } catch(e) {} finally {
     loading.style.display = 'none';
     content.style.display = 'block';
   }
 }
 
-function renderAprobaciones(ventas, jornadas) {
-  document.getElementById('aprob-ventas-count').textContent = ventas.length;
-  document.getElementById('aprob-jornadas-count').textContent = jornadas.length;
+// Llena los selects de técnico y localidad a partir de los pendientes
+function _poblarFiltrosAprob() {
+  const tecnicos = new Set(), localidades = new Set();
+  _aprobVentasRaw.forEach(v => {
+    if (v.datos[4]) tecnicos.add(v.datos[4]);
+    if (v.datos[10]) tecnicos.add(v.datos[10]); // compañero de dupla
+    if (v.datos[2]) localidades.add(v.datos[2]);
+  });
+  _aprobJornadasRaw.forEach(j => {
+    if (j.datos[5]) tecnicos.add(j.datos[5]);
+    if (j.datos[3]) localidades.add(j.datos[3]);
+  });
+  const selTec = document.getElementById('aprob-filtro-tecnico');
+  const selLoc = document.getElementById('aprob-filtro-localidad');
+  const tecActual = selTec.value, locActual = selLoc.value;
+  selTec.innerHTML = '<option value="">Todos los técnicos</option>' +
+    [...tecnicos].sort().map(t => `<option>${t}</option>`).join('');
+  selLoc.innerHTML = '<option value="">Todas las localidades</option>' +
+    [...localidades].sort().map(l => `<option>${l}</option>`).join('');
+  selTec.value = tecActual; selLoc.value = locActual;
+}
 
+function renderAprobaciones() {
+  const fTec = document.getElementById('aprob-filtro-tecnico').value;
+  const fLoc = document.getElementById('aprob-filtro-localidad').value;
+
+  // Filtrado en frontend
+  let ventas   = _aprobVentasRaw.filter(v => {
+    const f = v.datos;
+    const dupla = String(f[9]).toLowerCase().startsWith('s');
+    const tecOk = !fTec || f[4] === fTec || (dupla && f[10] === fTec);
+    const locOk = !fLoc || f[2] === fLoc;
+    return tecOk && locOk;
+  });
+  let jornadas = _aprobJornadasRaw.filter(j => {
+    const f = j.datos;
+    const tecOk = !fTec || f[5] === fTec;
+    const locOk = !fLoc || f[3] === fLoc;
+    return tecOk && locOk;
+  });
+  if (aprobFiltroTipo === 'ventas')   jornadas = [];
+  if (aprobFiltroTipo === 'jornadas') ventas   = [];
+
+  // Iniciales para el avatar
+  const iniciales = (n) => {
+    const p = String(n || '').trim().split(/\s+/);
+    return ((p[0]?.[0] || '') + (p[1]?.[0] || '')).toUpperCase() || '?';
+  };
+
+  // === Ventas ===
+  document.getElementById('aprob-ventas-count').textContent = ventas.length;
   const contV = document.getElementById('aprob-ventas-lista');
+  const secVentas = contV.previousElementSibling;
+  if (secVentas) secVentas.style.display = aprobFiltroTipo === 'jornadas' ? 'none' : '';
   if (!ventas.length) {
-    contV.innerHTML = '<div class="loading-msg">No hay ventas pendientes</div>';
+    contV.innerHTML = aprobFiltroTipo === 'jornadas' ? '' : '<div class="loading-msg">No hay ventas pendientes</div>';
   } else {
-    let html = '';
-    ventas.forEach(v => {
+    contV.innerHTML = ventas.map(v => {
       const f = v.datos;
       const dupla = String(f[9]).toLowerCase().startsWith('s');
-      html += `<div class="approval-card">
-        <div class="approval-card-row principal">
-          <span>${f[4]}${dupla ? ' + ' + f[10] : ''}</span>
-          <span style="color:var(--accent);">${formatoPesos(f[11])}</span>
+      const quien = `${f[4]}${dupla ? ' + ' + f[10] : ''}`;
+      return `<div class="ap-card">
+        <div class="ap-left">
+          <div class="ap-card-head">
+            <div class="ap-avatar">🤝</div>
+            <div class="ap-who-text">
+              <div class="name">${quien}</div>
+              <div class="meta">${dupla ? 'Dupla' : 'Individual'} · ${f[2]}</div>
+            </div>
+          </div>
+          <div class="ap-card-body">
+            <div class="ap-field"><div class="k">Equipo</div><div class="v">${f[6]}</div></div>
+            <div class="ap-field"><div class="k">Cliente</div><div class="v">${f[5] || '—'}</div></div>
+            <div class="ap-field"><div class="k">Móvil</div><div class="v">${f[3]}</div></div>
+            <div class="ap-field"><div class="k">Pago</div><div class="v">${f[7]}</div></div>
+            <div class="ap-field"><div class="k">Fecha</div><div class="v">${f[0]}</div></div>
+          </div>
         </div>
-        <div class="approval-card-row"><span class="label">Equipo</span><span class="value">${f[6]}</span></div>
-        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${f[5] || '—'}</span></div>
-        <div class="approval-card-row"><span class="label">Localidad / Móvil</span><span class="value">${f[2]} / ${f[3]}</span></div>
-        <div class="approval-card-row"><span class="label">Pago</span><span class="value">${f[7]}</span></div>
-        <div class="approval-card-row"><span class="label">Fecha</span><span class="value">${f[0]}</span></div>
-        <div class="approval-actions">
-          <button class="btn btn-success" onclick="aprobar('venta', ${v.fila})">✓ APROBAR</button>
-          <button class="btn btn-danger" onclick="aprobar('venta', ${v.fila}, true)">✕ RECHAZAR</button>
+        <div class="ap-right">
+          <div class="ap-amount">
+            <div class="val">${formatoPesos(f[11])}</div>
+            <div class="lbl">Comisión</div>
+          </div>
+          <div class="ap-btns">
+            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('venta', ${v.fila})">✓</button>
+            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('venta', ${v.fila}, true)">✕</button>
+          </div>
         </div>
       </div>`;
-    });
-    contV.innerHTML = html;
+    }).join('');
   }
 
+  // === Jornadas ===
+  document.getElementById('aprob-jornadas-count').textContent = jornadas.length;
   const contJ = document.getElementById('aprob-jornadas-lista');
+  const secJornadas = contJ.previousElementSibling;
+  if (secJornadas) secJornadas.style.display = aprobFiltroTipo === 'ventas' ? 'none' : '';
   if (!jornadas.length) {
-    contJ.innerHTML = '<div class="loading-msg">No hay jornadas pendientes</div>';
+    contJ.innerHTML = aprobFiltroTipo === 'ventas' ? '' : '<div class="loading-msg">No hay jornadas pendientes</div>';
   } else {
-    let html = '';
-    jornadas.forEach(j => {
+    contJ.innerHTML = jornadas.map(j => {
       const f = j.datos;
-      html += `<div class="approval-card">
-        <div class="approval-card-row principal">
-          <span>${f[5]}</span>
-          <span style="color:var(--accent);">${formatoPesos(f[8])}</span>
+      return `<div class="ap-card">
+        <div class="ap-left">
+          <div class="ap-card-head">
+            <div class="ap-avatar jor">📅</div>
+            <div class="ap-who-text">
+              <div class="name">${f[5]}</div>
+              <div class="meta">${f[2]} · ${f[3]}</div>
+            </div>
+          </div>
+          <div class="ap-card-body">
+            <div class="ap-field"><div class="k">Categoría</div><div class="v">${f[7]}</div></div>
+            <div class="ap-field"><div class="k">Cliente</div><div class="v">${f[6] || '—'}</div></div>
+            <div class="ap-field"><div class="k">Móvil</div><div class="v">${f[4]}</div></div>
+            <div class="ap-field"><div class="k">Día</div><div class="v">${f[0]} (${f[2]})</div></div>
+          </div>
         </div>
-        <div class="approval-card-row"><span class="label">Categoría</span><span class="value">${f[7]}</span></div>
-        <div class="approval-card-row"><span class="label">Cliente</span><span class="value">${f[6] || '—'}</span></div>
-        <div class="approval-card-row"><span class="label">Localidad / Móvil</span><span class="value">${f[3]} / ${f[4]}</span></div>
-        <div class="approval-card-row"><span class="label">Día</span><span class="value">${f[0]} (${f[2]})</span></div>
-        <div class="approval-actions">
-          <button class="btn btn-success" onclick="aprobar('jornada', ${j.fila})">✓ APROBAR</button>
-          <button class="btn btn-danger" onclick="aprobar('jornada', ${j.fila}, true)">✕ RECHAZAR</button>
+        <div class="ap-right">
+          <div class="ap-amount">
+            <div class="val">${formatoPesos(f[8])}</div>
+            <div class="lbl">Precio ticket</div>
+          </div>
+          <div class="ap-btns">
+            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('jornada', ${j.fila})">✓</button>
+            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('jornada', ${j.fila}, true)">✕</button>
+          </div>
         </div>
       </div>`;
-    });
-    contJ.innerHTML = html;
+    }).join('');
   }
 }
+
+// Listeners de filtros de aprobaciones
+document.getElementById('aprob-tipo-toggle').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-tipo]');
+  if (!btn) return;
+  aprobFiltroTipo = btn.dataset.tipo;
+  document.querySelectorAll('#aprob-tipo-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAprobaciones();
+});
+document.getElementById('aprob-filtro-tecnico').addEventListener('change', renderAprobaciones);
+document.getElementById('aprob-filtro-localidad').addEventListener('change', renderAprobaciones);
 
 let aprobacionEnCurso = null;
 
@@ -3658,7 +3914,7 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
   const fechaHasta = isoADisplay(hastaISO);
 
   const btn = document.getElementById('btn-descargar-cert');
-  btn.textContent = '⏳ GENERANDO…';
+  btn.textContent = '⏳ Generando…';
   btn.disabled = true;
 
   try {
@@ -3693,7 +3949,7 @@ document.getElementById('btn-descargar-cert').addEventListener('click', async ()
   } catch(e) {
     toast('Error de conexión', 'error');
   } finally {
-    btn.textContent = '📥 DESCARGAR CERTIFICACIÓN';
+    btn.textContent = '📥 Descargar certificación';
     btn.disabled = false;
   }
 });
@@ -4329,7 +4585,7 @@ document.getElementById('btn-preview-cert').addEventListener('click', async () =
   const hastaISO = document.getElementById('cert-hasta').value;
   if (!desdeISO || !hastaISO) { toast('Seleccioná el rango de fechas', 'error'); return; }
   const btn = document.getElementById('btn-preview-cert');
-  btn.textContent = '⏳ VERIFICANDO…';
+  btn.textContent = '⏳ Verificando…';
   btn.disabled = true;
   function isoADisplay(iso) { const [y, m, d] = iso.split('-'); return d + '/' + m + '/' + y; }
   try {
@@ -4347,11 +4603,11 @@ document.getElementById('btn-preview-cert').addEventListener('click', async () =
     document.getElementById('cert-aprobadas-v').textContent = aprobV;
     document.getElementById('cert-aprobadas-j').textContent = aprobJ;
     document.getElementById('cert-pendientes').textContent  = pend;
-    document.getElementById('cert-preview-box').style.display = 'block';
+    document.getElementById('cert-preview-box').style.display = 'grid';
   } catch(e) {
     toast('Error al verificar', 'error');
   } finally {
-    btn.textContent = '🔍 VERIFICAR RANGO';
+    btn.textContent = '🔍 Verificar rango';
     btn.disabled = false;
   }
 });
