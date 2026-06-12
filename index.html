@@ -30,17 +30,38 @@
       --font-body:   'Inter', sans-serif;
     }
 
-    /* ===== MODO CLARO ===== */
+    /* ===== MODO CLARO (moderno) ===== */
     body.light-mode {
-      --bg:          #f0f4f8;
+      --bg:          #eef2f7;
       --surface:     #ffffff;
-      --card:        #ffffff;
-      --border:      #d0d7de;
-      --border-soft: #d0d7de;
-      --text:        #1c2128;
-      --muted:       #57606a;
+      --card:        #f7f9fc;
+      --border:      #e2e8f0;
+      --border-soft: #eceff4;
+      --text:        #1a2233;
+      --muted:       #64748b;
+      --accent:      #2563eb;
+      --accent2:     #7c3aed;
+      --violet:      #7c3aed;
+      --success:     #16a34a;
+      --danger:      #dc2626;
+      --warning:     #d97706;
+      --gold:        #d4a017;
+      --silver:      #94a3b8;
+      --bronze:      #b06a35;
+      /* panel izquierdo del login: degradé suave en vez de negro */
+      --login-left-bg: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
     }
-    /* accent, success, danger, warning, gold, silver, bronze, violet sin cambios en modo claro */
+    /* Sombras un poco más marcadas en claro para dar profundidad moderna */
+    body.light-mode .dash-section,
+    body.light-mode .hero-main,
+    body.light-mode .mini-card,
+    body.light-mode .kpi-card,
+    body.light-mode .ap-card,
+    body.light-mode .user-card,
+    body.light-mode .cert-card {
+      box-shadow: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+    }
+    body.light-mode .login-card { box-shadow: 0 8px 40px rgba(15,23,42,.16); }
 
     /* ===== BOTÓN TEMA ===== */
     .btn-theme-toggle {
@@ -60,7 +81,7 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      height: 100%;
+      min-height: 100%;
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
@@ -68,7 +89,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    #app { min-height: 100vh; display: flex; flex-direction: column; }
+    #app { min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; }
 
     .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn .25s ease; }
     .screen.active { display: flex; }
@@ -86,7 +107,7 @@
       line-height: 1;
     }
     .logo-text .ss { color: var(--accent); }
-    .logo-text .servicios { color: #fff; }
+    .logo-text .servicios { color: var(--text); }
     .logo-icon-big { width: 54px; height: 54px; }
     .logo-text-big { font-size: 2.1rem; letter-spacing: 0; }
 
@@ -144,7 +165,7 @@
     }
     .login-left {
       flex: 1;
-      background: #0d1117;
+      background: var(--login-left-bg, #0d1117);
       display: flex; align-items: center; justify-content: center;
       padding: 48px 32px;
       border-right: 1px solid var(--border);
@@ -989,7 +1010,7 @@
     .mes-picker-item.selected { color: var(--accent); font-weight: 600; }
 
     /* ===== ADMIN DESKTOP (> 1024px) ===== */
-    .admin-body { flex: 1; display: flex; min-height: 0; overflow: hidden; }
+    .admin-body { flex: 1; display: flex; min-height: 0; overflow: hidden; background: var(--bg); }
     .admin-sidebar {
       display: none;
       width: 210px; flex-shrink: 0;
@@ -1936,11 +1957,13 @@ function toggleTheme() {
 
 function actualizarIconoTema() {
   const isLight = document.body.classList.contains('light-mode');
-  const emoji = isLight ? '☀️' : '🌙';
+  // El botón indica la ACCIÓN que hará al apretarlo:
+  // si estoy en claro, ofrece pasar a oscuro (🌙); si estoy en oscuro, ofrece pasar a claro (☀️)
+  const emoji = isLight ? '🌙' : '☀️';
   document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
     if (btn.classList.contains('theme')) {
       // Botón del sidebar: mantener el span de ícono + texto
-      const txt = isLight ? ' Modo claro' : ' Modo oscuro';
+      const txt = isLight ? ' Modo oscuro' : ' Modo claro';
       btn.innerHTML = `<span class="foot-ic">${emoji}</span>${txt}`;
     } else {
       btn.textContent = emoji;
@@ -4470,6 +4493,27 @@ function cerrarSesion() {
   session.movil = '';
   session.zona  = '';
   session.rol   = '';
+
+  // Limpiar TODAS las cachés y estado para que el próximo usuario no vea datos del anterior
+  dashHistorialCache    = {};
+  dashMesActual         = '';
+  dashMesesDisponibles  = [];
+  ventasAdminCache      = [];
+  mrDatosCache          = { ventas: [], jornadas: [] };
+  mrMesActual           = '';
+  aprobMesActual        = '';
+  _aprobVentasRaw       = [];
+  _aprobJornadasRaw     = [];
+  registrosJornadasCargadas = false;
+  tabsAdmin.clear();
+  // Catálogos que dependen de la zona también se recargan al volver a entrar
+  equiposCatalogo = [];
+  tecnicosLista   = [];
+
+  // Resetear el picker de mes del topbar para que se reconstruya en el próximo login
+  const mesWrap = document.getElementById('dash-mes-picker-wrap');
+  if (mesWrap) { mesWrap.innerHTML = ''; mesWrap.style.display = 'none'; }
+
   document.getElementById('pin-input').value = '';
   document.getElementById('login-tecnico').value = '';
   document.getElementById('login-error').textContent = '';
