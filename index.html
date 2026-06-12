@@ -3323,8 +3323,8 @@ async function _recargarDashData() {
     content.style.display = 'block';
     renderDashboard2(curr, prev);
 
-    // Background: cargar los meses faltantes para sparklines (hasta 6 en total)
-    const mesesHist = dashMesesDisponibles.slice(0, 6);
+    // Background: cargar los meses faltantes para sparklines (hasta 4, alivia el tráfico)
+    const mesesHist = dashMesesDisponibles.slice(0, 4);
     const faltantes = mesesHist.filter(m => !dashHistorialCache[m]);
     if (faltantes.length) {
       Promise.all(faltantes.map(m => _fetchMesCache(m))).then(() => {
@@ -3376,7 +3376,7 @@ function renderDashKPIs2(curr, prev) {
   const p = _calcMetricas(prev.ventas, prev.jornadas);
 
   // Serie histórica para sparklines: meses de más antiguo a más nuevo (hasta 6)
-  const mesesOrdenados = [...dashMesesDisponibles].reverse().slice(-6);
+  const mesesOrdenados = [...dashMesesDisponibles].reverse().slice(-4);
   const hist = extractor => mesesOrdenados
     .filter(mes => dashHistorialCache[mes])
     .map(mes => extractor(_calcMetricas(
