@@ -249,27 +249,29 @@
     .greeting span { color: var(--accent); }
     .greeting-sub { color: var(--muted); font-size: .85rem; margin-bottom: 22px; }
 
-    .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
-    .resumen-card {
-      background: var(--surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 14px 12px;
+    /* ===== Resumen por período de cobro (ciclo 19-al-18) ===== */
+    .periodo-bloque { margin-bottom: 14px; }
+    .periodo-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+    .periodo-titulo { font-size: .95rem; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+    .periodo-rango { font-size: .72rem; color: var(--muted); }
+    /* A cobrar: destacado en verde */
+    .bloque-cobrar {
+      background: linear-gradient(135deg, rgba(63,185,80,.12), rgba(63,185,80,.04));
+      border: 1px solid rgba(63,185,80,.3); border-radius: 14px; padding: 18px;
     }
-    .resumen-card.full { grid-column: 1 / -1; }
-    .resumen-card .rc-label {
-      font-size: .72rem; font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase; letter-spacing: .06em;
-      margin-bottom: 4px;
-    }
-    .resumen-card .rc-value {
-      font-family: var(--font-head);
-      font-size: 1.6rem; font-weight: 300;
-      color: var(--accent); line-height: 1;
-    }
-    .resumen-card .rc-value.secondary { color: var(--accent2); }
-    .resumen-card .rc-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+    .bloque-cobrar .periodo-titulo { color: var(--success); }
+    .cobrar-total { font-family: var(--font-head); font-size: 2.1rem; font-weight: 300; color: var(--success); line-height: 1; margin: 6px 0 14px; }
+    /* Acumulando: sobrio en azul */
+    .bloque-acum { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+    .bloque-acum .periodo-titulo { color: var(--accent); }
+    .acum-total { font-family: var(--font-head); font-size: 1.7rem; font-weight: 300; color: var(--accent); line-height: 1; margin: 6px 0 14px; }
+    .acum-nota { font-size: .7rem; color: var(--muted); font-style: italic; margin-top: 10px; }
+    /* Mini datos dentro de cada bloque */
+    .mini-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .mini-grid .mini { background: rgba(255,255,255,.03); border-radius: 8px; padding: 9px 8px; text-align: center; }
+    .mini-grid .mini .v { font-family: var(--font-head); font-size: 1.05rem; font-weight: 500; }
+    .mini-grid .mini .l { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+    #resumen-periodos { margin-bottom: 24px; }
 
     .pendientes-banner {
       background: rgba(243, 156, 18, 0.12);
@@ -1248,30 +1250,38 @@
         ⏳ <span id="pendientes-text"></span>
       </div>
 
-      <div class="resumen-grid" id="resumen-grid">
-        <div class="resumen-card">
-          <div class="rc-label">Comisiones</div>
-          <div class="rc-value" id="rs-comisiones">—</div>
-          <div class="rc-sub">aprobadas</div>
+      <!-- Resumen por período de cobro (ciclo 19-al-18) -->
+      <div id="resumen-periodos">
+        <!-- A COBRAR (período cerrado) -->
+        <div class="periodo-bloque">
+          <div class="bloque-cobrar">
+            <div class="periodo-head">
+              <div class="periodo-titulo">💰 A cobrar</div>
+              <div class="periodo-rango" id="cobrar-rango">—</div>
+            </div>
+            <div class="cobrar-total" id="cobrar-total">—</div>
+            <div class="mini-grid">
+              <div class="mini"><div class="v" id="cobrar-ventas">—</div><div class="l">Ventas</div></div>
+              <div class="mini"><div class="v" id="cobrar-jornadas">—</div><div class="l">Jornadas</div></div>
+              <div class="mini"><div class="v" id="cobrar-produccion">—</div><div class="l">Producción</div></div>
+            </div>
+          </div>
         </div>
-        <div class="resumen-card">
-          <div class="rc-label">Ventas</div>
-          <div class="rc-value secondary" id="rs-ventas">—</div>
-          <div class="rc-sub">aprobadas</div>
-        </div>
-        <div class="resumen-card">
-          <div class="rc-label">Jornadas</div>
-          <div class="rc-value secondary" id="rs-jornadas">—</div>
-          <div class="rc-sub">tickets aprobados</div>
-        </div>
-        <div class="resumen-card">
-          <div class="rc-label">Producción</div>
-          <div class="rc-value" id="rs-produccion">—</div>
-          <div class="rc-sub">por jornadas</div>
-        </div>
-        <div class="resumen-card full" id="rs-equipo-card">
-          <div class="rc-label">Equipo + vendido</div>
-          <div class="rc-value" style="font-size:1.2rem;" id="rs-equipo">—</div>
+        <!-- ACUMULANDO (período en curso) -->
+        <div class="periodo-bloque">
+          <div class="bloque-acum">
+            <div class="periodo-head">
+              <div class="periodo-titulo">📈 Acumulando</div>
+              <div class="periodo-rango" id="acum-rango">—</div>
+            </div>
+            <div class="acum-total" id="acum-total">—</div>
+            <div class="mini-grid">
+              <div class="mini"><div class="v" id="acum-ventas">—</div><div class="l">Ventas</div></div>
+              <div class="mini"><div class="v" id="acum-jornadas">—</div><div class="l">Jornadas</div></div>
+              <div class="mini"><div class="v" id="acum-produccion">—</div><div class="l">Producción</div></div>
+            </div>
+            <div class="acum-nota" id="acum-nota">Período en curso, sigue sumando</div>
+          </div>
         </div>
       </div>
 
@@ -2097,6 +2107,46 @@ function formatoPesos(n) {
   return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
+// Calcula los dos períodos de cobro del ciclo 19-al-18.
+// Corte fijo el día 19. Devuelve fechas en formato dd/mm/aaaa para el backend.
+function calcularPeriodosCobro() {
+  const DIA_CORTE = 19;
+  const hoy = new Date();
+  const fmt = (d) => {
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}/${mm}/${d.getFullYear()}`;
+  };
+  const fmtCorto = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+
+  // El período EN CURSO arranca el día 19 del mes actual o del anterior,
+  // según si hoy ya pasó el 19 o no.
+  let inicioActual;
+  if (hoy.getDate() >= DIA_CORTE) {
+    inicioActual = new Date(hoy.getFullYear(), hoy.getMonth(), DIA_CORTE);
+  } else {
+    inicioActual = new Date(hoy.getFullYear(), hoy.getMonth() - 1, DIA_CORTE);
+  }
+  // Fin del período en curso: 18 del mes siguiente al inicio
+  const finActual = new Date(inicioActual.getFullYear(), inicioActual.getMonth() + 1, DIA_CORTE - 1);
+
+  // El período CERRADO (a cobrar) es el inmediatamente anterior
+  const inicioCerrado = new Date(inicioActual.getFullYear(), inicioActual.getMonth() - 1, DIA_CORTE);
+  const finCerrado    = new Date(inicioActual.getFullYear(), inicioActual.getMonth(), DIA_CORTE - 1);
+
+  return {
+    cobrar: {
+      desde: fmt(inicioCerrado), hasta: fmt(finCerrado),
+      label: `${fmtCorto(inicioCerrado)} – ${fmtCorto(finCerrado)}`
+    },
+    acum: {
+      desde: fmt(inicioActual), hasta: fmt(finActual),
+      label: `${fmtCorto(inicioActual)} – ${fmtCorto(finActual)}`,
+      hastaCorto: fmtCorto(finActual)
+    }
+  };
+}
+
 function mesActualNombre() {
   return new Date().toLocaleString('es-AR', { month: 'long', year: 'numeric' });
 }
@@ -2244,14 +2294,35 @@ async function cargarMenuPrincipal() {
   mostrarPantalla('menu');
 
   try {
+    // Calcular los dos períodos de cobro (ciclo con corte el día 19)
+    const periodos = calcularPeriodosCobro();
+
+    // Pedir ambos resúmenes en paralelo
+    const [cerrado, encurso] = await Promise.all([
+      api({ accion: 'obtenerResumenRango', tecnico: session.usuario,
+            fechaDesde: periodos.cobrar.desde, fechaHasta: periodos.cobrar.hasta }),
+      api({ accion: 'obtenerResumenRango', tecnico: session.usuario,
+            fechaDesde: periodos.acum.desde,  fechaHasta: periodos.acum.hasta })
+    ]);
+
+    // Bloque "A cobrar" (período cerrado)
+    document.getElementById('cobrar-rango').textContent      = periodos.cobrar.label;
+    document.getElementById('cobrar-total').textContent      = formatoPesos((cerrado.totalComision || 0) + (cerrado.totalJornadas || 0));
+    document.getElementById('cobrar-ventas').textContent     = cerrado.cantidadVentas ?? 0;
+    document.getElementById('cobrar-jornadas').textContent   = cerrado.cantidadJornadas ?? 0;
+    document.getElementById('cobrar-produccion').textContent = formatoPesos(cerrado.totalJornadas || 0);
+
+    // Bloque "Acumulando" (período en curso)
+    document.getElementById('acum-rango').textContent      = periodos.acum.label;
+    document.getElementById('acum-total').textContent      = formatoPesos((encurso.totalComision || 0) + (encurso.totalJornadas || 0));
+    document.getElementById('acum-ventas').textContent     = encurso.cantidadVentas ?? 0;
+    document.getElementById('acum-jornadas').textContent   = encurso.cantidadJornadas ?? 0;
+    document.getElementById('acum-produccion').textContent = formatoPesos(encurso.totalJornadas || 0);
+    document.getElementById('acum-nota').textContent       = `Período en curso, sigue sumando hasta el ${periodos.acum.hastaCorto}`;
+
+    // Banner de pendientes: lo pedimos del mes actual (sigue siendo útil como aviso)
     const data = await api({ accion: 'obtenerResumen', tecnico: session.usuario });
     if (data.ok) {
-      document.getElementById('rs-comisiones').textContent = formatoPesos(data.totalComision);
-      document.getElementById('rs-ventas').textContent = data.cantidadVentas ?? '0';
-      document.getElementById('rs-jornadas').textContent = data.cantidadJornadas ?? '0';
-      document.getElementById('rs-produccion').textContent = formatoPesos(data.totalJornadas);
-      document.getElementById('rs-equipo').textContent = data.equipoTop || '—';
-
       const totalPend = (data.pendientesV || 0) + (data.pendientesJ || 0);
       const banner = document.getElementById('pendientes-banner');
       if (totalPend > 0) {
