@@ -1598,7 +1598,7 @@
               <div id="dash-podio"></div>
             </div>
             <div class="dash-section">
-              <div class="dash-section-title">Producción por localidad</div>
+              <div class="dash-section-title">Producción (comisión) por localidad</div>
               <div id="dash-localidades"></div>
             </div>
           </div>
@@ -3218,8 +3218,11 @@ function normalizarMeses(mesesData) {
 }
 
 // Trae los datos de un mes y los guarda en caché para no repetir la petición
-async function _fetchMesCache(mes) {
-  if (dashHistorialCache[mes]) return dashHistorialCache[mes];
+async function _fetchMesCache(mes, forzar) {
+  // El mes que se está viendo se recarga siempre fresco (forzar=true) para no
+  // mostrar datos desactualizados tras aprobar/rechazar. Los meses históricos
+  // (sparklines) sí se sirven de caché porque cambian poco y son secundarios.
+  if (!forzar && dashHistorialCache[mes]) return dashHistorialCache[mes];
   const [vd, jd] = await Promise.all([
     api({ accion: 'obtenerVentas',   mes }),
     api({ accion: 'obtenerJornadas', mes })
@@ -3335,12 +3338,12 @@ async function _recargarDashData() {
     const mesPrev   = idxActual >= 0 && idxActual + 1 < dashMesesDisponibles.length
       ? dashMesesDisponibles[idxActual + 1] : null;
 
-    // Fetch mes actual + anterior en paralelo (con caché)
+    // Fetch mes actual (siempre fresco) + anterior en paralelo (con caché)
     const fetchPrev = mesPrev
       ? _fetchMesCache(mesPrev)
       : Promise.resolve({ ventas: [], jornadas: [] });
     const [curr, prev] = await Promise.all([
-      _fetchMesCache(dashMesActual), fetchPrev
+      _fetchMesCache(dashMesActual, true), fetchPrev
     ]);
 
     loading.style.display = 'none';
