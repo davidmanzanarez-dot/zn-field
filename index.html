@@ -3203,11 +3203,16 @@ let dashMesesDisponibles = [];
 // Devuelve siempre un array ordenado descendente (más reciente primero)
 function normalizarMeses(mesesData) {
   if (!mesesData) return [];
-  if (Array.isArray(mesesData)) return mesesData;
   const MESES_ORD = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  // Reunir todos los meses (sea array directo o un objeto por zona)
   const set = new Set();
-  Object.values(mesesData).forEach(arr => arr.forEach(m => set.add(m)));
+  if (Array.isArray(mesesData)) {
+    mesesData.forEach(m => set.add(m));
+  } else {
+    Object.values(mesesData).forEach(arr => arr.forEach(m => set.add(m)));
+  }
+  // Ordenar SIEMPRE cronológicamente, del más nuevo al más viejo
   return Array.from(set).sort((a, b) => {
     const anioA = parseInt(a.replace(/\D/g, '')), anioB = parseInt(b.replace(/\D/g, ''));
     if (anioA !== anioB) return anioB - anioA;
