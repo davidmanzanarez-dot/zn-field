@@ -3812,8 +3812,8 @@ function renderAprobaciones() {
             <div class="lbl">Comisión</div>
           </div>
           <div class="ap-btns">
-            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('venta', ${v.fila})">✓</button>
-            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('venta', ${v.fila}, true)">✕</button>
+            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('venta', ${v.fila}, false, '${v.zona || ''}')">✓</button>
+            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('venta', ${v.fila}, true, '${v.zona || ''}')">✕</button>
           </div>
         </div>
       </div>`;
@@ -3852,8 +3852,8 @@ function renderAprobaciones() {
             <div class="lbl">Precio ticket</div>
           </div>
           <div class="ap-btns">
-            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('jornada', ${j.fila})">✓</button>
-            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('jornada', ${j.fila}, true)">✕</button>
+            <button class="ap-btn aprobar" title="Aprobar" onclick="aprobar('jornada', ${j.fila}, false, '${j.zona || ''}')">✓</button>
+            <button class="ap-btn rechazar" title="Rechazar" onclick="aprobar('jornada', ${j.fila}, true, '${j.zona || ''}')">✕</button>
           </div>
         </div>
       </div>`;
@@ -3875,9 +3875,12 @@ document.getElementById('aprob-filtro-localidad').addEventListener('change', ren
 
 let aprobacionEnCurso = null;
 
-window.aprobar = function(tipo, fila, rechazar = false) {
+window.aprobar = function(tipo, fila, rechazar = false, zona = '') {
+  // El mes y la zona de la venta/jornada son necesarios para que el backend
+  // abra la hoja correcta. Si no se pasan, se escribiría en el mes actual (bug).
+  const mes = aprobMesActual || '';
   if (rechazar) {
-    rechazoEnCurso = { tipo, fila };
+    rechazoEnCurso = { tipo, fila, mes, zona };
     document.getElementById('modal-motivo-texto').value = '';
     document.getElementById('modal-rechazo-error').textContent = '';
     document.getElementById('modal-rechazo').classList.add('open');
@@ -3885,7 +3888,7 @@ window.aprobar = function(tipo, fila, rechazar = false) {
   }
 
   // Aprobar: abre modal pidiendo el link (opcional)
-  aprobacionEnCurso = { tipo, fila };
+  aprobacionEnCurso = { tipo, fila, mes, zona };
   document.getElementById('modal-link-texto').value = '';
   document.getElementById('modal-link-error').textContent = '';
   document.getElementById('modal-link').classList.add('open');
@@ -3905,7 +3908,7 @@ document.getElementById('btn-cancelar-aprobar').addEventListener('click', () => 
 document.getElementById('btn-confirmar-aprobar').addEventListener('click', async () => {
   if (!aprobacionEnCurso) return;
 
-  const { tipo, fila } = aprobacionEnCurso;
+  const { tipo, fila, mes, zona } = aprobacionEnCurso;
   const link = document.getElementById('modal-link-texto').value.trim();
   const accion = tipo === 'venta' ? 'aprobarVenta' : 'aprobarJornada';
 
@@ -3915,7 +3918,10 @@ document.getElementById('btn-confirmar-aprobar').addEventListener('click', async
   btn.disabled = true;
 
   try {
-    const data = await apiPost({ accion, fila, link });
+    const payload = { accion, fila, link };
+    if (mes)  payload.mes  = mes;
+    if (zona) payload.zona = zona;
+    const data = await apiPost(payload);
 
     if (data.ok) {
       toast(link ? 'Aprobada con link ✓' : 'Aprobada ✓', 'success');
@@ -3951,7 +3957,7 @@ document.getElementById('btn-confirmar-rechazo').addEventListener('click', async
   if (!motivo) { errEl.textContent = 'Escribí un motivo para que el técnico sepa qué corregir'; return; }
   if (!rechazoEnCurso) return;
 
-  const { tipo, fila } = rechazoEnCurso;
+  const { tipo, fila, mes, zona } = rechazoEnCurso;
   const accion = tipo === 'venta' ? 'rechazarVenta' : 'rechazarJornada';
 
   const btn = document.getElementById('btn-confirmar-rechazo');
@@ -3959,7 +3965,10 @@ document.getElementById('btn-confirmar-rechazo').addEventListener('click', async
   btn.disabled = true;
 
   try {
-    const data = await apiPost({ accion, fila, motivo });
+    const payload = { accion, fila, motivo };
+    if (mes)  payload.mes  = mes;
+    if (zona) payload.zona = zona;
+    const data = await apiPost(payload);
     if (data.ok) {
       toast('Rechazada ✕', 'success');
       document.getElementById('modal-rechazo').classList.remove('open');
