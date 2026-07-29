@@ -1429,6 +1429,18 @@
         </div>
       </div>
 
+      <div class="menu-section-title">Forma de trabajo</div>
+      <div class="radio-group" id="jor-modo-trabajo-group">
+        <div class="radio-chip selected" data-val="solo">Solo</div>
+        <div class="radio-chip" data-val="dupla">Dupla (se divide 50/50)</div>
+      </div>
+      <div id="jor-dupla-section" style="display:none;margin-top:12px;">
+        <div class="form-group">
+          <label>Compañero/a</label>
+          <select id="jor-companero-select"><option value="">— seleccioná compañero/a —</option></select>
+        </div>
+      </div>
+
       <div class="jornada-section-label">Clientes por categoría</div>
       <div id="categorias-pagas"></div>
 
@@ -2104,7 +2116,9 @@ async function bloquearMientras(btn, accion) {
 
 function formatoPesos(n) {
   if (n === undefined || n === null || n === '') return '—';
-  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  // Mostrar los decimales que el monto realmente tenga (hasta 2), sin forzar ni redondear.
+  // Ej: 1234.5 -> $1.234,5 | 1000 -> $1.000 | 1234.56 -> $1.234,56
+  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
 // Calcula los dos períodos de cobro del ciclo 19-al-18.
@@ -2623,6 +2637,24 @@ document.getElementById('btn-registrar-venta').addEventListener('click', async (
 //  JORNADAS - REDISEÑO CON CHIPS
 // ============================================================
 let ticketsPorCategoria = {};
+let jorModoTrabajo = 'solo';  // modo de trabajo de la jornada (solo/dupla)
+
+// Listener del toggle solo/dupla en jornadas
+document.addEventListener('DOMContentLoaded', () => {
+  const grupo = document.getElementById('jor-modo-trabajo-group');
+  if (grupo) {
+    grupo.addEventListener('click', e => {
+      const chip = e.target.closest('.radio-chip');
+      if (!chip) return;
+      jorModoTrabajo = chip.dataset.val;
+      grupo.querySelectorAll('.radio-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      document.getElementById('jor-dupla-section').style.display =
+        jorModoTrabajo === 'dupla' ? 'block' : 'none';
+      recalcularTotalJornada();
+    });
+  }
+});
 
 async function cargarPantallaJornada() {
   ticketsPorCategoria = {};
@@ -2632,9 +2664,30 @@ async function cargarPantallaJornada() {
   llenarSelectLocalidades('jornada-localidad');
   llenarSelectMoviles('jornada-movil', session.movil);
 
+  // Reset del modo de trabajo (solo/dupla)
+  jorModoTrabajo = 'solo';
+  document.querySelectorAll('#jor-modo-trabajo-group .radio-chip').forEach(c =>
+    c.classList.toggle('selected', c.dataset.val === 'solo'));
+  document.getElementById('jor-dupla-section').style.display = 'none';
+  llenarSelectCompaneroJornada();
+
   renderCategoriasJornada();
   recalcularTotalJornada();
   mostrarPantalla('jornada');
+}
+
+// Llena el selector de compañero de jornada (solo técnicos comunes, sin uno mismo)
+function llenarSelectCompaneroJornada() {
+  const sel = document.getElementById('jor-companero-select');
+  sel.innerHTML = '<option value="">— seleccioná compañero/a —</option>';
+  tecnicosLista.forEach(t => {
+    if (t.nombre === session.usuario) return;
+    if (String(t.rol || 'tecnico').toLowerCase() === 'supervisor') return;
+    const op = document.createElement('option');
+    op.value = t.nombre;
+    op.textContent = t.nombre;
+    sel.appendChild(op);
+  });
 }
 
 function renderCategoriasJornada() {
@@ -2733,8 +2786,11 @@ function recalcularTotalJornada() {
     totalTickets += tickets.length;
     if (cat.pago) totalMonto += tickets.length * (preciosJornada[cat.nombre] || 24000);
   });
+  // En dupla, el técnico cobra la mitad
+  if (jorModoTrabajo === 'dupla') totalMonto = totalMonto / 2;
   document.getElementById('total-tickets').textContent =
-    totalTickets + ' ticket' + (totalTickets !== 1 ? 's' : '') + ' · total jornada';
+    totalTickets + ' ticket' + (totalTickets !== 1 ? 's' : '') +
+    (jorModoTrabajo === 'dupla' ? ' · tu mitad' : ' · total jornada');
   document.getElementById('total-amount').textContent = formatoPesos(totalMonto);
 }
 
@@ -2757,6 +2813,13 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
 
   if (!tickets.length) { toast('Agregá al menos un ticket', 'error'); return; }
 
+  // Validar compañero si es dupla
+  const companeroJor = jorModoTrabajo === 'dupla'
+    ? document.getElementById('jor-companero-select').value : '';
+  if (jorModoTrabajo === 'dupla' && !companeroJor) {
+    toast('Seleccioná el compañero/a de dupla', 'error'); return;
+  }
+
   const btn = document.getElementById('btn-registrar-jornada');
   btn.textContent = 'Registrando…';
   btn.disabled = true;
@@ -2767,7 +2830,9 @@ document.getElementById('btn-registrar-jornada').addEventListener('click', async
     fechaJornada: fechaToBackend(fecha),
     localidad: localidad,
     movil: movil,
-    tickets: JSON.stringify(tickets)
+    tickets: JSON.stringify(tickets),
+    dupla: jorModoTrabajo === 'dupla',
+    companero: companeroJor
   };
 
   try {
@@ -3346,7 +3411,7 @@ function _calcMetricas(ventas, jornadas) {
 
   return {
     ventasAprob, comisionAprob, comisionPend,
-    ticketProm: ventasAprob > 0 ? Math.round(comisionAprob / ventasAprob) : 0,
+    ticketProm: ventasAprob > 0 ? comisionAprob / ventasAprob : 0,
     jornadasAprob,
     ingresoTotal: comisionAprob + jornadasMonto,
     equipoTop, equipoTopCant, totalUnidades
