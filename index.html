@@ -2288,6 +2288,13 @@ async function intentarLogin() {
 //  MENÚ
 // ============================================================
 async function cargarMenuPrincipal() {
+  // Asegurar que la lista de técnicos esté cargada (se limpia al cerrar sesión)
+  if (!tecnicosLista || tecnicosLista.length === 0) {
+    try {
+      const dt = await api({ accion: 'obtenerTecnicos' });
+      if (dt.ok && Array.isArray(dt.tecnicos)) tecnicosLista = dt.tecnicos;
+    } catch(e) {}
+  }
   const nombreMostrar = session.esAdmin ? 'Administrador' : session.usuario;
   document.getElementById('menu-nombre').textContent = nombreMostrar;
   document.getElementById('header-user-name').textContent = nombreMostrar;
@@ -2669,7 +2676,7 @@ async function cargarPantallaJornada() {
   document.querySelectorAll('#jor-modo-trabajo-group .radio-chip').forEach(c =>
     c.classList.toggle('selected', c.dataset.val === 'solo'));
   document.getElementById('jor-dupla-section').style.display = 'none';
-  llenarSelectCompaneroJornada();
+  await llenarSelectCompaneroJornada();
 
   renderCategoriasJornada();
   recalcularTotalJornada();
@@ -2677,8 +2684,16 @@ async function cargarPantallaJornada() {
 }
 
 // Llena el selector de compañero de jornada (solo técnicos comunes, sin uno mismo)
-function llenarSelectCompaneroJornada() {
+async function llenarSelectCompaneroJornada() {
   const sel = document.getElementById('jor-companero-select');
+  if (!sel) return;
+  // Si por algún motivo la lista de técnicos no está cargada, traerla ahora
+  if (!tecnicosLista || tecnicosLista.length === 0) {
+    try {
+      const data = await api({ accion: 'obtenerTecnicos' });
+      if (data.ok && Array.isArray(data.tecnicos)) tecnicosLista = data.tecnicos;
+    } catch(e) {}
+  }
   sel.innerHTML = '<option value="">— seleccioná compañero/a —</option>';
   tecnicosLista.forEach(t => {
     if (t.nombre === session.usuario) return;
