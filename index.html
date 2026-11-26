@@ -2001,7 +2001,7 @@ const ZONA_NOMBRES = {
   TODAS: 'Todas las zonas'
 };
 
-const session = { usuario: null, esAdmin: false, movil: '', zona: '', rol: '' };
+const session = { usuario: null, esAdmin: false, movil: '', zona: '', rol: '', token: '' };
 let equiposCatalogo = [];
 let tecnicosLista = [];
 let movilesLista = [];
@@ -2076,28 +2076,39 @@ async function api(params) {
   // Inyectar zona de sesión si no viene explícitamente en el llamado
   const payload = Object.assign({}, params);
   if (session.zona && !payload.zona) payload.zona = session.zona;
+  if (session.token) payload.token = session.token;
   const url = new URL(WEB_APP_URL);
   Object.keys(payload).forEach(k => url.searchParams.append(k, payload[k]));
   _marcarInicioPeticion();
   try {
     const resp = await fetch(url.toString());
-    return await resp.json();
+    return _revisarSesion(await resp.json());
   } finally {
     _marcarFinPeticion();
   }
+}
+
+// El backend responde SESION_EXPIRADA cuando el token venció (12 h) o no es válido
+function _revisarSesion(data) {
+  if (data && data.error === 'SESION_EXPIRADA' && session.usuario) {
+    cerrarSesion();
+    toast('Tu sesión venció. Ingresá de nuevo.', 'error', 4000);
+  }
+  return data;
 }
 
 async function apiPost(data) {
   // Inyectar zona de sesión si no viene explícitamente en el llamado
   const payload = Object.assign({}, data);
   if (session.zona && !payload.zona) payload.zona = session.zona;
+  if (session.token) payload.token = session.token;
   _marcarInicioPeticion();
   try {
     const resp = await fetch(WEB_APP_URL, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
-    return await resp.json();
+    return _revisarSesion(await resp.json());
   } finally {
     _marcarFinPeticion();
   }
@@ -2266,6 +2277,7 @@ async function intentarLogin() {
       session.movil = data.movil || '';
       session.zona  = data.zona  || 'ZN';
       session.rol   = data.rol   || data.tipo || 'tecnico';
+      session.token = data.token || '';
       pinInput.value = '';
       document.getElementById('btn-login').textContent = 'INGRESAR';
       if (session.esAdmin) {
@@ -4661,6 +4673,7 @@ function cerrarSesion() {
   session.movil = '';
   session.zona  = '';
   session.rol   = '';
+  session.token = '';
 
   // Limpiar TODAS las cachés y estado para que el próximo usuario no vea datos del anterior
   dashHistorialCache    = {};
